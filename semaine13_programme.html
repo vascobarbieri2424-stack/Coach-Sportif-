@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semaine 13 — Performance & Simulation</title>
+<style>
+:root{
+  --ink:#1A2332;--im:#4A5568;--il:#718096;
+  --ind:#312E81;--ind-mid:#4338CA;--ind-light:#EEF2FF;--ind-acc:#818CF8;
+  --g:#0F5132;--gm:#1D8A52;--gl:#D1FAE5;--ga:#10B981;
+  --b:#1E40AF;--bm:#3B82F6;--bl:#DBEAFE;
+  --am:#D97706;--al:#FEF3C7;--ad:#78350F;
+  --em:#065F46;--em-l:#ECFDF5;--em-acc:#34D399;
+  --peak:#DC2626;--peak-l:#FEF2F2;
+  --volt:#C2410C;--volt-l:#FFF7ED;--volt-acc:#FB923C;
+  --pp:#5B21B6;--ppl:#F5F3FF;
+  --sb:#EFF6FF;--sbd:#93C5FD;--st:#1E3A8A;
+  --eb:#F0FDF4;--ebd:#6EE7B7;--et:#065F46;
+  --sf:#F8FAFC;--w:#fff;--bo:#E2E8F0;--bd:#CBD5E1;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--sf);color:var(--ink);font-size:14px;line-height:1.5;}
+.wrap{max-width:960px;margin:0 auto;padding:1.5rem 1.5rem 5rem;}
+
+.hdr{background:linear-gradient(135deg,#1E1B4B,#4338CA);border-radius:16px;padding:1.75rem 2rem 1.5rem;position:relative;overflow:hidden;}
+.hdr::before{content:'13';position:absolute;right:1.5rem;top:50%;transform:translateY(-50%);font-size:96px;font-weight:900;color:rgba(255,255,255,.06);line-height:1;}
+.eye{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ind-acc);margin-bottom:6px;}
+.ht{font-size:24px;font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:3px;}
+.hs2{font-size:12px;color:rgba(255,255,255,.45);margin-bottom:1rem;}
+.pills{display:flex;flex-wrap:wrap;gap:6px;}
+.pill{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+.pi2{background:rgba(129,140,248,.2);color:var(--ind-acc);}
+.pa{background:rgba(217,119,6,.25);color:#FCD34D;}
+.pw{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);}
+.hst{background:#13104A;border-radius:8px;padding:8px 2rem;display:flex;gap:2rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.hsi{display:flex;flex-direction:column;}
+.hv{font-size:14px;font-weight:700;color:var(--ind-acc);}
+.hlb{font-size:9px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.06em;}
+
+.ps-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.5rem;}
+.ps{background:var(--w);border:0.5px solid var(--bo);border-radius:10px;padding:10px 12px;}
+.ps-l{font-size:10px;font-weight:700;color:var(--il);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;}
+.ps-f{font-size:10px;color:var(--il);text-decoration:line-through;margin-bottom:2px;}
+.ps-t{font-size:12px;font-weight:700;color:var(--ind-mid);}
+.dt{display:inline-block;padding:1px 6px;border-radius:10px;font-size:9px;font-weight:700;}
+.du{background:#D1FAE5;color:#065F46;} .dn{background:#FFEDD5;color:#9A3412;}
+.dnew{background:var(--ind-light);color:var(--ind);}
+
+.mt{display:flex;gap:0;border:1.5px solid var(--bd);border-radius:10px;overflow:hidden;margin-bottom:1.5rem;background:var(--w);}
+.mt-btn{flex:1;padding:10px;text-align:center;cursor:pointer;font-size:12px;font-weight:600;border:none;background:transparent;color:var(--il);}
+.mt-btn.as{background:var(--sb);color:var(--st);}
+.mt-btn.ae{background:var(--eb);color:var(--et);}
+.mt-d{width:1px;background:var(--bd);}
+
+.ws{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:1.5rem;}
+.wc{border-radius:8px;padding:8px 3px;text-align:center;border:0.5px solid transparent;}
+.wn{font-size:9px;font-weight:700;text-transform:uppercase;margin-bottom:3px;}
+.wt2{font-size:8px;line-height:1.3;}
+.wd{width:5px;height:5px;border-radius:50%;margin:4px auto 0;}
+.wi{background:var(--ind-light);border-color:#A5B4FC;border-width:1.5px;} .wi .wn{color:var(--ind);} .wi .wt2{color:var(--ind-mid);} .wi .wd{background:var(--ind-mid);}
+.wg{background:var(--gl);border-color:#6EE7B7;} .wg .wn{color:var(--g);} .wg .wd{background:var(--ga);}
+.wf{background:#FFF7ED;border-color:#FDBA74;} .wf .wn{color:#9A3412;} .wf .wd{background:var(--volt);}
+.wsim{background:#FEF3C7;border-color:#FCD34D;border-width:2px;} .wsim .wn{color:var(--ad);font-weight:800;} .wsim .wt2{color:var(--am);font-weight:600;} .wsim .wd{background:var(--am);}
+.wr{background:#F1F5F9;border-color:#CBD5E1;} .wr .wn{color:#475569;} .wr .wd{background:#CBD5E1;}
+.wrest{background:#FFF1F2;border-color:#FECDD3;} .wrest .wn{color:var(--red);} .wrest .wd{background:var(--red);}
+
+.sec{margin-bottom:2rem;}
+.sl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--il);padding-bottom:5px;border-bottom:2px solid var(--bd);margin-bottom:1rem;}
+
+.day{margin-bottom:1.25rem;}
+.dh{border-radius:10px 10px 0 0;padding:10px 16px;}
+.db2{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;border-radius:4px;}
+.dt3{font-size:15px;font-weight:700;color:var(--ink);margin:3px 0 2px;}
+.dm{font-size:11px;color:var(--il);}
+.db{border:0.5px solid var(--bo);border-top:none;border-radius:0 0 10px 10px;padding:12px;background:var(--w);}
+
+.dhi{background:var(--ind-light);} .dhi .db2{background:var(--ind-mid);color:#fff;}
+.dhg{background:var(--gl);} .dhg .db2{background:var(--g);color:#fff;}
+.dhf{background:#FFF7ED;} .dhf .db2{background:var(--volt);color:#fff;}
+.dha{background:var(--al);} .dha .db2{background:var(--am);color:#fff;}
+.dhr{background:#F1F5F9;} .dhr .db2{background:#475569;color:#fff;}
+.dhsim{background:#FFFBEB;border:1.5px solid #FCD34D;} .dhsim .db2{background:var(--am);color:#fff;}
+.dhrest{background:#FFF1F2;} .dhrest .db2{background:var(--red);color:#fff;}
+
+.ib{display:flex;align-items:center;gap:8px;background:var(--sf);border-radius:6px;padding:5px 10px;margin-bottom:10px;}
+.ibl{font-size:10px;font-weight:600;color:var(--im);width:75px;flex-shrink:0;}
+.ibt{flex:1;height:6px;background:var(--bd);border-radius:3px;overflow:hidden;}
+.ibf{height:100%;border-radius:3px;}
+.ibv{font-size:11px;font-weight:700;width:34px;text-align:right;}
+
+.eb2{background:var(--w);border:0.5px solid var(--bo);border-radius:12px;margin-bottom:8px;overflow:hidden;}
+.eh{padding:10px 16px;display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;}
+.en{font-size:13px;font-weight:700;color:var(--ink);}
+.ev{font-size:11px;font-weight:600;color:var(--im);white-space:nowrap;}
+.er{font-size:10px;color:var(--il);white-space:nowrap;}
+.esp{padding:0 16px 10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.es{background:var(--sb);border:0.5px solid var(--sbd);border-radius:8px;padding:8px 10px;}
+.ee{background:var(--eb);border:0.5px solid var(--ebd);border-radius:8px;padding:8px 10px;}
+.mt2{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+.es .mt2{color:var(--st);} .ee .mt2{color:var(--et);}
+.ed{font-size:11px;line-height:1.6;}
+.es .ed{color:#1E40AF;} .ee .ed{color:#065F46;}
+.etk{padding:6px 16px 10px;border-top:0.5px solid var(--bo);background:#FAFBFC;}
+.tl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--il);margin-bottom:2px;}
+.tt{font-size:11px;color:var(--im);line-height:1.5;}
+.eu{padding:0 16px 10px;}
+.euu{background:var(--sf);border:0.5px solid var(--bo);border-radius:8px;padding:8px 10px;font-size:11px;color:var(--im);line-height:1.6;}
+
+.tag{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:9px;font-weight:700;margin-left:5px;}
+.tag-spp{background:var(--em-l);color:var(--em);}
+.tag-pow{background:var(--volt-l);color:var(--volt);}
+.tag-new{background:var(--ind-light);color:var(--ind);}
+.tag-sim{background:#FEF3C7;color:#78350F;}
+
+/* SIMULATION CARD */
+.sim-card{background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border:2px solid #FCD34D;border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:1rem;}
+.sim-title{font-size:16px;font-weight:800;color:var(--ad);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.sim-subtitle{font-size:12px;color:var(--am);margin-bottom:1rem;}
+.sim-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.sim-opt{background:rgba(255,255,255,.8);border:0.5px solid #FCD34D;border-radius:8px;padding:10px 12px;}
+.sim-opt-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--am);margin-bottom:4px;}
+.sim-opt-body{font-size:11px;color:var(--ad);line-height:1.55;}
+
+/* SPRINT TABLE */
+.sprint-table{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0;}
+.sprint-card{border-radius:8px;padding:10px 12px;border:0.5px solid transparent;text-align:center;}
+.sc-10{background:#EFF6FF;border-color:#93C5FD;}
+.sc-30{background:var(--volt-l);border-color:#FDBA74;}
+.sc-60{background:var(--ind-light);border-color:#A5B4FC;}
+.sc-l{font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:4px;}
+.sc-10 .sc-l{color:var(--b);} .sc-30 .sc-l{color:var(--volt);} .sc-60 .sc-l{color:var(--ind);}
+.sc-v{font-size:20px;font-weight:800;margin-bottom:2px;}
+.sc-10 .sc-v{color:var(--bm);} .sc-30 .sc-v{color:var(--volt);} .sc-60 .sc-v{color:var(--ind-mid);}
+.sc-d{font-size:10px;line-height:1.4;}
+.sc-10 .sc-d{color:var(--b);} .sc-30 .sc-d{color:var(--volt);} .sc-60 .sc-d{color:var(--ind);}
+
+/* SIMULATION SCHEDULE */
+.sim-schedule{display:flex;flex-direction:column;gap:4px;margin:10px 0;}
+.ss-row{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:6px;border:0.5px solid var(--bo);}
+.ss-time{font-size:10px;font-weight:700;color:var(--am);width:55px;flex-shrink:0;}
+.ss-content{font-size:11px;color:var(--im);}
+.ss-fc{font-size:10px;color:var(--il);width:70px;text-align:right;flex-shrink:0;}
+.ss-high{background:#FEF3C7;border-color:#FCD34D;}
+.ss-med{background:#F0FDF4;border-color:#6EE7B7;}
+.ss-low{background:#F1F5F9;border-color:#CBD5E1;}
+
+.info{border-radius:7px;padding:9px 12px;font-size:11px;line-height:1.65;margin:8px 0;}
+.info b{font-weight:700;}
+.ig{background:var(--gl);border-left:3px solid var(--ga);color:#065F46;}
+.ia{background:var(--al);border-left:3px solid var(--am);color:var(--ad);}
+.ii{background:var(--ind-light);border-left:3px solid var(--ind-acc);color:var(--ind);}
+.iv{background:var(--volt-l);border-left:3px solid var(--volt-acc);color:var(--volt);}
+.ib2{background:#EFF6FF;border-left:3px solid var(--bm);color:var(--b);}
+
+/* TAPER BOX */
+.taper{background:var(--ind-light);border:1.5px solid var(--ind-acc);border-radius:12px;padding:1rem 1.25rem;margin-top:1.5rem;}
+.taper-t{font-size:13px;font-weight:700;color:var(--ind);margin-bottom:8px;}
+.taper-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.taper-day{background:rgba(255,255,255,.7);border-radius:8px;padding:8px 10px;text-align:center;}
+.td-lbl{font-size:9px;font-weight:700;text-transform:uppercase;color:var(--ind);margin-bottom:3px;}
+.td-val{font-size:11px;color:var(--ind-mid);font-weight:600;line-height:1.3;}
+.td-test{background:var(--al);border:1px solid #FCD34D;}
+.td-test .td-lbl{color:var(--ad);} .td-test .td-val{color:var(--am);}
+
+.mr{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1rem;}
+.mc2{border-radius:10px;padding:10px 12px;border:0.5px solid transparent;}
+.mc2-p{background:#EFF6FF;border-color:#93C5FD;} .mc2-g{background:var(--al);border-color:#FCD34D;} .mc2-f{background:var(--gl);border-color:#6EE7B7;}
+.ml{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+.mc2-p .ml{color:#1E3A8A;} .mc2-g .ml{color:var(--ad);} .mc2-f .ml{color:var(--g);}
+.mv{font-size:20px;font-weight:800;letter-spacing:-1px;}
+.mc2-p .mv{color:var(--bm);} .mc2-g .mv{color:var(--am);} .mc2-f .mv{color:var(--gm);}
+.mc-s{font-size:10px;color:var(--il);margin-top:1px;}
+
+.pg{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.pgc{background:var(--w);border:0.5px solid var(--bo);border-radius:8px;padding:10px 14px;display:flex;gap:10px;}
+.pi{font-size:20px;flex-shrink:0;}
+.pti{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:2px;}
+.pd{font-size:11px;color:var(--il);line-height:1.45;}
+.pok{border-left:3px solid var(--ga);}
+.pwn{border-left:3px solid var(--am);}
+
+.bridge{background:#13104A;border-radius:12px;padding:1.25rem 1.5rem;margin-top:2rem;}
+.bt{font-size:11px;font-weight:700;color:var(--ind-acc);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
+.bgr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.bgc{background:rgba(255,255,255,.07);border-radius:8px;padding:9px 11px;}
+.bgl{font-size:10px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+.bgs13{font-size:10px;color:rgba(255,255,255,.4);text-decoration:line-through;margin-bottom:3px;}
+.bgs14{font-size:11px;color:#FCD34D;font-weight:600;}
+
+@media(max-width:640px){
+  .ps-row,.mr,.pg,.bgr,.sim-options,.sprint-table,.taper-grid{grid-template-columns:1fr;}
+  .esp{grid-template-columns:1fr;}
+  .ws{grid-template-columns:repeat(4,1fr);}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <div class="eye">Phase 2 · Performance · Semaine 13 sur 14</div>
+  <div class="ht">Performance & Simulation — L'avant-dernière semaine</div>
+  <div class="hs2">Dernières séances lourdes. Sprints 60m. Simulation match. Puis 3 jours de taper avant les tests finaux.</div>
+  <div class="pills">
+    <span class="pill pi2">6 séances</span>
+    <span class="pill pi2">Force-vitesse maintenue</span>
+    <span class="pill pa">2 900 kcal</span>
+    <span class="pill pw">Sprints 60m 🆕</span>
+    <span class="pill pw">Simulation match ⚽</span>
+  </div>
+</div>
+<div class="hst">
+  <div class="hsi"><span class="hv">Force-vit.</span><span class="hlb">Maintenue · volume −</span></div>
+  <div class="hsi"><span class="hv">60m</span><span class="hlb">Premier sprint 60m</span></div>
+  <div class="hsi"><span class="hv">Simulation</span><span class="hlb">60–70 min match</span></div>
+  <div class="hsi"><span class="hv">Nordic 3×4</span><span class="hlb">Dernière progression</span></div>
+  <div class="hsi"><span class="hv">3 jours</span><span class="hlb">Taper avant S14</span></div>
+</div>
+
+<!-- PROGRESSION S12→S13 -->
+<div class="ps-row">
+  <div class="ps"><div class="ps-l">Volume muscu</div><div class="ps-f">4 blocs force-vit.</div><div class="ps-t">3 blocs · légèrement − <span class="dt dn">Volume</span></div></div>
+  <div class="ps"><div class="ps-l">Sprints</div><div class="ps-f">10m × 10 + 30m × 4</div><div class="ps-t">+60m × 2 <span class="dt dnew">🆕</span></div></div>
+  <div class="ps"><div class="ps-l">Nordic</div><div class="ps-f">3 × 3 sans aide</div><div class="ps-t">3 × 4 si toléré <span class="dt du">+1 rep</span></div></div>
+  <div class="ps"><div class="ps-l">Grande séance</div><div class="ps-f">Plyométrie 4 rounds</div><div class="ps-t">Simulation match <span class="dt dnew">⚽</span></div></div>
+</div>
+
+<!-- MODE TOGGLE -->
+<div class="mt">
+  <button class="mt-btn as" id="bs" onclick="setMode('salle')">🏋️ Mode Salle</button>
+  <div class="mt-d"></div>
+  <button class="mt-btn" id="bb" onclick="setMode('both')">👁 Voir les deux</button>
+  <div class="mt-d"></div>
+  <button class="mt-btn" id="be" onclick="setMode('ext')">🌳 Mode Extérieur</button>
+</div>
+
+<!-- WEEK STRIP -->
+<div class="ws">
+  <div class="wc wi"><div class="wn">Lun</div><div class="wt2">Force-vit. bas + Plyo</div><div class="wd"></div></div>
+  <div class="wc wf"><div class="wn">Mar</div><div class="wt2">Sprints 10m+30m+60m</div><div class="wd"></div></div>
+  <div class="wc wr"><div class="wn">Mer</div><div class="wt2">Récup active + Zone 2</div><div class="wd"></div></div>
+  <div class="wc wi"><div class="wn">Jeu</div><div class="wt2">Force-vit. haut + Nordic</div><div class="wd"></div></div>
+  <div class="wc wr"><div class="wn">Ven</div><div class="wt2">Récup longue 60 min</div><div class="wd"></div></div>
+  <div class="wc wsim"><div class="wn">Sam</div><div class="wt2">⚽ SIMULATION MATCH</div><div class="wd"></div></div>
+  <div class="wc wrest"><div class="wn">Dim</div><div class="wt2">Repos → Tests S14</div><div class="wd"></div></div>
+</div>
+
+<!-- LOGIQUE DE LA SEMAINE -->
+<div class="ii" style="border-radius:10px;padding:12px 16px;font-size:12px;line-height:1.7;margin-bottom:1.5rem;">
+  <b>La logique de S13 :</b> 4 jours intenses (lun–jeu), 2 jours de décharge (ven–sam), repos dimanche, tests lundi.<br>
+  La simulation du samedi est prévue là parce que les tests de S14 commencent par les mesures corps/mobilité (lundi J1 — peu exigeantes physiquement) et la vitesse (mardi J2 — 2 jours après la simulation). Ce timing est suffisant pour que les jambes soient fraîches pour les sprints de mardi.<br>
+  <b>La semaine qui a 12 semaines de travail derrière elle. Tout s'exprime ici.</b>
+</div>
+
+<!-- SPRINT TABLE -->
+<div class="sec">
+<div class="sl">Programme des sprints de mardi — Les 3 distances</div>
+<div class="sprint-table">
+  <div class="sprint-card sc-10">
+    <div class="sc-l">Sprint 10m</div>
+    <div class="sc-v">8 reps</div>
+    <div class="sc-d">Repos 90 sec · Accélération · Pattern déjà maîtrisé</div>
+  </div>
+  <div class="sprint-card sc-30">
+    <div class="sc-l">Sprint 30m</div>
+    <div class="sc-v">4 reps</div>
+    <div class="sc-d">Repos 3 min · Vitesse max · Maîtrisé depuis S12</div>
+  </div>
+  <div class="sprint-card sc-60">
+    <div class="sc-l">Sprint 60m 🆕</div>
+    <div class="sc-v">2 reps</div>
+    <div class="sc-d">Repos 5 min · Maintien vitesse max · Premier 60m du programme</div>
+  </div>
+</div>
+<div class="ii"><b>Pourquoi le 60m maintenant et pas avant :</b> le sprint 60m ne teste plus l'accélération — il teste la capacité à maintenir la vitesse maximale sur une durée plus longue. Cette qualité n'est accessible qu'après avoir développé l'accélération (10m) et la vitesse de pointe (30m). C'est l'aboutissement naturel de la progression en vitesse. Pour un défenseur, le 60m reproduit la course de récupération défensive après une contre-attaque adverse.</div>
+</div>
+
+<!-- ─── PROGRAMME ─── -->
+<div class="sec">
+<div class="sl">Programme journalier</div>
+
+<!-- LUNDI -->
+<div class="day">
+<div class="dh dhi">
+  <span class="db2">Lundi · Séance 1</span>
+  <div class="dt3">Force-vitesse bas du corps + Plyométrie 3 rounds</div>
+  <div class="dm">⏱ 85 min · Volume légèrement réduit vs S12 · Même intensité · Plyo 3 rounds (était 4)</div>
+</div>
+<div class="db">
+<div class="ib"><div class="ibl">Intensité</div><div class="ibt"><div class="ibf" style="width:87%;background:var(--ind-mid);"></div></div><div class="ibv" style="color:var(--ind-mid);">87%</div></div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Squat — Force-vitesse (volume réduit)</div><div class="ev">Bloc A + B</div><div class="er">Repos 3 min</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">
+      <b>Bloc A Force :</b> 2 × 3 @ 87–90% · tempo 3-1-X<br>
+      <b>Bloc B Vitesse :</b> 1 × 5 @ 70% · explosive (était 2 × 5 en S12)<br>
+      3 min repos. <b>−1 série Bloc B</b> — légère réduction de volume pour préserver la fraîcheur de semaine.
+    </div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">
+      <b>Bloc A :</b> 2 × 3 Bulgarian split squat lourd<br>
+      <b>Bloc B :</b> 1 × 5 squat jump (−1 série vs S12)<br>
+      Même logique force-vitesse, volume légèrement réduit.
+    </div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Hip thrust explosif</div><div class="ev">3 × 6 (était 4)</div><div class="er">Repos 2 min</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Charge de S12 ou légèrement plus. 3 séries au lieu de 4. Drive explosif maximal à chaque rep. Qualité > quantité.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Unilatéral sac max. 3 × 8/jambe. Hold 2 sec en haut + descente 3 sec. −1 série vs S12.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Depth jump + Lateral reactive bound <span class="tag tag-pow">Puissance</span></div><div class="ev">3 rounds</div><div class="er">2 min entre rounds</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed"><b>3 rounds (était 4) :</b><br>
+    4 × Depth jump (30–40 cm) · 20 sec/rep<br>
+    4 × Lateral reactive bound/côté · 15 sec/rep<br>
+    4 × Box jump · 20 sec/rep<br>
+    2 min repos entre rounds. Volume −25% vs S12.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed"><b>3 rounds :</b><br>
+    4 × Reactive squat jump · 20 sec<br>
+    4 × Lateral reactive bound · 15 sec<br>
+    4 × Broad jump · 20 sec<br>
+    2 min repos entre rounds.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Nordic curl + Copenhagen</div><div class="ev">3 × 4 (si S12 ok) + 3 × 30 sec</div><div class="er">—</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed"><b>Nordic 3 × 4 sans aide</b> si S12 (3 × 3) s'est bien passé et sans douleur. Si S12 était difficile → 3 × 3 maintenu. <b>C'est la dernière progression Nordic avant les tests S14.</b> Copenhagen 3 × 30 sec/côté.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Barre de parc. Nordic 3 × 4 si S12 ok. Copenhagen sur muret 3 × 30 sec. Même décision conditionnelle sur la douleur.</div></div>
+  </div>
+  <div class="etk"><div class="tl">Décision conditionnelle</div><div class="tt" style="color:var(--peak);">Si la moindre douleur ischio persiste depuis S12 → rester à 3 × 3 ou passer à excentrique seul · arriver sans douleur aux tests S14 prime sur la progression Nordic</div></div>
+</div>
+</div>
+</div>
+
+<!-- MARDI -->
+<div class="day">
+<div class="dh dhf">
+  <span class="db2">Mardi · Séance 2</span>
+  <div class="dt3">Sprints — 10m × 8 + 30m × 4 + 60m × 2</div>
+  <div class="dm">⏱ 65 min · Corps frais pour les sprints · Récup COMPLÈTE entre chaque distance</div>
+</div>
+<div class="db">
+<div class="info iv"><b>Ordre impératif :</b> 10m d'abord (accélération), puis 30m (vitesse max), puis 60m (maintien vitesse). Chaque distance sollicite une qualité différente et se fait à corps de plus en plus "chaud" mais aussi de plus en plus fatigué. Les 60m en derniers permettent au corps de produire la meilleure vitesse de pointe possible.</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Échauffement sprint</div><div class="ev">20 min</div><div class="er">—</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Jogging 8 min + éducatifs 7 min + 3 accélérations progressives (10m à 70%, 80%, 90%). Mettre en place les cônes avant l'échauffement.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Jogging 8 min + éducatifs 7 min + 4 accélérations progressives sur 30m à 60%, 70%, 80%, 90%. Surface identique à S11/S12 pour comparer les sensations.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Sprints 10m — 8 reps à 100%</div><div class="ev">8 × 10m</div><div class="er">Repos 90 sec complet</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Couloir. 8 sprints max. −2 reps vs S12 — légère réduction de volume pour préserver les jambes pour la simulation de samedi.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">8 × 10m à 100%. Récup 90 sec. Note si tu cours plus vite ou avec moins d'effort qu'en S12 — progrès de la supercompensation de la semaine.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Sprints 30m — 4 reps à 100%</div><div class="ev">4 × 30m</div><div class="er">Repos 3 min complet</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Si couloir 32m+ dispo. Sinon : extérieur uniquement. 4 × 30m à 100%. Repos 3 min strict.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">4 × 30m à 100%. 3 min repos. Comparer sensations vs S12 — plus fluide ? Moins d'effort pour la même vitesse ? Ce sont les signes de la progression neurale.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Sprints 60m — 2 reps à 100% <span class="tag tag-new">🆕 S13</span></div><div class="ev">2 × 60m</div><div class="er">Repos 5 min complet</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Nécessite un couloir de 65m minimum — probablement extérieur uniquement. Si impossible en salle → réserver pour la séance extérieure du samedi ou terrain en dehors. <b>Ne pas rogner sur la distance — 60m ou rien.</b></div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Terrain ou piste. 2 sprints × 60m à 100% de vitesse maximale. Repos 5 min complet entre les 2 reps. C'est peu de volume — mais ces 2 reps suffisent à entraîner le maintien de la vitesse maximale. La qualité prime largement sur le nombre.</div></div>
+  </div>
+  <div class="etk"><div class="tl">Objectif du 60m</div><div class="tt">Maintenir la vitesse atteinte à 30m jusqu'à 60m · la décélération après 30m est normale et attendue · l'objectif est de la minimiser · utile pour les longues récupérations défensives</div></div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Retour au calme + mobilité</div><div class="ev">10 min</div><div class="er">—</div></div>
+  <div class="eu"><div class="euu">✅ Marche 5 min + mobilité ischio, mollets, hanches. Les 60m créent un stress important sur les ischio et le tendon d'Achille — 5 min de mobilité immédiate aide la récupération avant jeudi.</div></div>
+</div>
+</div>
+</div>
+
+<!-- MERCREDI -->
+<div class="day">
+<div class="dh dhr">
+  <span class="db2">Mercredi · Récupération active</span>
+  <div class="dt3">Récupération active + Zone 2 léger (25 min)</div>
+  <div class="dm">⏱ 55 min · Entre sprints 60m mardi et force haut jeudi · Essentiel</div>
+</div>
+<div class="db">
+<div class="eb2">
+  <div class="eh"><div class="en">Récupération + Zone 2 léger</div><div class="ev">55 min</div><div class="er">FC &lt; 65%</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Vélo très léger 10 min (FC &lt; 110 bpm) + mobilité complète 25 min + zone 2 vélo 15 min (FC 60–65% max) + foam rolling 5 min. Les sprints 60m ont sollicité le SNC intensément — ce mercredi est le tampon avant la force de jeudi.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Marche 10 min + mobilité complète 25 min + jogging très léger 15 min (FC 60–65%) + auto-massage 5 min. Priorité mollets et ischio qui ont subi le stress des 60m hier.</div></div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- JEUDI -->
+<div class="day">
+<div class="dh dhi">
+  <span class="db2">Jeudi · Séance 3</span>
+  <div class="dt3">Force-vitesse haut du corps + Nordic 3 × 4</div>
+  <div class="dm">⏱ 65 min · Dernière vraie séance muscu haut du programme · Nordic final</div>
+</div>
+<div class="db">
+<div class="ib"><div class="ibl">Intensité</div><div class="ibt"><div class="ibf" style="width:85%;background:var(--am);"></div></div><div class="ibv" style="color:var(--am);">85%</div></div>
+<div class="info ii"><b>C'est la dernière séance de musculation intense du programme.</b> Après jeudi, ven = récup, sam = simulation, dim = repos, lun = tests S14. Ce que tu fais jeudi doit être fort mais pas épuisant — tu veux être frais pour la simulation de samedi et les tests de lundi.</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Développé couché force-vitesse (réduit)</div><div class="ev">Bloc A + B</div><div class="er">Repos 3 min</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">
+      <b>Bloc A :</b> 2 × 3 @ 87% · tempo 3-1-X<br>
+      <b>Bloc B :</b> 1 × 5 @ 70% · explosif (était 2 × 5 en S12)<br>
+      Volume −1 série vs S12.
+    </div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">
+      <b>Bloc A :</b> 2 × 4 pompes ultra-lestées<br>
+      <b>Bloc B :</b> 1 × 5 pompes explosives<br>
+      −1 série Bloc B vs S12.
+    </div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Tractions lestées</div><div class="ev">3 × 4 (était 4 × 4)</div><div class="er">Repos 3 min</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Même lest que S12. 3 séries au lieu de 4. Qualité maximale sur chaque rep. Descente 3 sec · remontée explosive.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Barre de parc lestée. 3 × 4. Même volume réduit.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Med ball (chest pass + rotation) + Militaire</div><div class="ev">2 × 8 chacun</div><div class="er">—</div></div>
+  <div class="eu"><div class="euu">✅ Volume réduit à 2 × 8 (était 3 × 8). Med ball chest pass 2 × 8 · rotation throw 2 × 8/côté · militaire force-vitesse (Bloc A 1 × 3 + Bloc B 1 × 5).<br>
+  🏋️ Salle : med ball contre mur · 🌳 Extérieur : mur terrain ou partenaire.</div></div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Nordic curl — Dernière progression</div><div class="ev">3 × 4 sans aide</div><div class="er">Repos 3 min</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed"><b>3 × 4 reps sans aide des mains</b> (si S12 + lundi S13 se sont bien passés). C'est le niveau le plus élevé du Nordic dans ce programme. Après jeudi, les tests S14 incluent les Nordic — arrive avec les ischio frais.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Barre de parc. 3 × 4. Si douleur → retour à 3 × 3 assisté. Priorité absolue : ischio sains pour les tests J2 (sprints) et J3 (force) de S14.</div></div>
+  </div>
+  <div class="etk"><div class="tl">Dernier Nordic du programme régulier</div><div class="tt">Après jeudi S13, plus de Nordic jusqu'aux tests S14 · laisser les ischio récupérer complètement pour les sprints et la force du test</div></div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Core + Face pull</div><div class="ev">2 séries chacun</div><div class="er">—</div></div>
+  <div class="eu"><div class="euu">✅ Volume réduit à 2 séries uniquement. Pallof 2 × 10 · Dead bug 2 × 8 · Gainage 2 × 60 sec · Face pull 2 × 15. Finir la séance proprement sans s'épuiser.</div></div>
+</div>
+</div>
+</div>
+
+<!-- VENDREDI -->
+<div class="day">
+<div class="dh dhr">
+  <span class="db2">Vendredi · Récupération longue</span>
+  <div class="dt3">Récupération active 60 min — Préparation simulation samedi</div>
+  <div class="dm">⏱ 60 min · La récupération la plus longue du programme · Corps prêt pour la simulation</div>
+</div>
+<div class="db">
+<div class="eb2">
+  <div class="eh"><div class="en">Protocole récupération complet</div><div class="ev">60 min</div><div class="er">—</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Vélo léger 20 min (FC &lt; 55%) + foam rolling complet 15 min (priorité : mollets, ischio, adducteurs, quadriceps) + mobilité complète 20 min + cohérence cardiaque 5 min. Corps préparé pour la simulation de demain.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Marche 20 min (idéalement en plein air, stimule la récupération parasympathique) + auto-massage 15 min + mobilité complète 20 min + cohérence cardiaque 5 min. Même protocole, même durée.</div></div>
+  </div>
+</div>
+<div class="info ig"><b>Objectif de ce vendredi :</b> arriver samedi matin avec des jambes légères, un esprit clair, et une motivation maximale pour la simulation match. Tout ce que tu fais vendredi est au service de la qualité de la simulation. Hydratation 3,5 L. Glucides élevés au dîner (300 g).</div>
+</div>
+</div>
+
+<!-- SAMEDI — SIMULATION -->
+<div class="day">
+<div class="dh dhsim">
+  <span class="db2">Samedi · ⚽ Simulation match</span>
+  <div class="dt3">Simulation match complet — 60 à 70 minutes</div>
+  <div class="dm">⏱ 90 min total avec échauffement · La séance la plus football-spécifique du programme · Tout s'exprime ici</div>
+</div>
+<div class="db">
+
+<div class="sim-card">
+  <div class="sim-title">⚽ La simulation match — deux formats possibles</div>
+  <div class="sim-subtitle">Choisir le format qui correspond à ta situation</div>
+  <div class="sim-options">
+    <div class="sim-opt">
+      <div class="sim-opt-lbl">✅ Format Idéal — Match réel</div>
+      <div class="sim-opt-body">Rejoindre une partie de <b>futsal</b>, un entraînement avec un club, ou un match informel. FC réelle de compétition. Décisions vraies. Contacts physiques. Rien ne remplace ça. C'est l'environnement pour lequel tout ce programme a été construit.</div>
+    </div>
+    <div class="sim-opt">
+      <div class="sim-opt-lbl">🔄 Format Solo — Si pas de match</div>
+      <div class="sim-opt-body">Circuit de simulation structuré (voir ci-dessous). FC maintenue à 75–90%. Toujours avec le ballon. Les actions reproduisent le rôle d'un défenseur sur 60–70 min de match.</div>
+    </div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Échauffement simulation</div><div class="ev">15 min</div><div class="er">—</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle (futsal possible)</div><div class="ed">Si futsal : échauffement standard de l'équipe + quelques échanges de passes. Si solo en salle : jogging 8 min + éducatifs + touches de balle légères 5 min.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Jogging 8 min + éducatifs 4 min + jonglerie + passes courtes légères 3 min. Corps et esprit activés pour le football. Se rappeler les sensations des bons matchs passés.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Simulation match — Format solo <span class="tag tag-sim">60–70 min</span></div><div class="ev">60–70 min</div><div class="er">FC 75–90%</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle (couloir ou terrain)</div><div class="ed">Alterner en boucle sur 60–70 min :<br>
+    · Sprint repli 20m + repositionnement (×15 total)<br>
+    · Passes courtes contre mur × 10<br>
+    · Shuffles défensifs bande 30 sec<br>
+    · Duel aérien imagé × 5<br>
+    · Sprint de transition 15m × 5<br>
+    · Marche récup 60 sec entre blocs<br>
+    FC cible : 75–85% FC max</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur (terrain)</div><div class="ed">Alterner en boucle sur 60–70 min :<br>
+    · Sprint défensif 20m + positionnement × 15<br>
+    · Relance courte + longue ballon × 10<br>
+    · Placement 1v1 imagé 30 sec<br>
+    · Duel aérien × 8<br>
+    · Transition perte de balle × 8<br>
+    · Technique relance sous fatigue × 10<br>
+    FC 75–90%. Jogging récup entre blocs.</div></div>
+  </div>
+  <div class="etk"><div class="tl">Ce que cette séance teste</div><div class="tt">Tout ce qui a été construit en 12 semaines · cardio (tiens-tu les 70 min ?) · force (tes duels sont-ils solides ?) · technique (tes relances sont-elles propres sous fatigue ?) · mental (est-ce que tu joues avec confiance ?)</div></div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Retour au calme</div><div class="ev">15 min</div><div class="er">—</div></div>
+  <div class="eu"><div class="euu">✅ Identique salle et extérieur — marche 5 min + routine mobilité complète 10 min. Fin de la dernière vraie séance de football-training du programme.</div></div>
+</div>
+
+<div class="sim-schedule" style="margin-top:10px;">
+  <div class="ss-row ss-high"><div class="ss-time">0–15 min</div><div class="ss-content">Échauffement + montée progressive · Entrée dans le rythme match</div><div class="ss-fc">FC 65–75%</div></div>
+  <div class="ss-row ss-high"><div class="ss-time">15–35 min</div><div class="ss-content">Simulation haute intensité · Efforts défensifs · Transitions</div><div class="ss-fc">FC 80–90%</div></div>
+  <div class="ss-row ss-med"><div class="ss-time">35–40 min</div><div class="ss-content">Mi-temps → récupération active</div><div class="ss-fc">FC 60–65%</div></div>
+  <div class="ss-row ss-high"><div class="ss-time">40–65 min</div><div class="ss-content">Reprise haute intensité · Duels · Relances · Sprints</div><div class="ss-fc">FC 80–88%</div></div>
+  <div class="ss-row ss-low"><div class="ss-time">65–80 min</div><div class="ss-content">Retour au calme · Mobilité · Bilan personnel</div><div class="ss-fc">FC &lt; 60%</div></div>
+</div>
+</div>
+</div>
+
+<!-- DIMANCHE -->
+<div class="day">
+<div class="dh dhrest">
+  <span class="db2">Dimanche · Repos total</span>
+  <div class="dt3">Repos — Tests S14 commencent demain lundi</div>
+  <div class="dm">0 min · Récupération maximale · Glucides élevés · Sommeil 9h</div>
+</div>
+<div class="db">
+<div class="eu"><div class="euu">✅ Identique salle et extérieur — marche 20 min max. 9h de sommeil. Repas riche en glucides (300+ g) pour recharger avant les tests.<br><br>
+<b>Vérifier la liste de la semaine 9 (tests) :</b> chrono prêt, plots préparés, carnet de notes, même chaussures qu'en S1 et S9, même surface. Les tests commencent demain matin. Le travail de 13 semaines s'évalue à partir de lundi.</div></div>
+</div>
+</div>
+</div>
+
+<!-- MOBILITÉ -->
+<div class="sec">
+<div class="sl">Mobilité quotidienne S13 — 15 min · Priorités pré-tests</div>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">
+  <div style="background:var(--w);border:0.5px solid var(--bo);border-radius:8px;padding:9px 11px;"><div style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:3px;">🦵 Ischio — 5 min (PRIORITÉ ABSOLUE)</div><div style="font-size:11px;color:var(--im);line-height:1.55;">PNF × 4/jambe tous les jours. Les Nordic complets + sprints 60m stressent les ischio au maximum. Si moindre tension anormale → glace + repos supplémentaire. Les tests sprints de S14 J2 (mardi) nécessitent des ischio 100% frais.</div></div>
+  <div style="background:var(--w);border:0.5px solid var(--bo);border-radius:8px;padding:9px 11px;"><div style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:3px;">🦶 Mollets + Achille — 4 min</div><div style="font-size:11px;color:var(--im);line-height:1.55;">Étirement + calf raise lent. Le sprint 60m est l'effort le plus intense que le tendon d'Achille ait subi dans ce programme. Entretien quotidien critique.</div></div>
+  <div style="background:var(--w);border:0.5px solid var(--bo);border-radius:8px;padding:9px 11px;"><div style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:3px;">🦵 Adducteurs — 3 min</div><div style="font-size:11px;color:var(--im);line-height:1.55;">La simulation de samedi sollicitera fortement les adducteurs (changements direction, duels). Les préparer avec 3 min d'étirement quotidien garantit une simulation de qualité.</div></div>
+  <div style="background:var(--w);border:0.5px solid var(--bo);border-radius:8px;padding:9px 11px;"><div style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:3px;">🤸 Flexibilité générale — 3 min</div><div style="font-size:11px;color:var(--im);line-height:1.55;">Sit and reach · Thomas test auto-évaluation · Apley scratch. Te préparer mentalement aux mesures de S14 J1. Noter tes valeurs actuelles pour anticiper les résultats.</div></div>
+</div>
+</div>
+
+<!-- NUTRITION -->
+<div class="sec">
+<div class="sl">Nutrition — Semaine 13 · Progressive vers la recharge finale</div>
+<div class="mr">
+  <div class="mc2 mc2-p"><div class="ml">Protéines</div><div class="mv">180 g</div><div class="mc-s">2.5 g/kg · 720 kcal · 25%</div></div>
+  <div class="mc2 mc2-g"><div class="ml">Glucides</div><div class="mv">325 g</div><div class="mc-s">4.5 g/kg · 1 300 kcal · 45%</div></div>
+  <div class="mc2 mc2-f"><div class="ml">Lipides</div><div class="mv">97 g</div><div class="mc-s">1.3 g/kg · 873 kcal · 30%</div></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1rem;">
+  <div style="background:var(--ind-light);border:0.5px solid #A5B4FC;border-radius:8px;padding:9px 11px;text-align:center;">
+    <div style="font-size:10px;font-weight:700;color:var(--ind);margin-bottom:3px;">Lun–Mar</div>
+    <div style="font-size:14px;font-weight:700;color:var(--ind-mid);">2 900 kcal</div>
+    <div style="font-size:9px;color:var(--ind);">Séances lourdes</div>
+  </div>
+  <div style="background:#F1F5F9;border:0.5px solid #CBD5E1;border-radius:8px;padding:9px 11px;text-align:center;">
+    <div style="font-size:10px;font-weight:700;color:#475569;margin-bottom:3px;">Mer (récup)</div>
+    <div style="font-size:14px;font-weight:700;color:#374151;">2 600 kcal</div>
+    <div style="font-size:9px;color:#475569;">Moins d'activité</div>
+  </div>
+  <div style="background:var(--ind-light);border:0.5px solid #A5B4FC;border-radius:8px;padding:9px 11px;text-align:center;">
+    <div style="font-size:10px;font-weight:700;color:var(--ind);margin-bottom:3px;">Jeu</div>
+    <div style="font-size:14px;font-weight:700;color:var(--ind-mid);">2 900 kcal</div>
+    <div style="font-size:9px;color:var(--ind);">Dernière muscu</div>
+  </div>
+  <div style="background:#DCFCE7;border:0.5px solid #86EFAC;border-radius:8px;padding:9px 11px;text-align:center;">
+    <div style="font-size:10px;font-weight:700;color:#14532D;margin-bottom:3px;">Ven–Sam–Dim</div>
+    <div style="font-size:14px;font-weight:700;color:#15803D;">3 000 kcal</div>
+    <div style="font-size:9px;color:#14532D;">Recharge pré-tests</div>
+  </div>
+</div>
+<div class="ia"><b>Vendredi-samedi-dimanche :</b> monter à 3 000 kcal en augmentant les glucides à 350 g/jour. Riz blanc, pâtes, patate douce, pain, bananes. Les tests de S14 commencent lundi — arriver avec des stocks de glycogène maximum. Même stratégie qu'en S8 (pré-tests mi-parcours) mais légèrement plus élevée car le corps est plus musclé et consomme plus.</div>
+</div>
+
+<!-- TAPER VISUEL -->
+<div class="sec">
+<div class="sl">Mini-taper S13–S14 — Vue de l'enchaînement</div>
+<div class="taper">
+  <div class="taper-t">🗓 Les 7 derniers jours avant les tests finaux</div>
+  <div class="taper-grid">
+    <div class="taper-day"><div class="td-lbl">Ven S13</div><div class="td-val">Récup longue 60 min · Corps se répare</div></div>
+    <div class="taper-day"><div class="td-lbl">Sam S13</div><div class="td-val">Simulation match 60–70 min · Performance express</div></div>
+    <div class="taper-day"><div class="td-lbl">Dim S13</div><div class="td-val">Repos total · Glucides 3 000 kcal</div></div>
+    <div class="taper-day td-test"><div class="td-lbl">Lun S14 · J1</div><div class="td-val">Corps · Mobilité · Souplesse · Équilibre</div></div>
+    <div class="taper-day td-test"><div class="td-lbl">Mar S14 · J2</div><div class="td-val">Vitesse · Sprint 10m 30m · Agilité · Cazorla</div></div>
+    <div class="taper-day td-test"><div class="td-lbl">Mer S14 · J3</div><div class="td-val">Force max · Squat · Bench · Dead · Tractions</div></div>
+    <div class="taper-day td-test"><div class="td-lbl">Ven S14 · J5</div><div class="td-val">GACON 30-15 · Nouvelle VIFT finale</div></div>
+  </div>
+</div>
+</div>
+
+<!-- INDICATEURS -->
+<div class="sec">
+<div class="sl">Indicateurs fin de semaine 13</div>
+<div class="pg">
+  <div class="pgc pok"><div class="pi">⚽</div><div><div class="pti">Simulation réussie si</div><div class="pd">Tu tiens les 60–70 min sans t'effondrer · Tes relances sont propres à la 60ème min · Tu ressens la différence avec ton niveau physique d'il y a 13 semaines · Tu te sens "prêt à jouer" en équipe</div></div></div>
+  <div class="pgc pok"><div class="pi">🏃</div><div><div class="pti">Sprints 60m réussis si</div><div class="pd">2 reps complètes à 100% · Décélération après 40m minimale · Aucune douleur ischio ou Achille pendant ou après</div></div></div>
+  <div class="pgc pok"><div class="pi">💪</div><div><div class="pti">Nordic final réussi si</div><div class="pd">3 × 4 sans aide des mains · 12 reps propres sur l'ensemble des 3 séries · Ischio sans douleur pendant et après · Le mouvement est contrôlé même sur la 4ème rep</div></div></div>
+  <div class="pgc pok"><div class="pi">🎯</div><div><div class="pti">Prêt pour S14 si</div><div class="pd">Ischio sans douleur dimanche · Jambes légères après la simulation · Énergie haute · Tu te souviens des valeurs S1 et S9 pour les comparer · Glucides rechargés · Sommeil 9h dimanche soir</div></div></div>
+</div>
+</div>
+
+<!-- BRIDGE -->
+<div class="bridge">
+  <div class="bt">Semaine 14 — Tests finaux · Bilan de 14 semaines</div>
+  <div class="bgr">
+    <div class="bgc"><div class="bgl">J1 · Lundi</div><div class="bgs13">Simulation S13</div><div class="bgs14">Corps · Mobilité · Souplesse · Équilibre · Poids final</div></div>
+    <div class="bgc"><div class="bgl">J2 · Mardi</div><div class="bgs13">—</div><div class="bgs14">Sprint 10m · 30m · T-test · Cazorla · Broad jump · Nordic reps</div></div>
+    <div class="bgc"><div class="bgl">J3 · Mercredi</div><div class="bgs13">—</div><div class="bgs14">Force max · Squat · Bench · Dead · Tractions · Hip thrust · Leg curl</div></div>
+    <div class="bgc"><div class="bgl">J4 · Jeudi</div><div class="bgs13">—</div><div class="bgs14">Repos obligatoire · Recharge avant GACON</div></div>
+    <div class="bgc"><div class="bgl">J5 · Vendredi</div><div class="bgs13">—</div><div class="bgs14">GACON 30-15 · VIFT finale · Comparer à S1 et S9</div></div>
+    <div class="bgc"><div class="bgl">Sam–Dim · J6–J7</div><div class="bgs13">—</div><div class="bgs14">Analyse complète · Bilan 14 semaines · Planification Phase 2 sans club</div></div>
+  </div>
+</div>
+
+</div>
+<script>
+function setMode(m){
+  var s=document.querySelectorAll('.show-salle');
+  var e=document.querySelectorAll('.show-ext');
+  var bs=document.getElementById('bs');
+  var bb=document.getElementById('bb');
+  var be=document.getElementById('be');
+  [bs,bb,be].forEach(function(b){b.classList.remove('as','ae');});
+  if(m==='salle'){s.forEach(function(el){el.style.display='';});e.forEach(function(el){el.style.display='none';});bs.classList.add('as');}
+  else if(m==='ext'){s.forEach(function(el){el.style.display='none';});e.forEach(function(el){el.style.display='';});be.classList.add('ae');}
+  else{s.forEach(function(el){el.style.display='';});e.forEach(function(el){el.style.display='';}); }
+}
+setMode('salle');
+</script>
+</body>
+</html>

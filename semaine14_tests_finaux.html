@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semaine 14 — Tests Finaux & Bilan</title>
+<style>
+:root{
+  --ink:#1A2332;--im:#4A5568;--il:#718096;
+  --gold:#92400E;--gold-mid:#B45309;--gold-light:#FFFBEB;--gold-acc:#F59E0B;
+  --g:#0F5132;--gm:#1D8A52;--gl:#D1FAE5;--ga:#10B981;
+  --b:#1E40AF;--bm:#3B82F6;--bl:#DBEAFE;
+  --sky:#0369A1;--sky-l:#E0F2FE;--sky-acc:#38BDF8;
+  --ind:#4338CA;--ind-l:#EEF2FF;--ind-acc:#818CF8;
+  --am:#D97706;--al:#FEF3C7;--ad:#78350F;
+  --em:#065F46;--em-l:#ECFDF5;--em-acc:#34D399;
+  --pp:#5B21B6;--ppl:#F5F3FF;
+  --sb:#EFF6FF;--sbd:#93C5FD;--st:#1E3A8A;
+  --eb:#F0FDF4;--ebd:#6EE7B7;--et:#065F46;
+  --sf:#F8FAFC;--w:#fff;--bo:#E2E8F0;--bd:#CBD5E1;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--sf);color:var(--ink);font-size:14px;line-height:1.5;}
+.wrap{max-width:960px;margin:0 auto;padding:1.5rem 1.5rem 5rem;}
+
+.hdr{background:linear-gradient(135deg,#451A03,#B45309);border-radius:16px;padding:1.75rem 2rem 1.5rem;position:relative;overflow:hidden;}
+.hdr::before{content:'14';position:absolute;right:1.5rem;top:50%;transform:translateY(-50%);font-size:96px;font-weight:900;color:rgba(255,255,255,.06);line-height:1;}
+.eye{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-acc);margin-bottom:6px;}
+.ht{font-size:24px;font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:3px;}
+.hs2{font-size:12px;color:rgba(255,255,255,.45);margin-bottom:1rem;}
+.pills{display:flex;flex-wrap:wrap;gap:6px;}
+.pill{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+.pg{background:rgba(245,158,11,.2);color:#FDE68A;}
+.pw{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);}
+.hst{background:#2C0E00;border-radius:8px;padding:8px 2rem;display:flex;gap:2rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.hsi{display:flex;flex-direction:column;}
+.hv{font-size:14px;font-weight:700;color:var(--gold-acc);}
+.hlb{font-size:9px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.06em;}
+
+.ws{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:1.5rem;}
+.wc{border-radius:8px;padding:8px 3px;text-align:center;border:0.5px solid transparent;}
+.wn{font-size:9px;font-weight:700;text-transform:uppercase;margin-bottom:3px;}
+.wt2{font-size:8px;line-height:1.3;}
+.wd{width:5px;height:5px;border-radius:50%;margin:4px auto 0;}
+.wg2{background:var(--gold-light);border-color:#FDE68A;border-width:1.5px;} .wg2 .wn{color:var(--gold);} .wg2 .wt2{color:var(--gold-mid);} .wg2 .wd{background:var(--gold-acc);}
+.wr{background:#F1F5F9;border-color:#CBD5E1;} .wr .wn{color:#475569;} .wr .wd{background:#CBD5E1;}
+.wem{background:var(--em-l);border-color:#6EE7B7;} .wem .wn{color:var(--em);} .wem .wd{background:var(--em-acc);}
+.wrest{background:#FFF1F2;border-color:#FECDD3;} .wrest .wn{color:var(--red);} .wrest .wd{background:var(--red);}
+
+.sec{margin-bottom:2rem;}
+.sl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--il);padding-bottom:5px;border-bottom:2px solid var(--bd);margin-bottom:1rem;}
+
+.day{margin-bottom:1.25rem;}
+.dh{border-radius:10px 10px 0 0;padding:10px 16px;}
+.db2{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;border-radius:4px;}
+.dt3{font-size:15px;font-weight:700;color:var(--ink);margin:3px 0 2px;}
+.dm{font-size:11px;color:var(--il);}
+.db{border:0.5px solid var(--bo);border-top:none;border-radius:0 0 10px 10px;padding:12px;background:var(--w);}
+
+.dhgold{background:var(--gold-light);} .dhgold .db2{background:var(--gold-mid);color:#fff;}
+.dhb{background:var(--bl);} .dhb .db2{background:var(--b);color:#fff;}
+.dhem{background:var(--em-l);} .dhem .db2{background:var(--em);color:#fff;}
+.dhr{background:#F1F5F9;} .dhr .db2{background:#475569;color:#fff;}
+.dhrest{background:#FFF1F2;} .dhrest .db2{background:var(--red);color:#fff;}
+
+.eb2{background:var(--w);border:0.5px solid var(--bo);border-radius:12px;margin-bottom:8px;overflow:hidden;}
+.eh{padding:10px 16px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;}
+.en{font-size:13px;font-weight:700;color:var(--ink);}
+.ev{font-size:11px;font-weight:600;color:var(--im);white-space:nowrap;}
+.eu{padding:0 16px 10px;}
+.euu{background:var(--sf);border:0.5px solid var(--bo);border-radius:8px;padding:8px 10px;font-size:11px;color:var(--im);line-height:1.6;}
+
+.info{border-radius:7px;padding:9px 12px;font-size:11px;line-height:1.65;margin:8px 0;}
+.info b{font-weight:700;}
+.ig{background:var(--gl);border-left:3px solid var(--ga);color:#065F46;}
+.ia{background:var(--al);border-left:3px solid var(--am);color:var(--ad);}
+.igold{background:var(--gold-light);border-left:3px solid var(--gold-acc);color:var(--gold);}
+.ib2{background:#EFF6FF;border-left:3px solid var(--bm);color:var(--b);}
+.ie{background:var(--em-l);border-left:3px solid var(--em-acc);color:var(--em);}
+.ir{background:#FEF2F2;border-left:3px solid #F87171;color:#B91C1C;}
+
+/* THREE-COLUMN COMPARISON */
+.cmp3{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px;}
+.cmp3 th{padding:7px 8px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--bd);text-align:left;}
+.th-test{background:var(--sf);color:var(--il);}
+.th-s1{background:var(--sky-l);color:var(--sky);}
+.th-s9{background:var(--ind-l);color:var(--ind);}
+.th-s14{background:var(--gold-light);color:var(--gold);}
+.th-prog{background:var(--gl);color:var(--em);}
+.cmp3 td{padding:7px 8px;border-bottom:0.5px solid var(--bo);vertical-align:middle;}
+.cmp3 tr:last-child td{border-bottom:none;}
+.cmp3 tr:hover td{background:#FAFBFC;}
+.col-t{color:var(--ink);font-weight:600;font-size:11px;}
+.col-1{background:rgba(224,242,254,.4);color:var(--sky);font-size:11px;}
+.col-9{background:rgba(238,242,255,.4);color:var(--ind);font-size:11px;}
+.col-14{background:rgba(255,251,235,.5);color:var(--gold);font-size:11px;font-weight:700;}
+.col-p{background:rgba(209,250,229,.4);color:var(--em);font-size:10px;font-style:italic;}
+.blank{color:var(--bd);}
+
+/* HIIT VISUAL */
+.hv-row{display:flex;gap:2px;height:40px;margin:8px 0 5px;}
+.hv-e{background:var(--gold-mid);border-radius:3px 3px 0 0;flex:3;}
+.hv-r{background:#E2E8F0;border-radius:3px 3px 0 0;flex:3;}
+
+/* STANDARDS PRO */
+.std-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem;}
+.std-card{border-radius:8px;padding:10px 12px;border:0.5px solid transparent;}
+.std-elite{background:var(--gl);border-color:#86EFAC;}
+.std-pro{background:#EFF6FF;border-color:#93C5FD;}
+.std-semi{background:var(--al);border-color:#FDE68A;}
+.std-l{font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:5px;}
+.std-elite .std-l{color:var(--em);} .std-pro .std-l{color:var(--b);} .std-semi .std-l{color:var(--ad);}
+.std-body{font-size:10px;line-height:1.6;}
+.std-elite .std-body{color:#065F46;} .std-pro .std-body{color:#1E3A8A;} .std-semi .std-body{color:var(--ad);}
+
+/* BLOCS ROTATIFS */
+.blocs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:1rem 0;}
+.bloc{border-radius:10px;padding:12px 14px;border:1.5px solid transparent;}
+.bloc-a{background:#EFF6FF;border-color:#93C5FD;}
+.bloc-b{background:var(--em-l);border-color:#6EE7B7;}
+.bloc-c{background:var(--gold-light);border-color:#FDE68A;}
+.bloc-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.bloc-a .bloc-lbl{color:var(--b);} .bloc-b .bloc-lbl{color:var(--em);} .bloc-c .bloc-lbl{color:var(--gold);}
+.bloc-title{font-size:13px;font-weight:700;margin-bottom:5px;}
+.bloc-a .bloc-title{color:#1E3A8A;} .bloc-b .bloc-title{color:var(--em);} .bloc-c .bloc-title{color:var(--gold-mid);}
+.bloc-body{font-size:10px;line-height:1.6;}
+.bloc-a .bloc-body{color:#1E40AF;} .bloc-b .bloc-body{color:#065F46;} .bloc-c .bloc-body{color:var(--gold);}
+
+/* ANALYSIS GRID */
+.ag-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:1rem 0;}
+.ag-card{border-radius:10px;padding:12px 14px;border:0.5px solid transparent;}
+.ag-elite{background:#DCFCE7;border-color:#86EFAC;}
+.ag-good{background:#DBEAFE;border-color:#93C5FD;}
+.ag-avg{background:var(--al);border-color:#FCD34D;}
+.ag-low{background:#FEF2F2;border-color:#FECACA;}
+.ag-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
+.ag-elite .ag-l{color:#14532D;} .ag-good .ag-l{color:var(--b);} .ag-avg .ag-l{color:var(--ad);} .ag-low .ag-l{color:var(--red);}
+.ag-body{font-size:11px;line-height:1.55;}
+.ag-elite .ag-body{color:#15803D;} .ag-good .ag-body{color:#1E40AF;} .ag-avg .ag-body{color:#78350F;} .ag-low .ag-body{color:var(--red);}
+
+/* BILAN FINAL */
+.bilan{background:linear-gradient(135deg,#451A03,#92400E);border-radius:14px;padding:1.5rem 2rem;margin:1.5rem 0;}
+.bilan-t{font-size:16px;font-weight:800;color:#fff;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.bilan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem;}
+.bilan-item{background:rgba(255,255,255,.08);border-radius:8px;padding:10px 12px;text-align:center;}
+.bi-val{font-size:18px;font-weight:800;color:var(--gold-acc);}
+.bi-lbl{font-size:9px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
+.bilan-body{font-size:12px;color:rgba(255,255,255,.75);line-height:1.7;}
+
+.bridge{background:#2C0E00;border-radius:12px;padding:1.25rem 1.5rem;margin-top:2rem;}
+.bt{font-size:11px;font-weight:700;color:var(--gold-acc);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
+.bgr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.bgc{background:rgba(255,255,255,.07);border-radius:8px;padding:9px 11px;}
+.bgl{font-size:10px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;}
+.bgv{font-size:11px;color:#FDE68A;font-weight:600;line-height:1.45;}
+
+@media(max-width:640px){
+  .std-grid,.blocs,.ag-grid,.bilan-grid,.bgr{grid-template-columns:1fr;}
+  .ws{grid-template-columns:repeat(4,1fr);}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <div class="eye">Semaine Finale · 14 sur 14</div>
+  <div class="ht">Tests Finaux — 14 semaines se révèlent ici</div>
+  <div class="hs2">Même protocole que S1 et S9. Trois colonnes. Ce que tu étais, ce que tu es devenu.</div>
+  <div class="pills">
+    <span class="pill pg">5 jours de tests</span>
+    <span class="pill pg">Comparaison S1 / S9 / S14</span>
+    <span class="pill pw">Bilan complet 14 semaines</span>
+    <span class="pill pw">Transition blocs rotatifs</span>
+  </div>
+</div>
+<div class="hst">
+  <div class="hsi"><span class="hv">J1</span><span class="hlb">Corps · Mobilité</span></div>
+  <div class="hsi"><span class="hv">J2</span><span class="hlb">Vitesse · Agilité</span></div>
+  <div class="hsi"><span class="hv">J3</span><span class="hlb">Force maximale</span></div>
+  <div class="hsi"><span class="hv">J4</span><span class="hlb">Repos</span></div>
+  <div class="hsi"><span class="hv">J5</span><span class="hlb">GACON 30-15</span></div>
+</div>
+
+<!-- WEEK STRIP -->
+<div class="ws">
+  <div class="wc wg2"><div class="wn">Lun · J1</div><div class="wt2">Corps Mobilité</div><div class="wd"></div></div>
+  <div class="wc wg2"><div class="wn">Mar · J2</div><div class="wt2">Vitesse Agilité</div><div class="wd"></div></div>
+  <div class="wc wg2"><div class="wn">Mer · J3</div><div class="wt2">Force max</div><div class="wd"></div></div>
+  <div class="wc wr"><div class="wn">Jeu · J4</div><div class="wt2">Repos</div><div class="wd"></div></div>
+  <div class="wc wg2"><div class="wn">Ven · J5</div><div class="wt2">GACON Final</div><div class="wd"></div></div>
+  <div class="wc wem"><div class="wn">Sam · J6</div><div class="wt2">Bilan complet</div><div class="wd"></div></div>
+  <div class="wc wrest"><div class="wn">Dim · J7</div><div class="wt2">Suite programme</div><div class="wd"></div></div>
+</div>
+
+<div class="igold" style="border-radius:10px;padding:12px 16px;font-size:12px;line-height:1.7;margin-bottom:1.5rem;">
+  <b>Conditions impératives :</b> même heure qu'en S1 et S9, même surface, même balance, même équipement, même ordre des tests. Un résultat obtenu dans des conditions différentes n'est pas comparable. Si les conditions ont changé vs S1 → noter la différence et interpréter avec prudence.
+</div>
+
+<!-- TESTS -->
+<div class="sec">
+<div class="sl">Tests journaliers — Protocole identique S1 et S9</div>
+
+<!-- J1 LUNDI -->
+<div class="day">
+<div class="dh dhgold">
+  <span class="db2">Lundi · J1</span>
+  <div class="dt3">Corps · Mobilité · Souplesse · Équilibre</div>
+  <div class="dm">⏱ 75 min · À jeun · Même protocole S1/S9</div>
+</div>
+<div class="db">
+<table class="cmp3">
+  <thead><tr>
+    <th class="th-test" style="width:28%;">Test</th>
+    <th class="th-s1" style="width:18%;">S1 · Départ</th>
+    <th class="th-s9" style="width:18%;">S9 · Mi-parcours</th>
+    <th class="th-s14" style="width:18%;">S14 · Final</th>
+    <th class="th-prog" style="width:18%;">Cible S14</th>
+  </tr></thead>
+  <tbody>
+    <tr><td class="col-t">Poids (kg)</td><td class="col-1">78 kg</td><td class="col-9">___ kg</td><td class="col-14">___ kg</td><td class="col-p">70–73 kg</td></tr>
+    <tr><td class="col-t">Tour de taille (cm)</td><td class="col-1">___ cm</td><td class="col-9">___ cm</td><td class="col-14">___ cm</td><td class="col-p">−5 à −8 cm</td></tr>
+    <tr><td class="col-t">FC repos (bpm)</td><td class="col-1">___ bpm</td><td class="col-9">___ bpm</td><td class="col-14">___ bpm</td><td class="col-p">−5 à −12 bpm</td></tr>
+    <tr><td class="col-t">Wall ankle G (cm)</td><td class="col-1">___ cm</td><td class="col-9">___ cm</td><td class="col-14">___ cm</td><td class="col-p">+2 à +5 cm</td></tr>
+    <tr><td class="col-t">Wall ankle D (cm)</td><td class="col-1">___ cm</td><td class="col-9">___ cm</td><td class="col-14">___ cm</td><td class="col-p">+2 à +5 cm</td></tr>
+    <tr><td class="col-t">Sit and reach (cm)</td><td class="col-1">___ cm</td><td class="col-9">___ cm</td><td class="col-14">___ cm</td><td class="col-p">+5 à +10 cm</td></tr>
+    <tr><td class="col-t">Thomas test G/D</td><td class="col-1">___</td><td class="col-9">___</td><td class="col-14">___</td><td class="col-p">Cuisse sous horiz.</td></tr>
+    <tr><td class="col-t">Adducteurs (°)</td><td class="col-1">___°</td><td class="col-9">___°</td><td class="col-14">___°</td><td class="col-p">+15 à +30°</td></tr>
+    <tr><td class="col-t">Single leg YO G (sec)</td><td class="col-1">___ sec</td><td class="col-9">___ sec</td><td class="col-14">___ sec</td><td class="col-p">+10 à +20 sec</td></tr>
+    <tr><td class="col-t">Single leg YF G (sec)</td><td class="col-1">___ sec</td><td class="col-9">___ sec</td><td class="col-14">___ sec</td><td class="col-p">+8 à +15 sec</td></tr>
+    <tr><td class="col-t">Y-balance ant. G (%)</td><td class="col-1">___%</td><td class="col-9">___%</td><td class="col-14">___%</td><td class="col-p">+5 à +12%</td></tr>
+  </tbody>
+</table>
+<div class="info igold"><b>J1 S14 spécifique :</b> en plus de la routine, noter si le poids a atteint les 70–72 kg cibles. Si à 71–73 kg → l'objectif principal du programme est atteint. Si à 73–75 kg → ce n'est pas un échec, la composition corporelle a changé (plus de muscle, moins de graisse) et les performances compteront davantage que le chiffre sur la balance.</div>
+</div>
+</div>
+
+<!-- J2 MARDI -->
+<div class="day">
+<div class="dh dhb">
+  <span class="db2">Mardi · J2</span>
+  <div class="dt3">Vitesse · Agilité · Puissance</div>
+  <div class="dm">⏱ 90 min · Récupération complète entre les tests · Corps frais · Même surface S1/S9</div>
+</div>
+<div class="db">
+<div class="info ia"><b>Règle absolue :</b> récupération complète entre chaque test. 3 min entre les sprints, 5 min entre les disciplines. Un sprint à 90% ne mesure pas ta vitesse, il mesure ta fatigue.</div>
+<table class="cmp3">
+  <thead><tr>
+    <th class="th-test" style="width:22%;">Test</th>
+    <th class="th-s1" style="width:16%;">S1</th>
+    <th class="th-s9" style="width:16%;">S9</th>
+    <th class="th-s14" style="width:16%;">S14</th>
+    <th class="th-prog" style="width:30%;">Cible S14 · Notes</th>
+  </tr></thead>
+  <tbody>
+    <tr><td class="col-t">Sprint 10m (sec)</td><td class="col-1">___ sec</td><td class="col-9">___ sec</td><td class="col-14">___ sec</td><td class="col-p">−0.10 à −0.25 sec · 3 essais</td></tr>
+    <tr><td class="col-t">Sprint 30m (sec)</td><td class="col-1">___ sec</td><td class="col-9">___ sec</td><td class="col-14">___ sec</td><td class="col-p">−0.15 à −0.40 sec · 3 essais</td></tr>
+    <tr><td class="col-t">T-test (sec)</td><td class="col-1">___ sec</td><td class="col-9">___ sec</td><td class="col-14">___ sec</td><td class="col-p">−0.5 à −1.2 sec · 2 essais</td></tr>
+    <tr><td class="col-t">10 × 5m (sec)</td><td class="col-1">___ sec</td><td class="col-9">___ sec</td><td class="col-14">___ sec</td><td class="col-p">−0.4 à −1.0 sec · 2 essais</td></tr>
+    <tr><td class="col-t">Cazorla (sec)</td><td class="col-1">___ sec</td><td class="col-9">___ sec</td><td class="col-14">___ sec</td><td class="col-p">−0.4 à −0.9 sec · 3 essais</td></tr>
+    <tr><td class="col-t">Broad jump (cm)</td><td class="col-1">___ cm</td><td class="col-9">___ cm</td><td class="col-14">___ cm</td><td class="col-p">+10 à +25 cm · 3 essais</td></tr>
+    <tr><td class="col-t">Nordic curl reps</td><td class="col-1">___ reps</td><td class="col-9">___ reps</td><td class="col-14">___ reps</td><td class="col-p">+5 à +8 reps · descente 4 sec</td></tr>
+  </tbody>
+</table>
+<div class="info ig"><b>Ce que le broad jump mesure en S14 :</b> c'est l'indicateur le plus direct de la progression en puissance explosive des jambes. Les 4 semaines de plyométrie (S11–S13) + la force (S10–S12) + le poids perdu se cumulent tous dans cet exercice. Une amélioration de +15 cm vs S1 serait excellente.</div>
+</div>
+</div>
+
+<!-- J3 MERCREDI -->
+<div class="day">
+<div class="dh dhgold">
+  <span class="db2">Mercredi · J3</span>
+  <div class="dt3">Force maximale — Salle complète</div>
+  <div class="dm">⏱ 2h30–3h · Spotter · Protocole 3RM → estimation 1RM (×1.10) · Identique S1/S9</div>
+</div>
+<div class="db">
+<div class="igold"><b>S14 vs S9 sur la force :</b> la différence sera significative. S9 avait été fait après 8 semaines de phase fat loss (déficit calorique) — les charges étaient maintenues mais peu augmentées. S14 a bénéficié de 4 semaines de surplus calorique + force SPP. Attendre des gains de 15 à 30% vs S9 sur les exercices principaux est réaliste.</div>
+<table class="cmp3" style="margin-top:10px;">
+  <thead><tr>
+    <th class="th-test" style="width:25%;">Exercice</th>
+    <th class="th-s1" style="width:17%;">1RM estimé S1</th>
+    <th class="th-s9" style="width:17%;">1RM estimé S9</th>
+    <th class="th-s14" style="width:17%;">1RM estimé S14</th>
+    <th class="th-prog" style="width:24%;">Standard pro défenseur</th>
+  </tr></thead>
+  <tbody>
+    <tr><td class="col-t">Squat (kg)</td><td class="col-1">___ kg</td><td class="col-9">___ kg</td><td class="col-14">___ kg</td><td class="col-p">≥ 1.5× poids de corps</td></tr>
+    <tr><td class="col-t">Développé couché (kg)</td><td class="col-1">___ kg</td><td class="col-9">___ kg</td><td class="col-14">___ kg</td><td class="col-p">≥ 1.0× poids de corps</td></tr>
+    <tr><td class="col-t">Développé militaire</td><td class="col-1">___ kg</td><td class="col-9">___ kg</td><td class="col-14">___ kg</td><td class="col-p">≥ 0.7× poids de corps</td></tr>
+    <tr><td class="col-t">Tractions (reps)</td><td class="col-1">___ reps</td><td class="col-9">___ reps</td><td class="col-14">___ reps</td><td class="col-p">≥ 12–15 reps · ou ≥ +15 kg lest</td></tr>
+    <tr><td class="col-t">Hip thrust (kg)</td><td class="col-1">___ kg</td><td class="col-9">___ kg</td><td class="col-14">___ kg</td><td class="col-p">≥ 2× poids de corps</td></tr>
+    <tr><td class="col-t">Soulevé de terre (kg)</td><td class="col-1">___ kg</td><td class="col-9">___ kg</td><td class="col-14">___ kg</td><td class="col-p">≥ 1.8× poids de corps</td></tr>
+    <tr><td class="col-t">Rowing barre (kg)</td><td class="col-1">___ kg</td><td class="col-9">___ kg</td><td class="col-14">___ kg</td><td class="col-p">≥ 0.9× poids de corps</td></tr>
+    <tr><td class="col-t">Leg curl IJ/Q ratio</td><td class="col-1">___</td><td class="col-9">___</td><td class="col-14">___</td><td class="col-p">≥ 0.60 (clé défenseur)</td></tr>
+    <tr><td class="col-t">Pompes max 1 min</td><td class="col-1">___ reps</td><td class="col-9">___ reps</td><td class="col-14">___ reps</td><td class="col-p">+10 à +18 reps vs S1</td></tr>
+    <tr><td class="col-t">Gainage frontal max</td><td class="col-1">___ sec</td><td class="col-9">___ sec</td><td class="col-14">___ sec</td><td class="col-p">+30 à +60 sec vs S1</td></tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<!-- J4 JEUDI -->
+<div class="day">
+<div class="dh dhr">
+  <span class="db2">Jeudi · J4</span>
+  <div class="dt3">Repos obligatoire</div>
+  <div class="dm">0 effort · SNC récupère des tests force · Glycogène rechargé pour GACON demain</div>
+</div>
+<div class="db">
+<div class="eu"><div class="euu">✅ Marche légère 20 min max. Mobilité douce 15 min. 3,5 L d'eau. Glucides élevés (350 g) pour recharger avant le GACON. Coucher tôt — sommeil de qualité = GACON de qualité.</div></div>
+</div>
+</div>
+
+<!-- J5 VENDREDI -->
+<div class="day">
+<div class="dh dhem">
+  <span class="db2">Vendredi · J5</span>
+  <div class="dt3">GACON 30-15 — Test cardio final</div>
+  <div class="dm">⏱ 50 min · Même protocole S1/S9 · Corps frais après repos jeudi</div>
+</div>
+<div class="db">
+<div style="background:var(--sf);border-radius:8px;padding:10px;margin-bottom:10px;">
+  <div style="font-size:10px;font-weight:700;color:var(--il);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">GACON 30-15 — Départ 8 km/h · +0.5 km/h/palier · Jusqu'à l'échec</div>
+  <div class="hv-row">
+    <div class="hv-e"></div><div class="hv-r"></div>
+    <div class="hv-e" style="opacity:.95;"></div><div class="hv-r"></div>
+    <div class="hv-e" style="opacity:.9;"></div><div class="hv-r"></div>
+    <div class="hv-e" style="opacity:.85;"></div><div class="hv-r"></div>
+    <div class="hv-e" style="opacity:.8;"></div>
+    <div style="font-size:12px;display:flex;align-items:center;padding-left:6px;color:var(--il);">jusqu'à l'échec</div>
+  </div>
+</div>
+<table class="cmp3">
+  <thead><tr>
+    <th class="th-test" style="width:28%;">Métrique</th>
+    <th class="th-s1" style="width:18%;">S1</th>
+    <th class="th-s9" style="width:18%;">S9</th>
+    <th class="th-s14" style="width:18%;">S14</th>
+    <th class="th-prog" style="width:18%;">Cible</th>
+  </tr></thead>
+  <tbody>
+    <tr><td class="col-t">VIFT (km/h)</td><td class="col-1">___ km/h</td><td class="col-9">___ km/h</td><td class="col-14">___ km/h</td><td class="col-p">+1.0 à +3.0 km/h vs S1</td></tr>
+    <tr><td class="col-t">Dernier palier</td><td class="col-1">palier ___</td><td class="col-9">palier ___</td><td class="col-14">palier ___</td><td class="col-p">+2 à +5 paliers vs S1</td></tr>
+    <tr><td class="col-t">Standard pro défenseur</td><td class="col-1 blank">—</td><td class="col-9 blank">—</td><td class="col-14 blank">—</td><td class="col-p">VIFT ≥ 20.5 km/h</td></tr>
+  </tbody>
+</table>
+<div class="ie"><b>Ce que représente le GACON en S14 :</b> c'est la synthèse de tout. 13 semaines de zone 2, 2 blocs de HIIT, 4 semaines de SPP, la perte de poids (moins à transporter), la force des jambes (appuis plus efficaces) — tout se traduit dans cette valeur finale de VIFT. Une progression de +2 km/h vs S1 serait une réussite remarquable.</div>
+</div>
+</div>
+</div>
+
+<!-- J6 SAMEDI — BILAN -->
+<div class="sec">
+<div class="sl">Samedi J6 — Analyse complète · Bilan 14 semaines</div>
+
+<div class="ag-grid">
+  <div class="ag-card ag-elite">
+    <div class="ag-l">✅ Programme réussi au-delà des objectifs</div>
+    <div class="ag-body">Poids ≤ 72 kg · VIFT +2 km/h+ · Sprint 10m −0.15 sec+ · Squat ≥ 1.5× BW · Broad jump +20 cm+ · Nordic 5+ reps sans aide · Mobilité globalement améliorée. <b>Niveau professionnel ou proche sur la plupart des tests.</b></div>
+  </div>
+  <div class="ag-card ag-good">
+    <div class="ag-l">👍 Objectifs principaux atteints</div>
+    <div class="ag-body">Poids 72–74 kg · VIFT +1 à +2 km/h · Améliorations nettes sur vitesse, force et mobilité. <b>Base solide pour une signature en club.</b> Continuer avec les blocs rotatifs pour affiner les points faibles avant les essais.</div>
+  </div>
+  <div class="ag-card ag-avg">
+    <div class="ag-l">⚠️ Objectifs partiellement atteints</div>
+    <div class="ag-body">Poids 74–76 kg · Améliorations présentes mais inférieures aux cibles. <b>Analyse honnête nécessaire :</b> l'adhérence nutritionnelle a-t-elle été suffisante ? Les séances manquées ont-elles été nombreuses ? Recommencer le bloc fat loss (S4–S8) avant de continuer vers la performance.</div>
+  </div>
+  <div class="ag-card ag-low">
+    <div class="ag-l">🔴 Résultats en dessous des attentes</div>
+    <div class="ag-body">Si blessure ou résultats faibles → d'abord identifier la cause. Blessure = rééducation spécifique. Faible adhérence = plan de re-motivation + simplification du programme. <b>14 semaines ne sont jamais perdues</b> — même partielles elles ont construit des bases.</div>
+  </div>
+</div>
+
+<!-- STANDARDS PRO -->
+<div class="sl" style="margin-top:1.5rem;">Barèmes défenseur professionnel — Où tu te situes</div>
+<div class="std-grid">
+  <div class="std-card std-elite">
+    <div class="std-l">🔥 Niveau Élite / Pro+</div>
+    <div class="std-body">Sprint 10m &lt; 1.65 sec<br>Sprint 30m &lt; 3.80 sec<br>T-test &lt; 9.0 sec<br>VIFT &gt; 22 km/h<br>Squat &gt; 1.7× BW<br>Deadlift &gt; 2.0× BW<br>Tractions ≥ 15 reps<br>Nordic curl ≥ 5 complets</div>
+  </div>
+  <div class="std-card std-pro">
+    <div class="std-l">⚽ Niveau Pro / National</div>
+    <div class="std-body">Sprint 10m &lt; 1.70 sec<br>Sprint 30m &lt; 4.00 sec<br>T-test &lt; 9.5 sec<br>VIFT &gt; 20.5 km/h<br>Squat ≥ 1.5× BW<br>Deadlift ≥ 1.8× BW<br>Tractions ≥ 12 reps<br>Nordic curl ≥ 3 complets</div>
+  </div>
+  <div class="std-card std-semi">
+    <div class="std-l">📈 Niveau Semi-Pro / Régional</div>
+    <div class="std-body">Sprint 10m &lt; 1.80 sec<br>Sprint 30m &lt; 4.20 sec<br>T-test &lt; 10.0 sec<br>VIFT &gt; 18.5 km/h<br>Squat ≥ 1.3× BW<br>Deadlift ≥ 1.5× BW<br>Tractions ≥ 8 reps<br>Nordic curl assisté ≥ 5</div>
+  </div>
+</div>
+</div>
+
+<!-- BILAN ÉMOTIONNEL -->
+<div class="bilan">
+  <div class="bilan-t">🏆 Ce que représentent 14 semaines de travail</div>
+  <div class="bilan-grid">
+    <div class="bilan-item"><div class="bi-val">98</div><div class="bi-lbl">Jours de programme</div></div>
+    <div class="bilan-item"><div class="bi-val">80+</div><div class="bi-lbl">Séances planifiées</div></div>
+    <div class="bilan-item"><div class="bi-val">5</div><div class="bi-lbl">Qualités développées</div></div>
+    <div class="bilan-item"><div class="bi-val">−6 kg</div><div class="bi-lbl">Perte estimée (cible)</div></div>
+    <div class="bilan-item"><div class="bi-val">+25%</div><div class="bi-lbl">Force estimée (cible)</div></div>
+    <div class="bilan-item"><div class="bi-val">+2 km/h</div><div class="bi-lbl">VIFT estimée (cible)</div></div>
+  </div>
+  <div class="bilan-body">
+    Le programme a suivi exactement la logique d'un préparateur physique professionnel : partir de zéro, construire dans l'ordre, ne jamais griller les étapes. La pyramide est complète. Mouvement → Robustesse → Cardio → Force → Puissance.<br><br>
+    Tu arrives aux essais ou à la reprise d'un club avec un corps préparé, des chiffres à présenter, et une connaissance précise de tes qualités et de tes axes de progression. C'est ce qui fait la différence entre un footballeur qui espère et un footballeur qui se présente.
+  </div>
+</div>
+
+<!-- SUITE — BLOCS ROTATIFS -->
+<div class="sec">
+<div class="sl">Ce qui vient après — Blocs rotatifs si encore sans club</div>
+<div class="info ia" style="margin-bottom:1rem;"><b>Le programme de 14 semaines est terminé. Si tu n'as pas encore signé en club</b>, passer à un système de blocs rotatifs de 3 semaines. L'objectif : maintenir le niveau atteint et être prêt à performer immédiatement dès qu'un essai se présente. Chaque bloc se termine avec une "semaine de fraîcheur" qui te rend disponible pour un test à tout moment.</div>
+
+<div class="blocs">
+  <div class="bloc bloc-a">
+    <div class="bloc-lbl">Semaine A</div>
+    <div class="bloc-title">Développement</div>
+    <div class="bloc-body">Volume complet · 5 séances<br>Force-vitesse maintenue<br>HIIT COD × 2<br>Zone 2 × 2<br>Plyométrie 3 rounds<br>Nordic maintenu<br><b>2 700–2 900 kcal</b></div>
+  </div>
+  <div class="bloc bloc-b">
+    <div class="bloc-lbl">Semaine B</div>
+    <div class="bloc-title">Consolidation</div>
+    <div class="bloc-body">Volume −20% · 5 séances<br>Mêmes exercices · moins de séries<br>Simulation match (jeudi)<br>Sprints 10m + 30m<br>Nordic maintenu<br>Technique défensive++<br><b>2 700 kcal</b></div>
+  </div>
+  <div class="bloc bloc-c">
+    <div class="bloc-lbl">Semaine C</div>
+    <div class="bloc-title">Fraîcheur · Essai</div>
+    <div class="bloc-body">Volume −50% · 3 séances légères<br>0 HIIT · 0 Nordic<br>Zone 2 × 2 × 25 min<br>Touches de balle légères<br>Recharge glucides<br>Essai possible n'importe quel jour<br><b>2 900 kcal glucides max</b></div>
+  </div>
+</div>
+
+<div class="info ie">
+  <b>Logique des blocs :</b> en répétant A → B → C → A → B → C, tu maintiens le niveau atteint tout en restant toujours à 1 semaine d'être au maximum de ta fraîcheur (semaine C). Si un essai est planifié → passer directement en Semaine C. Si plusieurs semaines sans essai → alterner A et B indéfiniment, avec une C toutes les 3 semaines.<br><br>
+  <b>Impératif :</b> futsal ou sessions collectives 2 fois par semaine minimum. Le travail solo ne suffit pas à maintenir les qualités footballistiques (décision, timing, lecture du jeu). Ces sessions remplacent les séances de technique du programme.
+</div>
+</div>
+
+<!-- DIMANCHE -->
+<div class="day">
+<div class="dh dhrest">
+  <span class="db2">Dimanche · J7</span>
+  <div class="dt3">Repos — Et maintenant ?</div>
+  <div class="dm">Fin officielle du programme · Début de la suite</div>
+</div>
+<div class="db">
+<div class="eu"><div class="euu">
+  Le programme de 14 semaines est terminé. Repos complet ce dimanche.<br><br>
+  <b>La liste de ce qui a changé depuis le Jour 1 :</b><br>
+  · Le corps a perdu du poids et gagné du muscle<br>
+  · Les tendons ischio sont assez robustes pour le Nordic complet<br>
+  · La vitesse a progressé grâce à la combinaison poids perdu + force + plyométrie<br>
+  · Le cardio a progressé grâce à 14 semaines de zone 2 et de HIIT structuré<br>
+  · La mobilité s'est améliorée grâce à la routine quotidienne<br>
+  · Tu sais maintenant lire ton corps, planifier ta nutrition, et comprendre la logique derrière chaque entraînement<br><br>
+  <b>Ce n'est pas une fin — c'est une base.</b>
+</div></div>
+</div>
+</div>
+
+<!-- NUTRITION S14 -->
+<div class="sec">
+<div class="sl">Nutrition S14 — Tests · Maintien 2 900 kcal</div>
+<div class="info igold" style="margin-bottom:1rem;"><b>Même stratégie qu'en S9 :</b> glucides élevés (350 g) les jours J1–J2 et la nuit de J3→J4 (avant GACON). Éviter les fibres en excès la veille du GACON. Hydratation 3,5 L/jour. Le corps est en phase de performance maximale — ne pas changer l'alimentation, ne pas introduire de nouveaux aliments.</div>
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;">
+  <div style="background:var(--gold-light);border:0.5px solid #FDE68A;border-radius:8px;padding:8px;text-align:center;"><div style="font-size:10px;font-weight:700;color:var(--gold);margin-bottom:2px;">J1 Lun</div><div style="font-size:13px;font-weight:700;color:var(--gold-mid);">2 900 kcal</div><div style="font-size:9px;color:var(--gold);">Glucides 350 g</div></div>
+  <div style="background:var(--gold-light);border:0.5px solid #FDE68A;border-radius:8px;padding:8px;text-align:center;"><div style="font-size:10px;font-weight:700;color:var(--gold);margin-bottom:2px;">J2 Mar</div><div style="font-size:13px;font-weight:700;color:var(--gold-mid);">2 900 kcal</div><div style="font-size:9px;color:var(--gold);">Glucides 350 g</div></div>
+  <div style="background:var(--gold-light);border:0.5px solid #FDE68A;border-radius:8px;padding:8px;text-align:center;"><div style="font-size:10px;font-weight:700;color:var(--gold);margin-bottom:2px;">J3 Mer</div><div style="font-size:13px;font-weight:700;color:var(--gold-mid);">2 900 kcal</div><div style="font-size:9px;color:var(--gold);">Force · Protéines++</div></div>
+  <div style="background:#F1F5F9;border:0.5px solid #CBD5E1;border-radius:8px;padding:8px;text-align:center;"><div style="font-size:10px;font-weight:700;color:#475569;margin-bottom:2px;">J4 Jeu</div><div style="font-size:13px;font-weight:700;color:#374151;">2 700 kcal</div><div style="font-size:9px;color:#475569;">Repos · Glucides élevés</div></div>
+  <div style="background:var(--em-l);border:0.5px solid #6EE7B7;border-radius:8px;padding:8px;text-align:center;"><div style="font-size:10px;font-weight:700;color:var(--em);margin-bottom:2px;">J5 Ven</div><div style="font-size:13px;font-weight:700;color:var(--gm);">2 900 kcal</div><div style="font-size:9px;color:var(--em);">GACON · Glucides max</div></div>
+</div>
+</div>
+
+<!-- BRIDGE FINAL -->
+<div class="bridge">
+  <div class="bt">Ce que tu emportes de ces 14 semaines</div>
+  <div class="bgr">
+    <div class="bgc"><div class="bgl">Physique</div><div class="bgv">Corps plus léger · plus fort · plus explosif. Les tests S14 le quantifient. Les matchs le prouveront.</div></div>
+    <div class="bgc"><div class="bgl">Savoir-faire</div><div class="bgv">Tu comprends la logique de l'entraînement. Tu peux créer ou adapter n'importe quel programme seul. C'est plus précieux que n'importe quel résultat de test.</div></div>
+    <div class="bgc"><div class="bgl">Méthode</div><div class="bgv">Ne jamais brûler les étapes. Construire dans l'ordre. Récupérer autant qu'on s'entraîne. Ce principe ne changera jamais, peu importe le niveau.</div></div>
+    <div class="bgc"><div class="bgl">Nordic curl</div><div class="bgv">Tu es passé de zéro à 4 reps complets sans aide. C'est un niveau que beaucoup de pros n'atteignent jamais. Tes ischio sont blindés.</div></div>
+    <div class="bgc"><div class="bgl">Prochaine étape</div><div class="bgv">Blocs rotatifs A→B→C jusqu'à la signature. Futsal 2×/semaine minimum. Nutrition maintenue. Essai possible à tout moment en semaine C.</div></div>
+    <div class="bgc"><div class="bgl">Mindset</div><div class="bgv">14 semaines de discipline sans club, sans structure externe, sans obligation. C'est le signe le plus concret de la motivation réelle. Un club cherche ça.</div></div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

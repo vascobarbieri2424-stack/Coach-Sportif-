@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semaine 5 — Programme Football</title>
+<style>
+:root{
+  --ink:#1A2332;--im:#4A5568;--il:#718096;
+  --fire:#9A3412;--fire-mid:#C2410C;--fire-l:#FFF7ED;--fire-acc:#FDBA74;
+  --g:#0F5132;--gm:#1D8A52;--gl:#D1FAE5;--ga:#10B981;
+  --b:#1E40AF;--bl:#DBEAFE;--bm:#3B82F6;
+  --am:#D97706;--al:#FEF3C7;--ad:#78350F;
+  --red:#B91C1C;--pp:#5B21B6;--ppl:#F5F3FF;
+  --sb:#EFF6FF;--sbd:#93C5FD;--st:#1E3A8A;
+  --eb:#F0FDF4;--ebd:#6EE7B7;--et:#065F46;
+  --sf:#F8FAFC;--w:#fff;--bo:#E2E8F0;--bd:#CBD5E1;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--sf);color:var(--ink);font-size:14px;line-height:1.5;}
+.wrap{max-width:960px;margin:0 auto;padding:1.5rem 1.5rem 5rem;}
+
+.hdr{background:linear-gradient(135deg,#450A0A,#9A3412);border-radius:16px;padding:1.75rem 2rem 1.5rem;position:relative;overflow:hidden;}
+.hdr::before{content:'5';position:absolute;right:1.5rem;top:50%;transform:translateY(-50%);font-size:110px;font-weight:900;color:rgba(255,255,255,.06);line-height:1;}
+.eye{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--fire-acc);margin-bottom:6px;}
+.ht{font-size:24px;font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:3px;}
+.hs2{font-size:12px;color:rgba(255,255,255,.45);margin-bottom:1rem;}
+.pills{display:flex;flex-wrap:wrap;gap:6px;}
+.pill{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+.pf{background:rgba(253,186,116,.2);color:var(--fire-acc);}
+.pa{background:rgba(217,119,6,.25);color:#FCD34D;}
+.pw{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);}
+.hst{background:#3B0004;border-radius:8px;padding:8px 2rem;display:flex;gap:2rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.hsi{display:flex;flex-direction:column;}
+.hv{font-size:14px;font-weight:700;color:var(--fire-acc);}
+.hl{font-size:9px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.06em;}
+
+.ps-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.5rem;}
+.ps{background:var(--w);border:0.5px solid var(--bo);border-radius:10px;padding:10px 12px;}
+.ps-l{font-size:10px;font-weight:700;color:var(--il);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;}
+.ps-f{font-size:10px;color:var(--il);text-decoration:line-through;margin-bottom:2px;}
+.ps-t{font-size:12px;font-weight:700;color:var(--fire-mid);}
+.dt{display:inline-block;padding:1px 6px;border-radius:10px;font-size:9px;font-weight:700;}
+.du{background:#D1FAE5;color:#065F46;} .dn{background:#FFEDD5;color:#9A3412;} .dw{background:#FEF3C7;color:#78350F;}
+
+.mt{display:flex;gap:0;border:1.5px solid var(--bd);border-radius:10px;overflow:hidden;margin-bottom:1.5rem;background:var(--w);}
+.mt-btn{flex:1;padding:10px;text-align:center;cursor:pointer;font-size:12px;font-weight:600;border:none;background:transparent;color:var(--il);}
+.mt-btn.as{background:var(--sb);color:var(--st);}
+.mt-btn.ae{background:var(--eb);color:var(--et);}
+.mt-d{width:1px;background:var(--bd);}
+
+.ws{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:1.5rem;}
+.wc{border-radius:8px;padding:8px 3px;text-align:center;border:0.5px solid transparent;}
+.wn{font-size:9px;font-weight:700;text-transform:uppercase;margin-bottom:3px;}
+.wt{font-size:8px;line-height:1.3;}
+.wd{width:5px;height:5px;border-radius:50%;margin:4px auto 0;}
+.wb{background:#EFF6FF;border-color:#93C5FD;} .wb .wn{color:#1E3A8A;} .wb .wd{background:#3B82F6;}
+.wg{background:var(--gl);border-color:#6EE7B7;} .wg .wn{color:var(--g);} .wg .wd{background:var(--ga);}
+.wf{background:#FFF7ED;border-color:#FDBA74;} .wf .wn{color:#9A3412;} .wf .wt{color:var(--fire-mid);} .wf .wd{background:var(--fire-mid);}
+.wam{background:var(--al);border-color:#FCD34D;} .wam .wn{color:var(--ad);} .wam .wd{background:var(--am);}
+.wr{background:#F1F5F9;border-color:#CBD5E1;} .wr .wn{color:#475569;} .wr .wd{background:#CBD5E1;}
+.wp{background:var(--ppl);border-color:#C4B5FD;} .wp .wn{color:var(--pp);} .wp .wd{background:var(--pp);}
+.wrest{background:#FFF1F2;border-color:#FECDD3;} .wrest .wn{color:var(--red);} .wrest .wd{background:var(--red);}
+
+.sec{margin-bottom:2rem;}
+.sl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--il);padding-bottom:5px;border-bottom:2px solid var(--bd);margin-bottom:1rem;}
+
+.day{margin-bottom:1.25rem;}
+.dh{border-radius:10px 10px 0 0;padding:10px 16px;}
+.db2{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;border-radius:4px;}
+.dt2{font-size:15px;font-weight:700;color:var(--ink);margin:3px 0 2px;}
+.dm{font-size:11px;color:var(--il);}
+.db{border:0.5px solid var(--bo);border-top:none;border-radius:0 0 10px 10px;padding:12px;background:var(--w);}
+
+.dhb{background:#EFF6FF;} .dhb .db2{background:#1E3A8A;color:#fff;}
+.dhg{background:var(--gl);} .dhg .db2{background:var(--g);color:#fff;}
+.dha{background:var(--al);} .dha .db2{background:var(--am);color:#fff;}
+.dhf{background:#FFF7ED;} .dhf .db2{background:var(--fire-mid);color:#fff;}
+.dhr{background:#F1F5F9;} .dhr .db2{background:#475569;color:#fff;}
+.dhp{background:var(--ppl);} .dhp .db2{background:var(--pp);color:#fff;}
+
+.ib{display:flex;align-items:center;gap:8px;background:var(--sf);border-radius:6px;padding:5px 10px;margin-bottom:10px;}
+.ibl{font-size:10px;font-weight:600;color:var(--im);width:75px;flex-shrink:0;}
+.ibt{flex:1;height:6px;background:var(--bd);border-radius:3px;overflow:hidden;}
+.ibf{height:100%;border-radius:3px;}
+.ibv{font-size:11px;font-weight:700;width:34px;text-align:right;}
+
+/* EXERCISE + CARDIO BLOCKS — all with split */
+.eb2{background:var(--w);border:0.5px solid var(--bo);border-radius:12px;margin-bottom:8px;overflow:hidden;}
+.eh{padding:10px 16px;display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;}
+.en{font-size:13px;font-weight:700;color:var(--ink);}
+.ev{font-size:11px;font-weight:600;color:var(--im);white-space:nowrap;}
+.er{font-size:10px;color:var(--il);white-space:nowrap;}
+.esp{padding:0 16px 10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.es{background:var(--sb);border:0.5px solid var(--sbd);border-radius:8px;padding:8px 10px;}
+.ee{background:var(--eb);border:0.5px solid var(--ebd);border-radius:8px;padding:8px 10px;}
+.mt2{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+.es .mt2{color:var(--st);} .ee .mt2{color:var(--et);}
+.ed{font-size:11px;line-height:1.6;}
+.es .ed{color:#1E40AF;} .ee .ed{color:#065F46;}
+.etk{padding:6px 16px 10px;border-top:0.5px solid var(--bo);background:#FAFBFC;}
+.tl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--il);margin-bottom:2px;}
+.tt{font-size:11px;color:var(--im);line-height:1.5;}
+.eu{padding:0 16px 10px;}
+.euu{background:var(--sf);border:0.5px solid var(--bo);border-radius:8px;padding:8px 10px;font-size:11px;color:var(--im);line-height:1.6;}
+
+.info{border-radius:7px;padding:9px 12px;font-size:11px;line-height:1.65;margin:8px 0;}
+.info b{font-weight:700;}
+.ig{background:var(--gl);border-left:3px solid var(--ga);color:#065F46;}
+.ia{background:var(--al);border-left:3px solid var(--am);color:var(--ad);}
+.ib2{background:#EFF6FF;border-left:3px solid var(--bm);color:var(--b);}
+.if2{background:#FFF7ED;border-left:3px solid var(--fire-mid);color:#9A3412;}
+.ir{background:#FFF1F2;border-left:3px solid var(--red);color:var(--red);}
+
+/* HIIT visual */
+.hv-row{display:flex;gap:2px;height:44px;margin:8px 0 5px;}
+.hv-e{background:var(--fire-mid);border-radius:3px 3px 0 0;flex:3;}
+.hv-r{background:#E2E8F0;border-radius:3px 3px 0 0;flex:3;}
+.hleg{display:flex;gap:14px;font-size:10px;color:var(--il);margin-bottom:10px;}
+.hleg span{display:flex;align-items:center;gap:4px;}
+.hdot{width:8px;height:8px;border-radius:2px;}
+
+.mr{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1rem;}
+.mc2{border-radius:10px;padding:10px 12px;border:0.5px solid transparent;}
+.mc2-p{background:#EFF6FF;border-color:#93C5FD;} .mc2-g{background:var(--al);border-color:#FCD34D;} .mc2-f{background:var(--gl);border-color:#6EE7B7;}
+.ml{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+.mc2-p .ml{color:#1E3A8A;} .mc2-g .ml{color:var(--ad);} .mc2-f .ml{color:var(--g);}
+.mv{font-size:20px;font-weight:800;letter-spacing:-1px;}
+.mc2-p .mv{color:var(--bm);} .mc2-g .mv{color:var(--am);} .mc2-f .mv{color:var(--gm);}
+.ms{font-size:10px;color:var(--il);margin-top:1px;}
+
+.pg{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.pgc{background:var(--w);border:0.5px solid var(--bo);border-radius:8px;padding:10px 14px;display:flex;gap:10px;}
+.pi{font-size:20px;flex-shrink:0;}
+.pt{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:2px;}
+.pd{font-size:11px;color:var(--il);line-height:1.45;}
+.pok{border-left:3px solid var(--ga);}
+.pwn{border-left:3px solid var(--am);}
+
+.bridge{background:#3B0004;border-radius:12px;padding:1.25rem 1.5rem;margin-top:2rem;}
+.bt{font-size:11px;font-weight:700;color:var(--fire-acc);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
+.bgr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.bgc{background:rgba(255,255,255,.07);border-radius:8px;padding:9px 11px;}
+.bgl{font-size:10px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+.bgs5{font-size:10px;color:rgba(255,255,255,.4);text-decoration:line-through;margin-bottom:3px;}
+.bgs6{font-size:11px;color:#FCD34D;font-weight:600;}
+
+.chip{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600;}
+.cs{background:#F1F5F9;color:#475569;} .cg{background:var(--gl);color:var(--g);}
+.cf{background:#FFF7ED;color:#9A3412;} .cb{background:#EFF6FF;color:var(--b);}
+
+@media(max-width:640px){
+  .ps-row,.mr,.pg,.bgr{grid-template-columns:1fr;}
+  .esp{grid-template-columns:1fr;}
+  .ws{grid-template-columns:repeat(4,1fr);}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <div class="eye">Phase 1 · Fat Loss Peak · Semaine 5 sur 14</div>
+  <div class="ht">Semaine d'intensification — Volume maximum</div>
+  <div class="hs2">Premier HIIT à 100% VIFT. Deux séances HIIT dans la semaine. S6 sera la décharge.</div>
+  <div class="pills">
+    <span class="pill pf">6 séances</span>
+    <span class="pill pf">80% intensité</span>
+    <span class="pill pa">2 200 kcal · déficit −450</span>
+    <span class="pill pw">2 × HIIT · 3 × zone 2</span>
+  </div>
+</div>
+<div class="hst">
+  <div class="hsi"><span class="hv">80%</span><span class="hl">Intensité</span></div>
+  <div class="hsi"><span class="hv">4 × 10</span><span class="hl">Séries × Reps</span></div>
+  <div class="hsi"><span class="hv">RPE 7–8</span><span class="hl">Effort /10</span></div>
+  <div class="hsi"><span class="hv">2 × HIIT</span><span class="hl">100% + 90% VIFT</span></div>
+  <div class="hsi"><span class="hv">−0,5/0,8 kg</span><span class="hl">Perte attendue</span></div>
+</div>
+
+<!-- PROGRESSION S4→S5 -->
+<div class="ps-row">
+  <div class="ps"><div class="ps-l">HIIT</div><div class="ps-f">1 session · 85% · 12 reps</div><div class="ps-t">2 sessions · 100% + 90% <span class="dt dn">+1 HIIT</span></div></div>
+  <div class="ps"><div class="ps-l">Intensité muscu</div><div class="ps-f">75–80% · RPE 7</div><div class="ps-t">80% · RPE 7–8 <span class="dt du">+charge</span></div></div>
+  <div class="ps"><div class="ps-l">Nordic curl</div><div class="ps-f">3 × 6 · 5 sec</div><div class="ps-t">3 × 7 · 5 sec <span class="dt du">+1 rep</span></div></div>
+  <div class="ps"><div class="ps-l">Nutrition</div><div class="ps-f">—</div><div class="ps-t">2 200 kcal · maintenu <span class="dt" style="background:#F1F5F9;color:#475569;">Stable</span></div></div>
+</div>
+
+<!-- MODE TOGGLE -->
+<div class="mt">
+  <button class="mt-btn as" id="bs" onclick="setMode('salle')">🏋️ Mode Salle</button>
+  <div class="mt-d"></div>
+  <button class="mt-btn" id="bb" onclick="setMode('both')">👁 Voir les deux</button>
+  <div class="mt-d"></div>
+  <button class="mt-btn" id="be" onclick="setMode('ext')">🌳 Mode Extérieur</button>
+</div>
+
+<!-- WEEK STRIP -->
+<div class="ws">
+  <div class="wc wb"><div class="wn">Lun</div><div class="wt">Muscu bas + Z2</div><div class="wd"></div></div>
+  <div class="wc wg"><div class="wn">Mar</div><div class="wt">Zone 2 + ballon</div><div class="wd"></div></div>
+  <div class="wc wf"><div class="wn">Mer</div><div class="wt">HIIT 100% VIFT</div><div class="wd"></div></div>
+  <div class="wc wr"><div class="wn">Jeu</div><div class="wt">Récup mobilité</div><div class="wd"></div></div>
+  <div class="wc wam"><div class="wn">Ven</div><div class="wt">Muscu haut + core</div><div class="wd"></div></div>
+  <div class="wc wp"><div class="wn">Sam</div><div class="wt">HIIT 2 + défensif</div><div class="wd"></div></div>
+  <div class="wc wrest"><div class="wn">Dim</div><div class="wt">Repos complet</div><div class="wd"></div></div>
+</div>
+
+<div class="info if2"><b>S5 = semaine de charge maximale.</b> Après cette semaine, S6 réduit le volume de 30% pour permettre au corps de supercompenser. Deux HIIT dans la même semaine pour la première fois — récupération entre les séances et sommeil 8–9h sont non-négociables. La qualité de chaque série prime toujours sur la charge.</div>
+
+<!-- ─── LUNDI ─── -->
+<div class="sec">
+<div class="sl">Programme journalier</div>
+
+<div class="day">
+<div class="dh dhb">
+  <span class="db2">Lundi · Séance 1</span>
+  <div class="dt2">Musculation bas du corps (80%) + Zone 2 · 20 min</div>
+  <div class="dm">⏱ 90 min · RPE 7–8/10 · Muscu AVANT zone 2</div>
+</div>
+<div class="db">
+<div class="ib"><div class="ibl">Intensité</div><div class="ibt"><div class="ibf" style="width:80%;background:#3B82F6;"></div></div><div class="ibv" style="color:#3B82F6;">80%</div></div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Squat — Charge maximale phase 1</div><div class="ev">4 × 10</div><div class="er">Repos 2 min</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Squat barre : <b>+5% vs S4</b>. Si S4 = 65 kg → S5 = 68 kg. Si technique a vacillé en S4 → même charge. Rack avec barres de sécurité obligatoires à 80%.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Squat sauté lesté : sac à dos <b>+3 kg vs S4</div>. Descente 3 sec contrôlée + saut explosif + atterrissage 2 sec amorti. 10 reps. Ou goblet squat lourd si tu as accès à un kettlebell.</div></div>
+  </div>
+  <div class="etk"><div class="tl">Technique clé</div><div class="tt">Genoux dans l'axe · talons au sol · dos neutre · pas de rebond en bas</div></div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Deadlift roumain (RDL)</div><div class="ev">4 × 10</div><div class="er">Repos 2 min</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed"><b>+5% vs S4</b>. Barre contre les tibias, hanches en arrière, dos neutre. Arrêter dès que le dos commence à se courber — même si ce n'est qu'à 50 cm du sol.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Hip hinge sac lesté <b>+3 kg vs S4</b>. Ou single-leg RDL (unilatéral) : une jambe décollée en arrière, pencher le buste, ressentir l'étirement ischio. 10 reps / jambe. Meilleur que la version bilatérale en charge légère.</div></div>
+  </div>
+  <div class="etk"><div class="tl">Technique clé</div><div class="tt">Dos neutre ABSOLUMENT · barre/mains longent les jambes · hanches en arrière (pas genoux)</div></div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Squat bulgare chargé</div><div class="ev">3 × 10/jambe</div><div class="er">Repos 90 sec</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed"><b>+2–4 kg total vs S4</b>. Si première fois avec haltères → ne pas forcer la progression. Technique prime.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Muret/banc + sac à dos <b>+2–3 kg vs S4</b>. Ou descente 4 sec + hold 2 sec en bas sans ajout de charge — le temps sous tension compense.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Hip thrust</div><div class="ev">4 × 12/jambe</div><div class="er">Repos 90 sec</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed"><b>+5 kg vs S4</b>. Le hip thrust peut progresser vite — charge agressive mais technique propre.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Sac sur bassin <b>+3 kg vs S4</b>. Ou hold 4 sec en haut + descente 4 sec. 4 × 12 reps.</div></div>
+  </div>
+  <div class="etk"><div class="tl">Technique clé</div><div class="tt">Bassin horizontal · serrer fessier fort · ne pas cambrer les lombaires en haut</div></div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Nordic curl — 7 reps</div><div class="ev">3 × 7 <span class="dt du">+1 rep</span></div><div class="er">Repos 2 min</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Pieds sous barre rack ou machine. 7 descentes × 5 sec. Si les 3 séries sont faciles : pas d'accélération — rester au même rythme, la qualité est tout.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Pieds sous barre de parc ou partenaire. 7 descentes × 5 sec. Même standard qu'en salle.</div></div>
+  </div>
+  <div class="etk"><div class="tl">Toujours critique</div><div class="tt" style="color:var(--red);">Corps rigide · 5 sec descente · STOP si douleur ischio · descente seulement</div></div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Zone 2 post-musculation · 20 min</div><div class="ev">20 min</div><div class="er">5 min repos avant</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Vélo stationnaire ou elliptique. FC 63–68%. Après muscu lourde le corps est en état de glycogène partiellement réduit → zone 2 puise davantage dans les graisses. Vitesse basse, jamais d'essoufflement.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Jogging lent ou marche rapide. FC 63–68%. Tu sortiras fatigué de la muscu — c'est normal. L'allure sera plus lente qu'habituellement. C'est voulu.</div></div>
+  </div>
+</div>
+
+<div class="info ig"><b>Gainage latéral :</b> 3 × 35 sec/côté — identique salle et extérieur. Toujours en fin de séance muscu bas.</div>
+</div>
+</div>
+
+<!-- MARDI -->
+<div class="day">
+<div class="dh dhg">
+  <span class="db2">Mardi · Séance 2</span>
+  <div class="dt2">Zone 2 (40 min) + Technique ballon défenseur</div>
+  <div class="dm">⏱ 65 min · FC 65–72% · Récupération active après lundi lourd</div>
+</div>
+<div class="db">
+
+<div class="eb2">
+  <div class="eh"><div class="en">Activation</div><div class="ev">10 min</div><div class="er">—</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Vélo ou elliptique à intensité très basse. FC &lt; 110 bpm. Jambes encore lourdes du lundi — ne pas forcer la mise en route.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Marche rapide 5 min → jogging très léger 5 min. Même principe : activation sans forcer.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Zone 2 — 40 min</div><div class="ev">40 min</div><div class="er">FC 65–72%</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Vélo stationnaire (option la moins traumatisante pour les jambes post-muscu lundi), elliptique ou tapis. Maintenir la FC dans la zone sans pousser. Allure de conversation.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Course à pied à allure conversation. FC 65–72%. Note ta vitesse — elle sera légèrement plus basse qu'en S3/S4 à cause de la fatigue cumulée et du déficit. C'est normal en semaine de pic.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Technique défensive — sous fatigue légère</div><div class="ev">15 min</div><div class="er">Après zone 2</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle (sans terrain)</div><div class="ed">Remplacer la technique ballon par <b>éducatifs défensifs au couloir</b> : pas chassés + reculés + changements de direction pendant 10 min. Puis 5 min gainage anti-rotation (Pallof press ou bird dog).</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur (terrain)</div><div class="ed">5 min contrôle + passe courte sous fatigue · 5 min relance longue · 5 min conduite + passe de rupture. Objectif : maintenir la qualité technique malgré la fatigue cardio — simulation de fin de match.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Retour au calme</div><div class="ev">5 min</div><div class="er">—</div></div>
+  <div class="eu"><div class="euu">✅ Identique salle et extérieur — marche lente + 3 étirements clés (ischio, hanches, mollets). 30 sec chacun.</div></div>
+</div>
+</div>
+</div>
+
+<!-- MERCREDI — HIIT 100% -->
+<div class="day">
+<div class="dh dhf">
+  <span class="db2">Mercredi · Séance 3 🔥</span>
+  <div class="dt2">HIIT 30/30 — 100% VIFT · 14 répétitions</div>
+  <div class="dm">⏱ 55 min · Première fois à intensité maximale · Récupération complète entre les intervalles</div>
+</div>
+<div class="db">
+<div class="info if2"><b>100% VIFT pour la première fois.</b> La différence avec S4 (85%) est significative. Tu vas sentir que les 30 secondes d'effort sont vraiment à la limite. C'est exactement l'objectif. La règle absolue : récupération COMPLÈTE pendant les 30 sec de marche — ne jamais trottiner entre les intervalles.</div>
+
+<div style="background:var(--sf);border-radius:8px;padding:10px;margin-bottom:10px;">
+  <div style="font-size:10px;font-weight:700;color:var(--il);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Structure — 14 intervalles × 30/30</div>
+  <div class="hv-row">
+    <div class="hv-e"></div><div class="hv-r"></div>
+    <div class="hv-e" style="opacity:.95;"></div><div class="hv-r"></div>
+    <div class="hv-e" style="opacity:.9;"></div><div class="hv-r"></div>
+    <div class="hv-e" style="opacity:.85;"></div><div class="hv-r"></div>
+    <div class="hv-e" style="opacity:.8;"></div><div class="hv-r"></div>
+    <div class="hv-e" style="opacity:.75;"></div><div class="hv-r"></div>
+    <div class="hv-e" style="opacity:.7;"></div><div class="hv-r"></div>
+    <div style="font-size:16px;display:flex;align-items:center;padding-left:6px;color:var(--il);">×14</div>
+  </div>
+  <div class="hleg">
+    <span><span class="hdot" style="background:var(--fire-mid);"></span>30 sec · 100% VIFT</span>
+    <span><span class="hdot" style="background:#E2E8F0;"></span>30 sec · marche récup</span>
+    <span>= 14 min de travail total</span>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Échauffement HIIT — obligatoire</div><div class="ev">15 min</div><div class="er">—</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Tapis ou vélo : 10 min progressif (60% → 80% FC max). Puis 5 min éducatifs sur place : montées genoux, pas chassés. Terminer par 2 accélérations à 90% sur 20 m si couloir disponible.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Jogging progressif 10 min (allure conversation → légèrement essoufflé). Puis 5 min éducatifs : montées genoux + pas chassés + 2 accélérations à 85% sur 20 m avec récup marche retour.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">HIIT 30/30 · 100% VIFT · 14 reps</div><div class="ev">14 min</div><div class="er">Marche strict 30 sec</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle — Tapis de course</div><div class="ed">Programme la vitesse = <b>ta VIFT exacte en km/h</b>. Ex : VIFT 19 km/h → effort à 19 km/h. Le tapis monte en vitesse en 5 sec → démarre le chrono quand tu atteins la vitesse cible. Pendant les 30 sec de repos : poser les pieds sur les côtés du tapis (ne pas couper le moteur) ou descendre rapidement. Attention : le tapis met 3–5 sec à remonter → anticipe.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur — Course à pied</div><div class="ed">Effort = <b>vitesse maximale que tu peux tenir pendant 30 sec</b> sans complètement t'effondrer. Ressenti : tu DOIS être incapable de parler normalement pendant les 30 sec. Pendant les 30 sec de marche : marche rapide, ne t'arrête JAMAIS. Utilise l'app Chronometer ou une montre pour compter.</div></div>
+  </div>
+  <div class="etk"><div class="tl">Règle absolue</div><div class="tt">Si tu ne tiens pas les 14 reps → arrête à 12 reps. Ne jamais sacrifier la qualité pour atteindre le nombre. La progression est : 14 reps en S5, consolider en S6 (décharge), puis monter en S7.</div></div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Récupération post-HIIT</div><div class="ev">5 min</div><div class="er">—</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Descendre le tapis à 4 km/h. Marcher 5 min. FC doit redescendre sous 130 bpm avant de s'arrêter. Ne pas s'asseoir immédiatement.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Marche active 5 min. Respiration contrôlée : inspire par le nez, expire par la bouche. FC doit descendre sous 130 bpm.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Technique défensive légère + mobilité</div><div class="ev">15 min</div><div class="er">—</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle (sans terrain)</div><div class="ed">Pas chassés latéraux 5 min + gainage core 5 min + mobilité hanches et ischio 5 min. Pas de ballon possible — mais la récupération musculaire reste l'objectif principal de cette phase.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Placement défensif en appuis chassés 5 min (lent, récupération active) + 5 min technique ballon légère (contrôle + passe) + 5 min mobilité au sol. Qualité sur quantité — tu sors d'un HIIT à 100%.</div></div>
+  </div>
+</div>
+
+<div class="info ig"><b>Signe que le HIIT s'est bien passé :</b> FC revenue sous 100 bpm après 5 min de marche. Fatigue musculaire présente mais pas d'épuisement total. Si tu es incapable de marcher normalement 10 min après → tu es allé trop vite sur les premiers intervalles.</div>
+</div>
+</div>
+
+<!-- JEUDI -->
+<div class="day">
+<div class="dh dhr">
+  <span class="db2">Jeudi · Récupération</span>
+  <div class="dt2">Récupération active + Mobilité complète</div>
+  <div class="dm">⏱ 45 min · Obligatoire entre les deux HIIT · Identique S2/S3/S4</div>
+</div>
+<div class="db">
+<div class="info ia"><b>Ce jeudi est le jour le plus important de la semaine.</b> Entre le HIIT de mercredi (100% VIFT) et le deuxième HIIT de samedi, le corps a besoin de cette fenêtre pour se réparer. Sauter cette récupération pour "s'entraîner plus" réduirait la qualité du HIIT du samedi de 15 à 20%.</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Activation circulatoire</div><div class="ev">15 min</div><div class="er">FC &lt; 55%</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Vélo stationnaire à résistance minimale ou marche sur tapis très lente (4–5 km/h). L'objectif est de faire circuler le sang dans les muscles sans créer de fatigue. FC &lt; 110 bpm impérativement.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Marche à allure normale en extérieur. Ou vélo urbain très tranquille. 15 min suffit. Pas de jogging — vraiment récupération passive en mouvement.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Routine mobilité complète</div><div class="ev">25 min</div><div class="er">—</div></div>
+  <div class="eu"><div class="euu">✅ <b>Identique salle et extérieur</b> — sol suffit pour tout.<br>
+  Hanches PNF (fente basse + hip 90/90 + pigeon) 8 min · Ischio contract-relax × 3/jambe 6 min · Thoracique (thread-the-needle + rotations) 5 min · Cheville (cercles + mollet) 4 min · Cohérence cardiaque 4/6 respiration 5 min → 30 min total.</div></div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Foam rolling / auto-massage</div><div class="ev">5 min</div><div class="er">—</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Foam roller sur : quadriceps (2 min), ischio (1 min), mollets (1 min), TFL/IT band (1 min). Rouler lentement, s'arrêter sur les zones tendues 20–30 sec.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Auto-massage avec les mains ou une balle de tennis : mêmes zones. Pressure points sur les quadriceps et mollets. Ou rouler contre un mur avec une balle dans le dos pour le thoracique.</div></div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- VENDREDI -->
+<div class="day">
+<div class="dh dha">
+  <span class="db2">Vendredi · Séance 4</span>
+  <div class="dt2">Musculation haut du corps + Core (80%)</div>
+  <div class="dm">⏱ 65 min · RPE 7–8/10 · +charge vs S4</div>
+</div>
+<div class="db">
+<div class="ib"><div class="ibl">Intensité</div><div class="ibt"><div class="ibf" style="width:80%;background:var(--am);"></div></div><div class="ibv" style="color:var(--am);">80%</div></div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Poussée horizontale</div><div class="ev">4 × 12</div><div class="er">Repos 75 sec</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Développé couché : <b>+2,5–5 kg vs S4</b>. Ou pompes lestées. Si tu ne peux pas compléter 4 × 12 avec bonne technique → réduire la charge. Qualité avant charge à 80%.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Pompes déclinées pieds sur banc + sac à dos <b>+3 kg vs S4</b>. Ou pompes archer (transfert latéral de poids) si les déclinées sont maîtrisées. 4 × 12 reps.</div></div>
+  </div>
+  <div class="etk"><div class="tl">Technique clé</div><div class="tt">Corps planche · coudes 45° · poitrine 2 cm du sol · descente 2 sec</div></div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Rangée tirage horizontal</div><div class="ev">4 × 10/côté</div><div class="er">Repos 75 sec</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Rangée haltère : <b>+2 kg vs S4</b>. Ou rowing barre penché + 5 kg. Coude guide, pas de rotation.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Body rows sous table : corps encore plus horizontal qu'en S4 (pieds plus éloignés). Objectif : corps à 20–30° du sol. Ou élastique résistance extra-forte.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Développé militaire / Pike push-up</div><div class="ev">3 × 10</div><div class="er">Repos 90 sec</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed"><b>+2–4 kg vs S4</b>. Haltères ou barre. Abdos gainés, pas de cambrure.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Pike push-up : pieds sur banc public pour augmenter l'angle (pseudo military press). Plus difficile qu'en S4. Ou pike push-up classique + sac à dos léger (3 kg).</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Tractions</div><div class="ev">4 × max</div><div class="er">Repos 2 min</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Objectif : <b>+1 rep vs S4</b>. Si à &gt; 12 reps → ajouter 5 kg (ceinture ou sac). Si &lt; 5 reps → machine assistée.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Barre de parc. Même objectif +1 rep. Si sac à dos dispo → ajouter 3–5 kg pour les plus forts.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Core complet — Gainage · Dead bug · Pallof · Superman</div><div class="ev">4 séries chacun</div><div class="er">45 sec</div></div>
+  <div class="eu"><div class="euu">✅ <b>Identique salle et extérieur.</b><br>
+  Gainage frontal 4 × 55 sec · Dead bug 4 × 8/côté · Pallof press 3 × 10/côté (🏋️ câble ou 🌳 élastique sur arbre) · Crunch rotation 3 × 15/côté · Superman hold 3 × 30 sec.</div></div>
+</div>
+</div>
+</div>
+
+<!-- SAMEDI — HIIT 2 -->
+<div class="day">
+<div class="dh dhp">
+  <span class="db2">Samedi · Séance 5 🔥</span>
+  <div class="dt2">HIIT 2 (90% VIFT × 10 reps) + Technique défensive + Circuit GPP</div>
+  <div class="dm">⏱ 80 min · HIIT en premier (quand frais) · RPE 6/10 pour le circuit</div>
+</div>
+<div class="db">
+<div class="info ia"><b>Deuxième HIIT de la semaine — version allégée (90% VIFT, 10 reps).</b> On ne va pas à 100% deux fois dans la même semaine sans une longue expérience de ce type d'entraînement. 90% VIFT permet de faire le travail de qualité sans vider complètement les réserves nerveuses.</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Échauffement</div><div class="ev">12 min</div><div class="er">—</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Vélo ou tapis progressif 8 min (60% → 80% FC). 2 accélérations à 85% sur tapis. Éducatifs 2 min.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Jogging progressif 8 min. Éducatifs 2 min (pas chassés + montées genoux). 2 accélérations à 80% sur 20 m.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">HIIT 30/30 · 90% VIFT · 10 reps</div><div class="ev">10 min</div><div class="er">Marche stricte 30 sec</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Tapis à <b>90% de ta VIFT</b>. Ex : VIFT 19 km/h → effort à 17,1 km/h. 10 intervalles. 5 min moins de travail qu'en S5 mercredi — c'est voulu, tu viens d'une semaine chargée.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Effort légèrement en dessous du maximum de mercredi. Ressenti : difficile mais plus contrôlé. Tu dois sentir que tu aurais pu faire 2 ou 3 reps de plus à la fin — c'est le bon dosage pour un 2ème HIIT hebdomadaire.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Technique défensive — placement + transitions</div><div class="ev">20 min</div><div class="er">5 min récup avant</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle (sans terrain)</div><div class="ed">Pas chassés défensifs 8 min (couloir ou espace dégagé) + 5 reps sprint repli 15 m si couloir + gainage anti-rotation Pallof press 3 × 10. Total 20 min.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Placement défensif (cône attaquant) 8 min · Sprint transition + tacle imagé 8 × 20 m · Relance courte + longue sous fatigue 5 min. Terrain recommandé pour cette section.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Circuit GPP — 4 rounds</div><div class="ev">4 × (5 exercices)</div><div class="er">40 sec entre rounds</div></div>
+  <div class="eu"><div class="euu">✅ <b>Identique salle et extérieur</b> — poids de corps uniquement.<br>
+  10 pompes · 10 squats aériens · 10 fentes alternées · 20 sec gainage · 10 step-ups (banc public ou marche d'escalier).<br>
+  Repos 30 sec entre exercices dans le round. RPE 6/10 max — tu sors d'un HIIT, le circuit ne doit pas être un deuxième HIIT.</div></div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Retour au calme complet</div><div class="ev">10 min</div><div class="er">—</div></div>
+  <div class="eu"><div class="euu">✅ Identique salle et extérieur — marche 5 min + routine mobilité complète (hanches, ischio, cheville). Fin de la semaine la plus chargée du programme jusqu'ici.</div></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- DIMANCHE -->
+<div class="day">
+<div class="dh" style="background:#FFF1F2;">
+  <span class="db2" style="background:var(--red);color:#fff;">Dimanche · Repos complet</span>
+  <div class="dt2">Repos — La semaine la plus chargée du programme se termine ici</div>
+  <div class="dm">0 min d'entraînement structuré · Sommeil · Hydratation · Recharge mentale</div>
+</div>
+<div class="db">
+
+<div class="eb2">
+  <div class="eh"><div class="en">Ce que tu peux faire</div><div class="ev">30–40 min max</div><div class="er">Facultatif</div></div>
+  <div class="eu"><div class="euu">✅ <b>Identique salle et extérieur</b> — marche tranquille uniquement. Pas de jogging, pas de cardio, pas de musculation. Si tu as absolument besoin de bouger, 30 min de marche à allure normale. C'est tout.</div></div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Pourquoi ce dimanche est particulièrement important en S5</div><div class="ev">—</div><div class="er">—</div></div>
+  <div class="eu"><div class="euu">
+    La semaine 5 contient deux HIIT à haute intensité, deux séances de musculation à 80%, trois sessions zone 2 et un circuit GPP. C'est le volume le plus élevé du programme.<br><br>
+    Le corps ne devient pas plus fort pendant l'entraînement — il devient plus fort <b>pendant la récupération</b>. Ce dimanche est la fenêtre de supercompensation la plus importante depuis le début du programme. Sauter ce repos pour "rattraper une séance manquée" est contre-productif : tu retardes les adaptations qui ont lieu précisément pendant ce temps de récupération.<br><br>
+    <b>Priorités du dimanche :</b><br>
+    · Sommeil : 9h minimum ce soir-là<br>
+    · Hydratation : 3 L d'eau (le corps élimine les déchets métaboliques accumulés en semaine)<br>
+    · Nutrition : 2 050 kcal (pas de séance = pas de shake post-séance ni snack pré-séance)<br>
+    · Mental : coupure totale — pas de vidéo de foot, pas de planification d'entraînement
+  </div></div>
+</div>
+
+<div class="info ig"><b>La semaine 6 commence lundi et sera la plus légère depuis S2.</b> Volume −30%, une seule session HIIT, moins de séances muscu. Le corps va supercompenser pendant cette décharge — c'est là que les vrais gains se fixent.</div>
+</div>
+</div>
+
+<!-- MOBILITÉ QUOTIDIENNE -->
+<div class="sec">
+<div class="sl">Mobilité quotidienne — 15 min · Tous les jours · 100% extérieur-compatible</div>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">
+  <div style="background:var(--w);border:0.5px solid var(--bo);border-radius:8px;padding:9px 11px;"><div style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:3px;">🦵 Fléchisseurs de hanche — 5 min</div><div style="font-size:11px;color:var(--im);line-height:1.55;">Fente basse + hip 90/90 + pigeon. En semaine de double HIIT, les fléchisseurs sont particulièrement sollicités par la mécanique de sprint. Les relâcher quotidiennement prévient les compensations.</div></div>
+  <div style="background:var(--w);border:0.5px solid var(--bo);border-radius:8px;padding:9px 11px;"><div style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:3px;">🦵 Ischio PNF — 4 min</div><div style="font-size:11px;color:var(--im);line-height:1.55;">Contract-relax × 3/jambe. Avec 7 reps de Nordic curl et le HIIT à 100%, les ischio sont en état de stress plus élevé que les semaines précédentes. La mobilité quotidienne est la première ligne de prévention.</div></div>
+  <div style="background:var(--w);border:0.5px solid var(--bo);border-radius:8px;padding:9px 11px;"><div style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:3px;">🦶 Cheville — 3 min</div><div style="font-size:11px;color:var(--im);line-height:1.55;">Cercles + étirement mollet + calf raise. Le HIIT à 100% sollicite fortement les appuis — les chevilles absorbent les impacts. Entretien quotidien critique.</div></div>
+  <div style="background:var(--w);border:0.5px solid var(--bo);border-radius:8px;padding:9px 11px;"><div style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:3px;">🔄 Thoracique — 3 min</div><div style="font-size:11px;color:var(--im);line-height:1.55;">Thread-the-needle + rotations. Inchangé. Maintenir l'amplitude des duels aériens malgré la fatigue accumulée.</div></div>
+</div>
+</div>
+
+<!-- NUTRITION -->
+<div class="sec">
+<div class="sl">Nutrition — Semaine 5 · 2 200 kcal · Déficit −450 · Maintenu</div>
+<div class="info if2" style="margin-bottom:1rem;"><b>Nutrition identique à S4 — ne pas réduire davantage.</b> S5 est la semaine de volume le plus élevé. Réduire les calories en plus serait contre-productif : le corps aurait moins de ressources pour les deux HIIT et la muscu à 80%. L'objectif est de maintenir le déficit constant, pas de l'augmenter.</div>
+<div class="mr">
+  <div class="mc2 mc2-p"><div class="ml">Protéines</div><div class="mv">165 g</div><div class="ms">2.1 g/kg · 660 kcal · 30%</div></div>
+  <div class="mc2 mc2-g"><div class="ml">Glucides</div><div class="mv">225 g</div><div class="ms">2.9 g/kg · 900 kcal · 41%</div></div>
+  <div class="mc2 mc2-f"><div class="ml">Lipides</div><div class="mv">71 g</div><div class="ms">0.9 g/kg · 640 kcal · 29%</div></div>
+</div>
+
+<div style="background:var(--sf);border:0.5px solid var(--bo);border-radius:10px;padding:12px;margin-bottom:1rem;">
+  <div style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:8px;">Ajustement nutritionnel jours HIIT (mercredi + samedi)</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+    <div style="background:var(--gl);border-radius:8px;padding:9px 11px;">
+      <div style="font-size:10px;font-weight:700;color:var(--g);margin-bottom:4px;">🔥 Jours HIIT (mer + sam) — ajouter 30 g glucides</div>
+      <div style="font-size:11px;color:#065F46;line-height:1.55;">Pré-HIIT (60 min avant) : 1 banane + 1 tranche pain complet avec miel. Le HIIT à 100% consomme du glycogène musculaire — être légèrement rechargé améliore la qualité des intervalles.</div>
+    </div>
+    <div style="background:#FFF7ED;border-radius:8px;padding:9px 11px;">
+      <div style="font-size:10px;font-weight:700;color:#9A3412;margin-bottom:4px;">😴 Dimanche repos — réduire 150 kcal</div>
+      <div style="font-size:11px;color:var(--fire-mid);line-height:1.55;">Supprimer shake post-séance et snack pré-séance. Descendre à ~2 050 kcal. Le corps dépense moins le jour de repos → le déficit reste efficace sans surcompenser.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- INDICATEURS -->
+<div class="sec">
+<div class="sl">Indicateurs fin de semaine 5 — semaine de pic</div>
+<div class="pg">
+  <div class="pgc pok"><div class="pi">✅</div><div><div class="pt">Bonne trajectoire</div><div class="pd">14 reps HIIT complétées mercredi · 10 reps samedi · Poids −0,4 à −0,8 kg sur la semaine · Force musculaire maintenue (même charge que S4 ou légèrement plus) · Fatigue présente mais gérée · Nordic 7 reps × 5 sec sans douleur</div></div></div>
+  <div class="pgc pwn"><div class="pi">⚠️</div><div><div class="pt">Signaux d'alerte → actions</div><div class="pd">HIIT mercredi non complété : stop à 10 reps, ne pas forcer · Épuisement extrême vendredi : réduire muscu à 3 séries · FC repos +5 bpm vs semaine normale : récup insuffisante, ajouter un jour Low · Douleur ischio : arrêt nordic immédiat</div></div></div>
+  <div class="pgc pok"><div class="pi">📊</div><div><div class="pt">Bilan cumulé S1–S5</div><div class="pd">Perte estimée : −2 à −3,5 kg depuis les tests. Les fondations physiques (nordic, force de base, cardio aérobie) sont solidement en place. Le corps est prêt pour la décharge de S6 et les tests de S9.</div></div></div>
+  <div class="pgc pok"><div class="pi">😴</div><div><div class="pt">Priorité absolue cette semaine</div><div class="pd">Sommeil 8h30 minimum. La double session HIIT génère un stress hormonal (cortisol) élevé — le sommeil est le seul outil efficace pour le réguler. Coucher avant 22h30, chambre fraîche.</div></div></div>
+</div>
+</div>
+
+<!-- BRIDGE S5→S6 -->
+<div class="bridge">
+  <div class="bt">Semaine 6 — Décharge active · Volume −30% · Supercompensation</div>
+  <div class="bgr">
+    <div class="bgc"><div class="bgl">Volume muscu</div><div class="bgs5">4 × 10</div><div class="bgs6">3 × 8 · −30% · même intensité</div></div>
+    <div class="bgc"><div class="bgl">HIIT</div><div class="bgs5">2 × HIIT</div><div class="bgs6">1 × HIIT · 10 reps · 90% VIFT</div></div>
+    <div class="bgc"><div class="bgl">Zone 2</div><div class="bgs5">3 × 40 min</div><div class="bgs6">2 × 30 min</div></div>
+    <div class="bgc"><div class="bgl">Nordic curl</div><div class="bgs5">3 × 7 · 5 sec</div><div class="bgs6">2 × 6 · 5 sec · repos tendineux</div></div>
+    <div class="bgc"><div class="bgl">Nutrition</div><div class="bgs5">2 200 kcal</div><div class="bgs6">2 300 kcal · légère remontée</div></div>
+    <div class="bgc"><div class="bgl">Objectif</div><div class="bgs5">Volume max</div><div class="bgs6">Corps supercompense → arrive frais en S7 + S8 tests</div></div>
+  </div>
+</div>
+
+</div>
+<script>
+function setMode(m){
+  var s=document.querySelectorAll('.show-salle');
+  var e=document.querySelectorAll('.show-ext');
+  var bs=document.getElementById('bs');
+  var bb=document.getElementById('bb');
+  var be=document.getElementById('be');
+  [bs,bb,be].forEach(function(b){b.classList.remove('as','ae');});
+  if(m==='salle'){
+    s.forEach(function(el){el.style.display='';});
+    e.forEach(function(el){el.style.display='none';});
+    bs.classList.add('as');
+  } else if(m==='ext'){
+    s.forEach(function(el){el.style.display='none';});
+    e.forEach(function(el){el.style.display='';});
+    be.classList.add('ae');
+  } else {
+    s.forEach(function(el){el.style.display='';});
+    e.forEach(function(el){el.style.display='';});
+  }
+}
+setMode('salle');
+</script>
+</body>
+</html>

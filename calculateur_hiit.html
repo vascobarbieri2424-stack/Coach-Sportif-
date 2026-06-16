@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculateur HIIT — Programme Football</title>
+<style>
+:root{
+  --ink:#1A2332;--im:#4A5568;--il:#718096;
+  --g:#0F5132;--gm:#1D8A52;--gl:#D1FAE5;--ga:#10B981;
+  --b:#1E40AF;--bm:#3B82F6;--bl:#DBEAFE;
+  --am:#D97706;--al:#FEF3C7;--ad:#78350F;
+  --fire:#C2410C;--fire-l:#FFF7ED;
+  --pp:#5B21B6;--ppl:#F5F3FF;
+  --sky:#0369A1;--sky-l:#E0F2FE;
+  --sf:#F8FAFC;--w:#fff;--bo:#E2E8F0;--bd:#CBD5E1;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--sf);color:var(--ink);font-size:14px;line-height:1.5;padding:1.5rem;min-height:100vh;}
+.wrap{max-width:900px;margin:0 auto;}
+
+/* HEADER */
+.hdr{background:linear-gradient(135deg,#0F172A,#1E3A5F);border-radius:14px;padding:1.5rem 2rem;margin-bottom:1.5rem;position:relative;overflow:hidden;}
+.hdr::before{content:'⚡';position:absolute;right:1.5rem;top:50%;transform:translateY(-50%);font-size:80px;opacity:.08;}
+.h-eye{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#38BDF8;margin-bottom:6px;}
+.h-title{font-size:22px;font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:4px;}
+.h-sub{font-size:12px;color:rgba(255,255,255,.4);}
+
+/* VIFT INPUT */
+.vift-card{background:var(--w);border:2px solid var(--bm);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;}
+.vc-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--bm);margin-bottom:1rem;}
+.vift-row{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+.vift-label{font-size:14px;font-weight:600;color:var(--ink);white-space:nowrap;}
+.vift-input-wrap{display:flex;align-items:center;gap:8px;}
+.vift-input{width:80px;padding:8px 12px;border:2px solid var(--bd);border-radius:8px;font-size:18px;font-weight:700;color:var(--ink);text-align:center;outline:none;transition:border-color .15s;}
+.vift-input:focus{border-color:var(--bm);}
+.unit{font-size:13px;color:var(--il);font-weight:600;}
+.vift-slider{flex:1;min-width:180px;accent-color:var(--bm);cursor:pointer;}
+.slider-range{display:flex;justify-content:space-between;font-size:10px;color:var(--il);margin-top:4px;}
+.save-btn{padding:8px 18px;background:var(--bm);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;transition:background .15s;white-space:nowrap;}
+.save-btn:hover{background:#2563EB;}
+.saved-badge{display:none;padding:4px 10px;background:var(--gl);color:var(--g);border-radius:6px;font-size:11px;font-weight:600;}
+
+/* ZONES GRID */
+.zones-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--il);margin-bottom:10px;}
+.zones{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:1.5rem;}
+.zone{border-radius:10px;padding:12px 14px;border:0.5px solid transparent;}
+.z-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.z-name{font-size:12px;font-weight:700;margin-bottom:8px;}
+.z-speed{font-size:24px;font-weight:800;letter-spacing:-1px;margin-bottom:2px;}
+.z-unit{font-size:10px;font-weight:600;margin-bottom:6px;}
+.z-info{font-size:10px;line-height:1.5;}
+
+.z-100{background:#FEF2F2;border-color:#FECACA;}
+.z-100 .z-lbl,.z-100 .z-speed{color:#B91C1C;}
+.z-100 .z-name,.z-100 .z-unit{color:#EF4444;}
+.z-100 .z-info{color:#7F1D1D;}
+
+.z-90{background:#FFF7ED;border-color:#FDBA74;}
+.z-90 .z-lbl,.z-90 .z-speed{color:var(--fire);}
+.z-90 .z-name,.z-90 .z-unit{color:#EA580C;}
+.z-90 .z-info{color:var(--ad);}
+
+.z-85{background:var(--al);border-color:#FCD34D;}
+.z-85 .z-lbl,.z-85 .z-speed{color:var(--am);}
+.z-85 .z-name,.z-85 .z-unit{color:var(--am);}
+.z-85 .z-info{color:var(--ad);}
+
+.z-70{background:var(--bl);border-color:#93C5FD;}
+.z-70 .z-lbl,.z-70 .z-speed{color:var(--b);}
+.z-70 .z-name,.z-70 .z-unit{color:var(--bm);}
+.z-70 .z-info{color:#1E3A8A;}
+
+.z-65{background:var(--gl);border-color:#6EE7B7;}
+.z-65 .z-lbl,.z-65 .z-speed{color:var(--g);}
+.z-65 .z-name,.z-65 .z-unit{color:var(--gm);}
+.z-65 .z-info{color:var(--g);}
+
+.z-55{background:#F1F5F9;border-color:#CBD5E1;}
+.z-55 .z-lbl,.z-55 .z-speed{color:#475569;}
+.z-55 .z-name,.z-55 .z-unit{color:#64748B;}
+.z-55 .z-info{color:#94A3B8;}
+
+/* VISUAL BAR */
+.bar-wrap{background:var(--w);border:0.5px solid var(--bo);border-radius:12px;padding:14px;margin-bottom:1.5rem;}
+.bar-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--il);margin-bottom:10px;}
+.speed-bar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin-bottom:8px;}
+.sb-seg{display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:rgba(255,255,255,.9);transition:width .3s;overflow:hidden;white-space:nowrap;}
+.bar-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--il);}
+
+/* WEEK TABLE */
+.week-table-wrap{background:var(--w);border:0.5px solid var(--bo);border-radius:12px;overflow:hidden;margin-bottom:1.5rem;}
+.wt-head{padding:12px 16px;background:var(--sf);border-bottom:1px solid var(--bo);}
+.wt-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--il);}
+table{width:100%;border-collapse:collapse;}
+thead tr{background:var(--sf);}
+th{padding:8px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--il);border-bottom:1px solid var(--bo);}
+td{padding:9px 12px;border-bottom:0.5px solid var(--bo);font-size:12px;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#FAFBFC;}
+.phase-cell{font-weight:700;}
+.hiit-cell{font-weight:700;}
+.s-100{color:#B91C1C;} .s-90{color:var(--fire);} .s-85{color:var(--am);}
+.z2-cell{color:var(--gm);}
+.badge{display:inline-block;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700;}
+.b-fat{background:var(--fire-l);color:var(--fire);}
+.b-test{background:var(--ppl);color:var(--pp);}
+.b-force{background:var(--gl);color:var(--g);}
+.b-decharge{background:#F1F5F9;color:#475569;}
+
+/* PACE CONVERTER */
+.pace-card{background:var(--w);border:0.5px solid var(--bo);border-radius:12px;padding:14px;margin-bottom:1.5rem;}
+.pace-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px;margin-top:10px;}
+.pace-item{background:var(--sf);border-radius:8px;padding:8px 10px;text-align:center;}
+.pace-item .pi-lbl{font-size:9px;color:var(--il);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+.pace-item .pi-val{font-size:13px;font-weight:700;color:var(--ink);}
+
+/* INFO */
+.info{border-radius:7px;padding:9px 12px;font-size:11px;line-height:1.65;margin-bottom:1rem;}
+.info b{font-weight:700;}
+.ig{background:var(--gl);border-left:3px solid var(--ga);color:var(--g);}
+.ib2{background:var(--bl);border-left:3px solid var(--bm);color:var(--b);}
+
+@media(max-width:600px){
+  body{padding:1rem;}
+  .zones{grid-template-columns:1fr 1fr;}
+  .vift-row{flex-direction:column;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <div class="h-eye">Outil · Programme Football 14 Semaines</div>
+  <div class="h-title">Calculateur HIIT & Zones d'Entraînement</div>
+  <div class="h-sub">Entre ta VIFT (test GACON 30-15) pour calculer toutes tes vitesses d'entraînement</div>
+</div>
+
+<!-- VIFT INPUT -->
+<div class="vift-card">
+  <div class="vc-title">⚡ Ta VIFT — Vitesse Maximale Aérobie Intermittente</div>
+  <div class="vift-row">
+    <div class="vift-label">VIFT (test GACON) :</div>
+    <div class="vift-input-wrap">
+      <input class="vift-input" type="number" id="vift-val" min="10" max="28" step="0.5" value="18" oninput="syncSlider(this.value)">
+      <span class="unit">km/h</span>
+    </div>
+    <div style="flex:1;min-width:180px;">
+      <input class="vift-slider" type="range" id="vift-slider" min="10" max="28" step="0.5" value="18" oninput="syncInput(this.value)">
+      <div class="slider-range"><span>10 km/h</span><span>Niveau national ≥ 20.5</span><span>28 km/h</span></div>
+    </div>
+    <button class="save-btn" onclick="saveVift()">💾 Sauvegarder</button>
+    <div class="saved-badge" id="saved-badge">✓ Sauvegardé</div>
+  </div>
+</div>
+
+<!-- ZONES -->
+<div class="zones-title">Zones calculées</div>
+<div class="zones" id="zones-grid">
+  <!-- Injected by JS -->
+</div>
+
+<!-- VISUAL BAR -->
+<div class="bar-wrap">
+  <div class="bar-title">Répartition visuelle des zones</div>
+  <div class="speed-bar" id="speed-bar"></div>
+  <div class="bar-labels">
+    <span>Récupération</span>
+    <span>Zone 2</span>
+    <span>Seuil</span>
+    <span>HIIT 85%</span>
+    <span>HIIT 90%</span>
+    <span>HIIT 100%</span>
+  </div>
+</div>
+
+<!-- PACE CONVERTER -->
+<div class="pace-card">
+  <div class="zones-title">Equivalences utiles</div>
+  <div class="pace-grid" id="pace-grid"></div>
+</div>
+
+<!-- WEEK TABLE -->
+<div class="week-table-wrap">
+  <div class="wt-head"><div class="wt-title">Vitesses par semaine — Programme 14 semaines</div></div>
+  <table>
+    <thead>
+      <tr>
+        <th>Sem.</th>
+        <th>Phase</th>
+        <th>HIIT Effort</th>
+        <th>Reps</th>
+        <th>Zone 2</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody id="week-rows"></tbody>
+  </table>
+</div>
+
+<div class="info ib2"><b>Comment utiliser ce tableau :</b> les vitesses affichées sont calculées automatiquement à partir de ta VIFT. Si ta VIFT évolue (tests S9 → nouvelle valeur), reviens ici, entre la nouvelle valeur et sauvegarde — tout se recalcule. Les vitesses de S10+ utilisent ta VIFT recalibrée après les tests de S9.</div>
+<div class="info ig"><b>Sur tapis de course :</b> programme directement la vitesse affichée. <b>En extérieur :</b> utilise le ressenti (souffle, capacité à parler) plutôt que la vitesse exacte — impossible à mesurer précisément sans GPS.</div>
+
+</div>
+
+<script>
+var WEEKS = [
+  {s:1, phase:'Tests S1', hiitPct:null, reps:null, notes:'Baseline — GACON donne ta VIFT initiale'},
+  {s:2, phase:'GPP 60%', hiitPct:null, reps:null, notes:'Pas de HIIT · Zone 2 uniquement'},
+  {s:3, phase:'GPP 70%', hiitPct:null, reps:null, notes:'Pas de HIIT · Zone 2 + circuit GPP'},
+  {s:4, phase:'Fat Loss', hiitPct:0.85, reps:'12', notes:'Première séance HIIT · Intro douce'},
+  {s:5, phase:'Fat Loss Peak', hiitPct:1.0, reps:'14 + 10', notes:'2 HIIT · 100% + 90% VIFT'},
+  {s:6, phase:'Décharge', hiitPct:0.90, reps:'10', notes:'1 HIIT · Volume −30%'},
+  {s:7, phase:'Fat Loss Final', hiitPct:1.0, reps:'14 + 10', notes:'2 HIIT · Dernier déficit'},
+  {s:8, phase:'Taper', hiitPct:null, reps:null, notes:'0 HIIT · Récup pré-tests'},
+  {s:9, phase:'Tests S9', hiitPct:null, reps:null, notes:'Nouvelle VIFT → recalibrer'},
+  {s:10, phase:'Force SPP', hiitPct:1.0, reps:'14 + 10', notes:'VIFT S9 · 2 HIIT'},
+  {s:11, phase:'Force + Puis.', hiitPct:null, reps:'COD ×12', notes:'HIIT COD 8sec+40sec repos'},
+  {s:12, phase:'Puissance Peak', hiitPct:null, reps:'T-test ×6', notes:'T-test répété + COD 5-0-5'},
+  {s:13, phase:'Performance', hiitPct:null, reps:'COD ×10', notes:'Simulation match samedi'},
+  {s:14, phase:'Tests Finaux', hiitPct:null, reps:null, notes:'GACON final → VIFT finale'},
+];
+
+var ZONES_DEF = [
+  {pct:1.0, key:'z-100', lbl:'HIIT 100%', name:'Intensité max', info:'HIIT principal S5/S7/S10', unit:'km/h'},
+  {pct:0.90, key:'z-90', lbl:'HIIT 90%', name:'Intensité haute', info:'HIIT secondaire · S6/S10', unit:'km/h'},
+  {pct:0.85, key:'z-85', lbl:'HIIT 85%', name:'Intro HIIT', info:'Premier HIIT S4', unit:'km/h'},
+  {pct:0.70, key:'z-70', lbl:'Seuil 70%', name:'Seuil aérobie', info:'Limite haute Zone 2', unit:'km/h'},
+  {pct:0.65, key:'z-65', lbl:'Zone 2 · 65%', name:'Brûle-graisses', info:'Zone 2 principale · conversation', unit:'km/h'},
+  {pct:0.55, key:'z-55', lbl:'Récup · 55%', name:'Récupération active', info:'Post-HIIT · retour calme', unit:'km/h'},
+];
+
+function round1(n){ return Math.round(n*10)/10; }
+
+function toMinSec(kmh) {
+  var secPerKm = 3600/kmh;
+  var min = Math.floor(secPerKm/60);
+  var sec = Math.round(secPerKm%60);
+  return min + "''" + (sec<10?'0':'')+sec+'\"';
+}
+
+function getVift(){ return parseFloat(document.getElementById('vift-val').value) || 18; }
+
+function syncSlider(v){
+  document.getElementById('vift-slider').value = v;
+  update();
+}
+function syncInput(v){
+  document.getElementById('vift-val').value = v;
+  update();
+}
+
+function saveVift(){
+  localStorage.setItem('vift_value', getVift());
+  var badge = document.getElementById('saved-badge');
+  badge.style.display = 'inline-block';
+  setTimeout(function(){ badge.style.display = 'none'; }, 2000);
+}
+
+function update(){
+  var vift = getVift();
+  renderZones(vift);
+  renderBar(vift);
+  renderWeeks(vift);
+  renderPace(vift);
+}
+
+function renderZones(vift){
+  var grid = document.getElementById('zones-grid');
+  grid.innerHTML = '';
+  ZONES_DEF.forEach(function(z){
+    var speed = round1(vift * z.pct);
+    var div = document.createElement('div');
+    div.className = 'zone ' + z.key;
+    div.innerHTML =
+      '<div class="z-lbl">'+z.lbl+'</div>'+
+      '<div class="z-name">'+z.name+'</div>'+
+      '<div class="z-speed">'+speed+'</div>'+
+      '<div class="z-unit">km/h · '+toMinSec(speed)+'/km</div>'+
+      '<div class="z-info">'+z.info+'</div>';
+    grid.appendChild(div);
+  });
+}
+
+function renderBar(vift){
+  var bar = document.getElementById('speed-bar');
+  var colors = ['#B91C1C','#C2410C','#D97706','#3B82F6','#10B981','#94A3B8'];
+  var pcts = [0.10, 0.08, 0.08, 0.08, 0.30, 0.36]; // visual proportions
+  var labels = ['100%','90%','85%','70%','65%','55%'];
+  bar.innerHTML = '';
+  pcts.forEach(function(p,i){
+    var seg = document.createElement('div');
+    seg.className = 'sb-seg';
+    seg.style.width = (p*100)+'%';
+    seg.style.background = colors[i];
+    seg.textContent = labels[i];
+    bar.appendChild(seg);
+  });
+}
+
+function renderWeeks(vift){
+  var tbody = document.getElementById('week-rows');
+  tbody.innerHTML = '';
+  var phaseColor = {
+    'Tests S1':'b-test','Tests S9':'b-test','Tests Finaux':'b-test',
+    'GPP 60%':'b-decharge','GPP 70%':'b-decharge','Taper':'b-decharge','Décharge':'b-decharge',
+    'Fat Loss':'b-fat','Fat Loss Peak':'b-fat','Fat Loss Final':'b-fat',
+    'Force SPP':'b-force','Force + Puis.':'b-force','Puissance Peak':'b-force','Performance':'b-force'
+  };
+  WEEKS.forEach(function(w){
+    var tr = document.createElement('tr');
+    var hiitHtml = '—';
+    var z2Html = round1(vift*0.65)+' km/h';
+    if(w.hiitPct){
+      var spd = round1(vift*w.hiitPct);
+      var cls = w.hiitPct===1.0?'s-100':w.hiitPct===0.90?'s-90':'s-85';
+      hiitHtml = '<span class="hiit-cell '+cls+'">'+spd+' km/h</span>';
+    }
+    if(!w.s || w.phase.includes('Tests') || w.phase==='Taper') z2Html = '—';
+    var pclass = phaseColor[w.phase]||'b-fat';
+    tr.innerHTML =
+      '<td><strong>S'+w.s+'</strong></td>'+
+      '<td><span class="badge '+pclass+'">'+w.phase+'</span></td>'+
+      '<td>'+hiitHtml+'</td>'+
+      '<td>'+(w.reps||'—')+'</td>'+
+      '<td class="z2-cell">'+z2Html+'</td>'+
+      '<td style="color:var(--il);font-size:11px;">'+w.notes+'</td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function renderPace(vift){
+  var grid = document.getElementById('pace-grid');
+  var items = [
+    {lbl:'100m (100% VIFT)', val: Math.round(360/vift)+'sec'},
+    {lbl:'400m (100% VIFT)', val: Math.round(1440/vift)+'sec'},
+    {lbl:'1km (Zone 2 65%)', val: toMinSec(vift*0.65)},
+    {lbl:'Tour piste 400m (Z2)', val: Math.round(1440/(vift*0.65))+'sec'},
+    {lbl:'HIIT 30sec effort (100%)', val: round1(vift/120*1000)+'m parcourus'},
+    {lbl:'Tapis — vitesse 100%', val: round1(vift)+' km/h à programmer'},
+  ];
+  grid.innerHTML = '';
+  items.forEach(function(it){
+    grid.innerHTML += '<div class="pace-item"><div class="pi-lbl">'+it.lbl+'</div><div class="pi-val">'+it.val+'</div></div>';
+  });
+}
+
+// Init
+window.addEventListener('DOMContentLoaded', function(){
+  var saved = localStorage.getItem('vift_value');
+  if(saved){
+    document.getElementById('vift-val').value = saved;
+    document.getElementById('vift-slider').value = saved;
+  }
+  update();
+});
+</script>
+</body>
+</html>

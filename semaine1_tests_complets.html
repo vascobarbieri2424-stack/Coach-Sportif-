@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bilan Physique Complet — Semaine 1</title>
+<style>
+:root {
+  --green-dark:#0A3D1F; --green-mid:#1A6B3A; --green-light:#E8F5EE; --green-acc:#2ECC71;
+  --amber:#E67E22; --amber-light:#FEF6E4; --amber-dark:#7D4E00;
+  --blue-dark:#0D3B5E; --blue-mid:#2471A3; --blue-light:#E8F2FB;
+  --red-dark:#7B1F1F; --red-light:#FDEAEA;
+  --purple-dark:#2C1461; --purple-light:#EDE8FB;
+  --slate:#2C3E50; --slate-mid:#5D6D7E; --slate-light:#F4F6F8;
+  --border:#E2E8EF; --white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#EEF1F5;color:var(--slate);font-size:14px;line-height:1.5;}
+.page{max-width:960px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+
+/* HEADER */
+.hdr{background:var(--green-dark);border-radius:14px;padding:2rem 2.5rem;margin-bottom:2rem;position:relative;overflow:hidden;}
+.hdr::after{content:'';position:absolute;bottom:-50px;right:-50px;width:220px;height:220px;border-radius:50%;background:rgba(46,204,113,.07);}
+.hdr-eye{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green-acc);margin-bottom:8px;}
+.hdr-title{font-size:28px;font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:5px;}
+.hdr-sub{font-size:13px;color:rgba(255,255,255,.55);margin-bottom:1.25rem;}
+.pills{display:flex;flex-wrap:wrap;gap:7px;}
+.pill{padding:3px 11px;border-radius:20px;font-size:11px;font-weight:500;}
+.pg{background:rgba(46,204,113,.18);color:#7DEBA6;}
+.pa{background:rgba(230,126,34,.25);color:#FAC55A;}
+.pw{background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);}
+
+/* NAV DAYS */
+.nav{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:2rem;}
+.nav-item{border-radius:8px;padding:9px 4px;text-align:center;border:1px solid transparent;cursor:default;}
+.nav-day{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;}
+.nav-type{font-size:9px;line-height:1.3;}
+.nav-dot{width:6px;height:6px;border-radius:50%;margin:4px auto 0;}
+.ni-mob{background:#EDE8FB;border-color:#B39DDB;} .ni-mob .nav-day{color:#2C1461;} .ni-mob .nav-type{color:#5E35B1;} .ni-mob .nav-dot{background:#7E57C2;}
+.ni-spe{background:#FEF6E4;border-color:#FAD7A0;} .ni-spe .nav-day{color:#7D4E00;} .ni-spe .nav-type{color:var(--amber);} .ni-spe .nav-dot{background:var(--amber);}
+.ni-for{background:#E8F2FB;border-color:#85B7EB;} .ni-for .nav-day{color:var(--blue-dark);} .ni-for .nav-type{color:var(--blue-mid);} .ni-for .nav-dot{background:var(--blue-mid);}
+.ni-rst{background:var(--slate-light);border-color:#BDC3C7;} .ni-rst .nav-day{color:#555;} .ni-rst .nav-type{color:#888;} .ni-rst .nav-dot{background:#BDC3C7;}
+.ni-car{background:var(--green-light);border-color:#5DCAA5;} .ni-car .nav-day{color:var(--green-dark);} .ni-car .nav-type{color:var(--green-mid);} .ni-car .nav-dot{background:var(--green-acc);}
+
+/* SECTION */
+.sec{margin-bottom:2.5rem;}
+.sec-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--slate-mid);padding-bottom:6px;border-bottom:2px solid var(--border);margin-bottom:1.25rem;}
+
+/* DAY HEADER */
+.day-hdr{border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:1rem;}
+.day-hdr-num{font-size:32px;font-weight:800;letter-spacing:-2px;opacity:.25;}
+.day-hdr-info .day-badge{display:inline-block;padding:2px 9px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:5px;}
+.day-hdr-info .day-title{font-size:17px;font-weight:700;color:var(--slate);}
+.day-hdr-info .day-meta{font-size:11px;color:var(--slate-mid);margin-top:3px;}
+
+.dh-mob{background:linear-gradient(135deg,#EDE8FB,#D1C4E9);} .dh-mob .day-badge{background:#7E57C2;color:#fff;}
+.dh-spe{background:linear-gradient(135deg,#FEF6E4,#FAD7A0);} .dh-spe .day-badge{background:var(--amber);color:#fff;}
+.dh-for{background:linear-gradient(135deg,#E8F2FB,#BBDEFB);} .dh-for .day-badge{background:var(--blue-mid);color:#fff;}
+.dh-car{background:linear-gradient(135deg,var(--green-light),#B2DFDB);} .dh-car .day-badge{background:var(--green-mid);color:#fff;}
+.dh-rst{background:linear-gradient(135deg,var(--slate-light),#ECEFF1);} .dh-rst .day-badge{background:var(--slate-mid);color:#fff;}
+
+/* CARDS */
+.card{background:var(--white);border:0.5px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:10px;}
+.card-title{font-size:13px;font-weight:700;color:var(--slate);margin-bottom:4px;}
+.card-sub{font-size:11px;color:var(--slate-mid);margin-bottom:10px;}
+
+/* TEST CARDS GRID */
+.test-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.test-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+
+/* TEST BLOCK */
+.test-block{background:var(--white);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:10px;}
+.tb-head{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;}
+.tb-name{font-size:13px;font-weight:700;color:var(--slate);}
+.tb-equip{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500;}
+.tb-body{padding:10px 14px;border-top:0.5px solid var(--border);}
+.tb-proto{font-size:11px;color:var(--slate-mid);line-height:1.65;margin-bottom:8px;}
+.tb-proto b{color:var(--slate);font-weight:600;}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead tr{background:var(--slate-light);}
+th{padding:7px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--slate-mid);border-bottom:1px solid var(--border);}
+td{padding:7px 10px;border-bottom:0.5px solid var(--border);color:var(--slate);vertical-align:top;line-height:1.4;}
+tr:last-child td{border-bottom:none;}
+.scale-low{color:#E74C3C;font-weight:600;} .scale-mid{color:var(--amber);font-weight:600;} .scale-good{color:var(--green-mid);font-weight:600;} .scale-elite{color:var(--blue-mid);font-weight:600;}
+
+/* INFO BOXES */
+.info{border-radius:8px;padding:9px 13px;font-size:11px;line-height:1.65;margin-top:8px;}
+.info b{font-weight:600;}
+.i-green{background:var(--green-light);border-left:3px solid var(--green-acc);color:var(--green-dark);}
+.i-amber{background:var(--amber-light);border-left:3px solid var(--amber);color:var(--amber-dark);}
+.i-blue{background:var(--blue-light);border-left:3px solid var(--blue-mid);color:var(--blue-dark);}
+.i-purple{background:var(--purple-light);border-left:3px solid #7E57C2;color:var(--purple-dark);}
+
+/* CHIPS */
+.chip{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600;}
+.cg{background:var(--green-light);color:var(--green-mid);}
+.ca{background:var(--amber-light);color:var(--amber-dark);}
+.cb{background:var(--blue-light);color:var(--blue-mid);}
+.cp{background:var(--purple-light);color:var(--purple-dark);}
+.cs{background:var(--slate-light);color:var(--slate-mid);}
+
+/* SCORE SHEET */
+.score-sheet{background:var(--white);border:1.5px dashed var(--border);border-radius:10px;padding:1.25rem;}
+.score-title{font-size:13px;font-weight:700;color:var(--slate);margin-bottom:1rem;}
+.score-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:0.5px solid var(--border);}
+.score-row:last-child{border-bottom:none;}
+.score-label{font-size:12px;color:var(--slate);flex:1;}
+.score-unit{font-size:11px;color:var(--slate-mid);width:50px;text-align:right;}
+.score-line{flex:0 0 120px;height:1.5px;background:var(--border);}
+
+/* SVG DIAGRAMS */
+.diagram-wrap{background:var(--slate-light);border-radius:10px;padding:1rem;margin:10px 0;text-align:center;}
+.diagram-title{font-size:11px;font-weight:600;color:var(--slate-mid);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;}
+
+/* FORCE TABLE */
+.force-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.force-card{background:var(--white);border:0.5px solid var(--border);border-radius:8px;padding:10px 12px;}
+.fc-name{font-size:12px;font-weight:700;color:var(--slate);margin-bottom:4px;}
+.fc-proto{font-size:10px;color:var(--slate-mid);line-height:1.55;}
+.fc-std{font-size:10px;font-weight:600;margin-top:6px;padding:3px 8px;border-radius:4px;display:inline-block;}
+
+/* GACON */
+.gacon-stages{display:flex;gap:3px;align-items:flex-end;height:80px;margin:12px 0;}
+.gs-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;}
+.gs-bar{width:100%;border-radius:2px 2px 0 0;}
+.gs-speed{font-size:8px;color:var(--slate-mid);margin-top:2px;}
+
+@media(max-width:640px){
+  .test-grid-2,.test-grid-3,.force-grid{grid-template-columns:1fr;}
+  .nav{grid-template-columns:repeat(4,1fr);}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-eye">Phase 1 · Semaine 1 · Protocole officiel</div>
+  <div class="hdr-title">Bilan Physique Complet</div>
+  <div class="hdr-sub">Tests de référence — à reproduire à l'identique en S9 (mi-parcours) et S14 (final)</div>
+  <div class="pills">
+    <span class="pill pg">5 jours de tests</span>
+    <span class="pill pa">Salle confirmée</span>
+    <span class="pill pw">GACON 30-15 · test cardio référence</span>
+    <span class="pill pw">Note tout — chaque chiffre compte</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <div class="nav-item ni-mob"><div class="nav-day">Lun</div><div class="nav-type">Mobilité Souplesse Équilibre</div><div class="nav-dot"></div></div>
+  <div class="nav-item ni-spe"><div class="nav-day">Mar</div><div class="nav-type">Vitesse Agilité</div><div class="nav-dot"></div></div>
+  <div class="nav-item ni-for"><div class="nav-day">Mer</div><div class="nav-type">Force Max Salle</div><div class="nav-dot"></div></div>
+  <div class="nav-item ni-rst"><div class="nav-day">Jeu</div><div class="nav-type">Repos obligatoire</div><div class="nav-dot"></div></div>
+  <div class="nav-item ni-car"><div class="nav-day">Ven</div><div class="nav-type">GACON 30-15</div><div class="nav-dot"></div></div>
+  <div class="nav-item ni-rst"><div class="nav-day">Sam</div><div class="nav-type">Récup + mobilité</div><div class="nav-dot"></div></div>
+  <div class="nav-item ni-rst"><div class="nav-day">Dim</div><div class="nav-type">Repos complet</div><div class="nav-dot"></div></div>
+</div>
+
+<!-- ══════════════ JOUR 1 ══════════════ -->
+<div class="sec">
+<div class="day-hdr dh-mob">
+  <div class="day-hdr-num">J1</div>
+  <div class="day-hdr-info">
+    <span class="day-badge">Lundi</span>
+    <div class="day-title">Mobilité · Souplesse · Équilibre · Mesures corporelles</div>
+    <div class="day-meta">⏱ 75 min · Extérieur ou salle · Tapis de sol requis</div>
+  </div>
+</div>
+
+<!-- Mesures corporelles -->
+<div class="card">
+  <div class="card-title">📏 Mesures corporelles — À faire en premier, à jeun</div>
+  <div class="card-sub">Même heure, même balance, même conditions à chaque session de tests</div>
+  <table>
+    <thead><tr><th>Mesure</th><th>Protocole</th><th>Unité</th><th>Ta valeur S1</th></tr></thead>
+    <tbody>
+      <tr><td><b>Poids</b></td><td>À jeun, le matin avant de manger, après les toilettes, sans chaussures</td><td>kg</td><td>_____ kg</td></tr>
+      <tr><td><b>Tour de taille</b></td><td>Au niveau du nombril, expiré, bande non serrée</td><td>cm</td><td>_____ cm</td></tr>
+      <tr><td><b>Tour de hanches</b></td><td>Au niveau du plus grand écartement</td><td>cm</td><td>_____ cm</td></tr>
+      <tr><td><b>Tour de cuisse</b></td><td>10 cm au-dessus du genou, jambe détendue, les deux jambes</td><td>cm</td><td>G___  D___</td></tr>
+      <tr><td><b>Tour de mollet</b></td><td>Au point le plus large du mollet</td><td>cm</td><td>G___  D___</td></tr>
+      <tr><td><b>FC repos</b></td><td>Assis, immobile, 3 min de calme puis compter les battements 60 sec. Refaire 3 matins consécutifs et faire la moyenne.</td><td>bpm</td><td>_____ bpm</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Mobilité -->
+<div class="card-title" style="margin:1rem 0 0.5rem;font-size:13px;font-weight:700;">🔄 Tests de mobilité</div>
+<div class="test-grid-2">
+
+  <div class="test-block">
+    <div class="tb-head" style="background:#EDE8FB;">
+      <div class="tb-name">Wall Ankle Test — Dorsiflexion cheville</div>
+      <span class="tb-equip" style="background:#7E57C2;color:#fff;">Mur requis</span>
+    </div>
+    <div class="tb-body">
+      <div class="tb-proto">
+        <b>Matériel :</b> mur, règle ou mètre.<br>
+        <b>Position :</b> debout face au mur, pied nu aligné perpendiculairement au mur, gros orteil à X cm du mur.<br>
+        <b>Action :</b> fléchis le genou pour toucher le mur avec ton genou, sans décoller le talon. Commence à 5 cm, recule jusqu'à la distance maximale où tu touches encore le mur.<br>
+        <b>Résultat :</b> distance maximale en cm. Les deux chevilles séparément.
+      </div>
+      <table><thead><tr><th>Résultat</th><th>Interprétation</th></tr></thead>
+      <tbody>
+        <tr><td><span class="scale-low">&lt; 8 cm</span></td><td>Mobilité insuffisante — risque blessures sprint et réception</td></tr>
+        <tr><td><span class="scale-mid">8–11 cm</span></td><td>Acceptable — travail de mobilité nécessaire</td></tr>
+        <tr><td><span class="scale-good">&gt; 11 cm</span></td><td>Bon — base suffisante pour le travail explosif</td></tr>
+      </tbody></table>
+      <div style="margin-top:8px;font-size:11px;color:var(--slate-mid);">Ta valeur : G _____ cm · D _____ cm</div>
+    </div>
+  </div>
+
+  <div class="test-block">
+    <div class="tb-head" style="background:#EDE8FB;">
+      <div class="tb-name">Overhead Squat — Évaluation posturale globale</div>
+      <span class="tb-equip" style="background:#7E57C2;color:#fff;">Bâton ou manche</span>
+    </div>
+    <div class="tb-body">
+      <div class="tb-proto">
+        <b>Position :</b> pieds à largeur d'épaules, bras tendus tenant un bâton au-dessus de la tête.<br>
+        <b>Action :</b> descends en squat profond le plus bas possible, bras restent verticaux, talons au sol, regard droit devant.<br>
+        <b>Observer :</b> les talons se lèvent ? Les genoux rentrent ? Le dos s'arrondit ? Les bras tombent vers l'avant ?<br>
+        <b>Résultat :</b> note les compensations observées.
+      </div>
+      <table><thead><tr><th>Compensation</th><th>Cause probable</th></tr></thead>
+      <tbody>
+        <tr><td>Talons se lèvent</td><td>Manque mobilité cheville</td></tr>
+        <tr><td>Genoux rentrent (valgus)</td><td>Faiblesse fessiers / abducteurs</td></tr>
+        <tr><td>Dos arrondi</td><td>Manque mobilité thoracique</td></tr>
+        <tr><td>Bras tombent</td><td>Raideur épaules / pecs</td></tr>
+      </tbody></table>
+      <div style="margin-top:8px;font-size:11px;color:var(--slate-mid);">Compensations observées : _________________________</div>
+    </div>
+  </div>
+
+  <div class="test-block">
+    <div class="tb-head" style="background:#EDE8FB;">
+      <div class="tb-name">Rotation hanche — Interne & externe</div>
+      <span class="tb-equip" style="background:#7E57C2;color:#fff;">Sol + rapporteur</span>
+    </div>
+    <div class="tb-body">
+      <div class="tb-proto">
+        <b>Position :</b> assis au bord d'une table ou banc haut, jambes dans le vide, genou à 90°.<br>
+        <b>Rotation interne :</b> pied part vers l'extérieur (le tibia tourne vers l'intérieur). Mesure l'angle.<br>
+        <b>Rotation externe :</b> pied part vers l'intérieur (le tibia tourne vers l'extérieur). Mesure l'angle.<br>
+        <b>Si pas de rapporteur :</b> note simplement si le mouvement te semble limité ou libre.
+      </div>
+      <table><thead><tr><th>Norme</th><th>Rotation interne</th><th>Rotation externe</th></tr></thead>
+      <tbody>
+        <tr><td>Standard footballeur</td><td><span class="scale-good">35–45°</span></td><td><span class="scale-good">40–60°</span></td></tr>
+        <tr><td>Limite acceptable</td><td><span class="scale-mid">25–35°</span></td><td><span class="scale-mid">30–40°</span></td></tr>
+        <tr><td>Insuffisant</td><td><span class="scale-low">&lt; 25°</span></td><td><span class="scale-low">&lt; 30°</span></td></tr>
+      </tbody></table>
+      <div style="margin-top:8px;font-size:11px;color:var(--slate-mid);">G int ___ / ext ___° · D int ___ / ext ___°</div>
+    </div>
+  </div>
+
+  <div class="test-block">
+    <div class="tb-head" style="background:#EDE8FB;">
+      <div class="tb-name">Apley Scratch Test — Mobilité épaules</div>
+      <span class="tb-equip" style="background:#7E57C2;color:#fff;">Règle</span>
+    </div>
+    <div class="tb-body">
+      <div class="tb-proto">
+        <b>Test 1 :</b> bras droit au-dessus, coude fléchi, main descend dans le dos. Bras gauche dans le dos par le bas, main monte. Mesure l'espace entre les deux mains (ou chevauchement = valeur négative).<br>
+        <b>Test 2 :</b> inverse les bras.<br>
+        <b>Résultat :</b> distance en cm (positif = mains qui ne se touchent pas, négatif = chevauchement).
+      </div>
+      <table><thead><tr><th>Résultat</th><th>Interprétation</th></tr></thead>
+      <tbody>
+        <tr><td><span class="scale-good">&lt; 0 cm</span> (chevauchement)</td><td>Bonne mobilité épaule</td></tr>
+        <tr><td><span class="scale-mid">0–5 cm</span></td><td>Acceptable</td></tr>
+        <tr><td><span class="scale-low">&gt; 5 cm</span></td><td>Raideur épaule — à travailler</td></tr>
+      </tbody></table>
+      <div style="margin-top:8px;font-size:11px;color:var(--slate-mid);">D _____ cm · G _____ cm</div>
+    </div>
+  </div>
+</div>
+
+<!-- Souplesse -->
+<div class="card-title" style="margin:1.25rem 0 0.5rem;font-size:13px;font-weight:700;">🤸 Tests de souplesse</div>
+<div class="test-grid-2">
+
+  <div class="test-block">
+    <div class="tb-head" style="background:#FEF6E4;">
+      <div class="tb-name">Sit and Reach — Chaîne postérieure</div>
+      <span class="tb-equip" style="background:var(--amber);color:#fff;">Boîte ou règle</span>
+    </div>
+    <div class="tb-body">
+      <div class="tb-proto">
+        <b>Position :</b> assis au sol, jambes tendues, pieds à plat contre une boîte (ou contre un mur, mesure avec règle).<br>
+        <b>Action :</b> inspire, puis en expirant, glisse les deux mains le plus loin possible sur la boîte/sol. Pas de rebond. Maintenir 2 sec.<br>
+        <b>Résultat :</b> distance au-delà des pieds en cm (valeur positive) ou en deçà (valeur négative).
+      </div>
+      <table><thead><tr><th>Résultat</th><th>Niveau</th></tr></thead>
+      <tbody>
+        <tr><td><span class="scale-low">&lt; 0 cm</span></td><td>Ischio très raides — priorité mobilité</td></tr>
+        <tr><td><span class="scale-mid">0–10 cm</span></td><td>Acceptable mais insuffisant</td></tr>
+        <tr><td><span class="scale-good">10–20 cm</span></td><td>Bon pour un défenseur</td></tr>
+        <tr><td><span class="scale-elite">&gt; 20 cm</span></td><td>Excellent</td></tr>
+      </tbody></table>
+      <div style="margin-top:8px;font-size:11px;color:var(--slate-mid);">Ta valeur : _____ cm</div>
+    </div>
+  </div>
+
+  <div class="test-block">
+    <div class="tb-head" style="background:#FEF6E4;">
+      <div class="tb-name">Thomas Test — Fléchisseurs de hanche</div>
+      <span class="tb-equip" style="background:var(--amber);color:#fff;">Table ou sol</span>
+    </div>
+    <div class="tb-body">
+      <div class="tb-proto">
+        <b>Position :</b> allongé sur le dos au bord d'une table, fesses au bord. Ramène les deux genoux contre la poitrine, puis relâche une jambe qui pend dans le vide.<br>
+        <b>Observer :</b> la cuisse de la jambe relâchée descend-elle sous la ligne horizontale ? Le genou est-il fléchi à plus ou moins de 90° ?
+      </div>
+      <table><thead><tr><th>Observation</th><th>Interprétation</th></tr></thead>
+      <tbody>
+        <tr><td>Cuisse descend sous horizontale, genou ≈ 90°</td><td><span class="scale-good">Normal — fléchisseurs souples</span></td></tr>
+        <tr><td>Cuisse reste horizontale</td><td><span class="scale-mid">Psoas légèrement raide</span></td></tr>
+        <tr><td>Cuisse monte au-dessus de l'horizontale</td><td><span class="scale-low">Psoas/iliaque court — à travailler prioritairement</span></td></tr>
+      </tbody></table>
+      <div style="margin-top:8px;font-size:11px;color:var(--slate-mid);">G : _____________ · D : _____________</div>
+    </div>
+  </div>
+
+  <div class="test-block">
+    <div class="tb-head" style="background:#FEF6E4;">
+      <div class="tb-name">Adducteurs — Angle d'écartement</div>
+      <span class="tb-equip" style="background:var(--amber);color:#fff;">Sol</span>
+    </div>
+    <div class="tb-body">
+      <div class="tb-proto">
+        <b>Position :</b> assis au sol, dos droit contre un mur. Ouvre les jambes tendues le plus large possible sans forcer, en maintenant le dos droit.<br>
+        <b>Résultat :</b> angle d'écartement estimé en degrés (ou mesure la distance entre les deux talons en cm).
+      </div>
+      <table><thead><tr><th>Angle estimé</th><th>Niveau</th></tr></thead>
+      <tbody>
+        <tr><td><span class="scale-low">&lt; 100°</span></td><td>Adducteurs courts — risque blessure aine élevé</td></tr>
+        <tr><td><span class="scale-mid">100–130°</span></td><td>Acceptable — travail recommandé</td></tr>
+        <tr><td><span class="scale-good">130–160°</span></td><td>Bon</td></tr>
+        <tr><td><span class="scale-elite">&gt; 160°</span></td><td>Excellent souplesse adducteurs</td></tr>
+      </tbody></table>
+      <div style="margin-top:8px;font-size:11px;color:var(--slate-mid);">Angle estimé : _____° · Distance talons : _____ cm</div>
+    </div>
+  </div>
+
+  <div class="test-block">
+    <div class="tb-head" style="background:#FEF6E4;">
+      <div class="tb-name">Souplesse quadriceps — Ely Test</div>
+      <span class="tb-equip" style="background:var(--amber);color:#fff;">Sol</span>
+    </div>
+    <div class="tb-body">
+      <div class="tb-proto">
+        <b>Position :</b> allongé sur le ventre, jambes tendues.<br>
+        <b>Action :</b> fléchis un genou, ramène le talon vers la fesse le plus loin possible (aide avec la main si nécessaire). Le bassin ne doit pas décoller du sol.<br>
+        <b>Résultat :</b> distance talon-fesse en cm.
+      </div>
+      <table><thead><tr><th>Distance talon-fesse</th><th>Niveau</th></tr></thead>
+      <tbody>
+        <tr><td><span class="scale-low">&gt; 10 cm</span></td><td>Quadriceps raides</td></tr>
+        <tr><td><span class="scale-mid">5–10 cm</span></td><td>Acceptable</td></tr>
+        <tr><td><span class="scale-good">0–5 cm</span></td><td>Bon</td></tr>
+        <tr><td><span class="scale-elite">Talon touche fesse</span></td><td>Excellent</td></tr>
+      </tbody></table>
+      <div style="margin-top:8px;font-size:11px;color:var(--slate-mid);">G _____ cm · D _____ cm</div>
+    </div>
+  </div>
+</div>
+
+<!-- Équilibre -->
+<div class="card-title" style="margin:1.25rem 0 0.5rem;font-size:13px;font-weight:700;">⚖️ Tests d'équilibre</div>
+<div class="test-grid-2">
+  <div class="test-block">
+    <div class="tb-head" style="background:#E8F5EE;">
+      <div class="tb-name">Single Leg Stance — Yeux ouverts & fermés</div>
+      <span class="tb-equip" style="background:var(--green-mid);color:#fff;">Chrono</span>
+    </div>
+    <div class="tb-body">
+      <div class="tb-proto">
+        <b>Position :</b> debout sur une jambe, mains sur les hanches, autre jambe fléchie à 90°.<br>
+        <b>Test 1 (YO) :</b> yeux ouverts, maintenir le plus longtemps possible. Stop si pied pose, mains quittent les hanches ou pied libre touche jambe d'appui. Maximum 60 sec.<br>
+        <b>Test 2 (YF) :</b> idem yeux fermés.<br>
+        <b>3 essais par jambe et par condition. Meilleur résultat.</b>
+      </div>
+      <table><thead><tr><th>Test</th><th>Insuffisant</th><th>Acceptable</th><th>Bon</th></tr></thead>
+      <tbody>
+        <tr><td>Yeux ouverts</td><td><span class="scale-low">&lt; 20 sec</span></td><td><span class="scale-mid">20–40 sec</span></td><td><span class="scale-good">&gt; 40 sec</span></td></tr>
+        <tr><td>Yeux fermés</td><td><span class="scale-low">&lt; 8 sec</span></td><td><span class="scale-mid">8–20 sec</span></td><td><span class="scale-good">&gt; 20 sec</span></td></tr>
+      </tbody></table>
+      <div style="margin-top:8px;font-size:11px;color:var(--slate-mid);">YO : G ___sec D ___sec · YF : G ___sec D ___sec</div>
+    </div>
+  </div>
+  <div class="test-block">
+    <div class="tb-head" style="background:#E8F5EE;">
+      <div class="tb-name">Y-Balance Test — Portée antérieure</div>
+      <span class="tb-equip" style="background:var(--green-mid);color:#fff;">Ruban adhésif sol</span>
+    </div>
+    <div class="tb-body">
+      <div class="tb-proto">
+        <b>Mise en place :</b> trace 3 lignes en Y au sol depuis un point central (avant, postéro-interne, postéro-externe à ~120° chacune).<br>
+        <b>Action :</b> debout sur une jambe au centre, pousse un marqueur (ou ton pied libre) le plus loin possible dans chaque direction, reviens à l'équilibre. 3 essais/direction.<br>
+        <b>Score :</b> moyenne des 3 meilleures portées, exprimée en % de la longueur de jambe (mesure ASIS→malléole interne).
+      </div>
+      <table><thead><tr><th>Direction</th><th>Seuil</th><th>Valeur</th></tr></thead>
+      <tbody>
+        <tr><td>Antérieure</td><td><span class="scale-good">&gt; 70% longueur jambe</span></td><td>G ___ / D ___</td></tr>
+        <tr><td>Postéro-interne</td><td><span class="scale-good">&gt; 100%</span></td><td>G ___ / D ___</td></tr>
+        <tr><td>Postéro-externe</td><td><span class="scale-good">&gt; 90%</span></td><td>G ___ / D ___</td></tr>
+      </tbody></table>
+      <div class="info i-amber" style="margin-top:8px;">Un écart G/D &gt; 4 cm sur la portée antérieure = risque de blessure du genou significativement augmenté.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════ JOUR 2 ══════════════ -->
+<div class="sec">
+<div class="day-hdr dh-spe">
+  <div class="day-hdr-num">J2</div>
+  <div class="day-hdr-info">
+    <span class="day-badge">Mardi</span>
+    <div class="day-title">Vitesse · Agilité · Tests spécifiques football</div>
+    <div class="day-meta">⏱ 90 min · Terrain plat · Plots + chrono · Corps frais obligatoire</div>
+  </div>
+</div>
+
+<div class="info i-amber" style="margin-bottom:1rem;">
+  <b>Règle impérative :</b> récupération COMPLÈTE entre chaque test. Minimum 3 min entre sprints, 5 min entre les tests différents. La qualité de l'effort compte plus que la quantité. Un sprint à 90% de fatigué ne mesure pas ta vitesse.
+</div>
+
+<!-- Sprints -->
+<div class="test-grid-2">
+  <div class="test-block">
+    <div class="tb-head" style="background:var(--amber-light);">
+      <div class="tb-name">Sprint 10 mètres</div>
+      <span class="tb-equip" style="background:var(--amber);color:#fff;">2 plots · chrono</span>
+    </div>
+    <div class="tb-body">
+      <div class="tb-proto">
+        <b>Échauffement :</b> 10 min jogging + éducatifs + 3 montées progressives (50%, 75%, 90%).<br>
+        <b>Protocole :</b> départ debout, position de ta préférence (défenseur = départ de la position de repli). 3 essais. Prendre le meilleur temps.<br>
+        <b>Timing :</b> cellules photoélectriques si dispo, sinon chrono manuel (ajouter ~0.1 sec d'erreur humaine).
+      </div>
+      <table><thead><tr><th>Temps</th><th>Niveau défenseur</th></tr></thead>
+      <tbody>
+        <tr><td><span class="scale-low">&gt; 1.90 sec</span></td><td>Insuffisant pour le niveau pro</td></tr>
+        <tr><td><span class="scale-mid">1.80–1.90 sec</span></td><td>Semi-pro standard</td></tr>
+        <tr><td><span class="scale-good">1.70–1.80 sec</span></td><td>Bon — niveau national</td></tr>
+        <tr><td><span class="scale-elite">&lt; 1.70 sec</span></td><td>Excellent — niveau pro</td></tr>
+      </tbody></table>
+      <div style="margin-top:8px;font-size:11px;color:var(--slate-mid);">Essai 1 : ___ · Essai 2 : ___ · Essai 3 : ___ · <b>Meilleur : _____</b></div>
+    </div>
+  </div>
+
+  <div class="test-block">
+    <div class="tb-head" style="background:var(--amber-light);">
+      <div class="tb-name">Sprint 30 mètres</div>
+      <span class="tb-equip" style="background:var(--amber);color:#fff;">2 plots · chrono</span>
+    </div>
+    <div class="tb-body">
+      <div class="tb-proto">
+        <b>Protocole :</b> même préparation que le 10m. Départ debout. 3 essais. Récup 4 min entre chaque.<br>
+        <b>Option :</b> si tu as cellules, note aussi le split à 10m pour calculer ta vitesse d'accélération vs vitesse max.
+      </div>
+      <table><thead><tr><th>Temps</th><th>Niveau défenseur</th></tr></thead>
+      <tbody>
+        <tr><td><span class="scale-low">&gt; 4.40 sec</span></td><td>Insuffisant</td></tr>
+        <tr><td><span class="scale-mid">4.20–4.40 sec</span></td><td>Semi-pro standard</td></tr>
+        <tr><td><span class="scale-good">4.00–4.20 sec</span></td><td>Bon — niveau national</td></tr>
+        <tr><td><span class="scale-elite">&lt; 4.00 sec</span></td><td>Excellent — niveau pro</td></tr>
+      </tbody></table>
+      <div style="margin-top:8px;font-size:11px;color:var(--slate-mid);">Essai 1 : ___ · Essai 2 : ___ · Essai 3 : ___ · <b>Meilleur : _____</b></div>
+    </div>
+  </div>
+</div>
+
+<!-- T-Test -->
+<div class="test-block" style="margin-top:10px;">
+  <div class="tb-head" style="background:var(--amber-light);">
+    <div class="tb-name">T-Test — Agilité multidirectionnelle</div>
+    <span class="tb-equip" style="background:var(--amber);color:#fff;">4 plots · chrono</span>
+  </div>
+  <div class="tb-body">
+    <div style="display:grid;grid-template-columns:1fr 220px;gap:16px;align-items:start;">
+      <div>
+        <div class="tb-proto">
+          <b>Mise en place :</b> Cône A = départ. Cône B à 9,14 m devant A. Cône C à 4,57 m à gauche de B. Cône D à 4,57 m à droite de B.<br>
+          <b>Séquence :</b><br>
+          1. Sprint de A vers B<br>
+          2. Pas chassés latéraux de B vers C (toucher la base du cône C)<br>
+          3. Pas chassés de C vers D (passer devant B)<br>
+          4. Pas chassés de D vers B<br>
+          5. Retour en reculant de B vers A<br>
+          <b>Important :</b> ne jamais croiser les pieds lors des déplacements latéraux. Toucher chaque cône avec la main.
+        </div>
+        <table><thead><tr><th>Temps</th><th>Niveau</th></tr></thead>
+        <tbody>
+          <tr><td><span class="scale-low">&gt; 11.0 sec</span></td><td>Insuffisant</td></tr>
+          <tr><td><span class="scale-mid">10.0–11.0 sec</span></td><td>Acceptable</td></tr>
+          <tr><td><span class="scale-good">9.5–10.0 sec</span></td><td>Bon — niveau national</td></tr>
+          <tr><td><span class="scale-elite">&lt; 9.5 sec</span></td><td>Excellent — niveau pro</td></tr>
+        </tbody></table>
+        <div style="margin-top:8px;font-size:11px;color:var(--slate-mid);">Essai 1 : ___ · Essai 2 : ___ · <b>Meilleur : _____</b></div>
+      </div>
+      <div class="diagram-wrap" style="margin:0;">
+        <div class="diagram-title">Schéma T-Test</div>
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:200px;">
+          <!-- Cones -->
+          <circle cx="100" cy="170" r="7" fill="#E67E22"/>
+          <text x="100" y="173" text-anchor="middle" font-size="8" fill="white" font-weight="bold">A</text>
+          <circle cx="100" cy="80" r="7" fill="#2ECC71"/>
+          <text x="100" y="83" text-anchor="middle" font-size="8" fill="white" font-weight="bold">B</text>
+          <circle cx="40" cy="80" r="7" fill="#3498DB"/>
+          <text x="40" y="83" text-anchor="middle" font-size="8" fill="white" font-weight="bold">C</text>
+          <circle cx="160" cy="80" r="7" fill="#3498DB"/>
+          <text x="160" y="83" text-anchor="middle" font-size="8" fill="white" font-weight="bold">D</text>
+          <!-- Lines -->
+          <line x1="100" y1="163" x2="100" y2="87" stroke="#E67E22" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <line x1="47" y1="80" x2="93" y2="80" stroke="#3498DB" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <line x1="107" y1="80" x2="153" y2="80" stroke="#3498DB" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <!-- Distances -->
+          <text x="115" y="130" font-size="9" fill="#5D6D7E">9.14m</text>
+          <text x="60" y="72" font-size="9" fill="#5D6D7E">4.57m</text>
+          <text x="120" y="72" font-size="9" fill="#5D6D7E">4.57m</text>
+          <!-- Arrows direction -->
+          <text x="78" y="68" font-size="8" fill="#E67E22">↔ latéral</text>
+          <text x="80" y="155" font-size="8" fill="#E67E22">← reculer</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 10x5m -->
+<div class="test-block" style="margin-top:10px;">
+  <div class="tb-head" style="background:var(--amber-light);">
+    <div class="tb-name">Test 10 × 5 mètres — Navette explosive</div>
+    <span class="tb-equip" style="background:var(--amber);color:#fff;">2 plots à 5m · chrono</span>
+  </div>
+  <div class="tb-body">
+    <div style="display:grid;grid-template-columns:1fr 200px;gap:16px;align-items:start;">
+      <div>
+        <div class="tb-proto">
+          <b>Mise en place :</b> 2 cônes placés à 5 mètres l'un de l'autre.<br>
+          <b>Protocole :</b> Au signal, sprint de A vers B, toucher la ligne B avec le pied, demi-tour, sprint vers A, toucher ligne A, etc. Répéter 10 fois (= 5 aller-retours complets = 50m total).<br>
+          <b>Attention :</b> les demi-tours se font en toucher de ligne, pas en contournant. 2 essais, récup 5 min.
+        </div>
+        <table><thead><tr><th>Temps total</th><th>Niveau défenseur</th></tr></thead>
+        <tbody>
+          <tr><td><span class="scale-low">&gt; 17.0 sec</span></td><td>Insuffisant</td></tr>
+          <tr><td><span class="scale-mid">16.0–17.0 sec</span></td><td>Acceptable</td></tr>
+          <tr><td><span class="scale-good">15.0–16.0 sec</span></td><td>Bon</td></tr>
+          <tr><td><span class="scale-elite">&lt; 15.0 sec</span></td><td>Excellent</td></tr>
+        </tbody></table>
+        <div style="margin-top:8px;font-size:11px;color:var(--slate-mid);">Essai 1 : _____ · Essai 2 : _____ · <b>Meilleur : _____</b></div>
+      </div>
+      <div class="diagram-wrap" style="margin:0;">
+        <div class="diagram-title">Schéma 10×5m</div>
+        <svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+          <rect x="20" y="50" width="10" height="30" fill="#E67E22" rx="2"/>
+          <text x="25" y="45" text-anchor="middle" font-size="9" fill="#E67E22" font-weight="bold">A</text>
+          <rect x="130" y="50" width="10" height="30" fill="#3498DB" rx="2"/>
+          <text x="135" y="45" text-anchor="middle" font-size="9" fill="#3498DB" font-weight="bold">B</text>
+          <line x1="25" y1="90" x2="135" y2="90" stroke="#BDC3C7" stroke-width="1" stroke-dasharray="3,2"/>
+          <!-- Arrows back and forth -->
+          <path d="M30,62 Q82,50 130,62" fill="none" stroke="#E67E22" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <path d="M130,70 Q82,82 30,70" fill="none" stroke="#3498DB" stroke-width="1.5" marker-end="url(#arr2)"/>
+          <defs>
+            <marker id="arr1" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#E67E22"/>
+            </marker>
+            <marker id="arr2" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#3498DB"/>
+            </marker>
+          </defs>
+          <text x="82" y="105" text-anchor="middle" font-size="9" fill="#5D6D7E">← 5 mètres →</text>
+          <text x="82" y="30" text-anchor="middle" font-size="9" fill="#5D6D7E">10 passages · 50m total</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Test de Cazorla -->
+<div class="test-block" style="margin-top:10px;">
+  <div class="tb-head" style="background:var(--amber-light);">
+    <div class="tb-name">Test de Cazorla — Vivacité football-spécifique</div>
+    <span class="tb-equip" style="background:var(--amber);color:#fff;">5 plots · chrono · terrain</span>
+  </div>
+  <div class="tb-body">
+    <div style="display:grid;grid-template-columns:1fr 220px;gap:16px;align-items:start;">
+      <div>
+        <div class="tb-proto">
+          <b>Mise en place :</b> 1 cône central (O), 4 cônes positionnés à égale distance — avant (A : 5m), arrière (R : 5m), gauche (G : 3m), droite (D : 3m).<br>
+          <b>Séquence :</b><br>
+          1. Départ depuis O<br>
+          2. Sprint vers A → retour O<br>
+          3. Déplacement latéral vers G → retour O<br>
+          4. Reculer vers R → retour O<br>
+          5. Déplacement latéral vers D → retour O<br>
+          <b>3 essais, récup 3 min. Meilleur temps.</b><br>
+          Le retour vers R se fait en recul (pas de dos à l'adversaire). Les déplacements vers G et D en appuis chassés.
+        </div>
+        <table><thead><tr><th>Temps</th><th>Niveau défenseur</th></tr></thead>
+        <tbody>
+          <tr><td><span class="scale-low">&gt; 8.5 sec</span></td><td>Insuffisant</td></tr>
+          <tr><td><span class="scale-mid">7.5–8.5 sec</span></td><td>Acceptable</td></tr>
+          <tr><td><span class="scale-good">7.0–7.5 sec</span></td><td>Bon</td></tr>
+          <tr><td><span class="scale-elite">&lt; 7.0 sec</span></td><td>Excellent</td></tr>
+        </tbody></table>
+        <div style="margin-top:8px;font-size:11px;color:var(--slate-mid);">Essai 1: ___ · Essai 2: ___ · Essai 3: ___ · <b>Meilleur: _____</b></div>
+      </div>
+      <div class="diagram-wrap" style="margin:0;">
+        <div class="diagram-title">Schéma Cazorla</div>
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:200px;">
+          <!-- Center -->
+          <circle cx="100" cy="100" r="8" fill="#2C3E50"/>
+          <text x="100" y="103" text-anchor="middle" font-size="8" fill="white" font-weight="bold">O</text>
+          <!-- Forward (A) -->
+          <circle cx="100" cy="35" r="7" fill="#E74C3C"/>
+          <text x="100" y="38" text-anchor="middle" font-size="8" fill="white" font-weight="bold">A</text>
+          <!-- Back (R) -->
+          <circle cx="100" cy="165" r="7" fill="#E74C3C"/>
+          <text x="100" y="168" text-anchor="middle" font-size="8" fill="white" font-weight="bold">R</text>
+          <!-- Left (G) -->
+          <circle cx="46" cy="100" r="7" fill="#3498DB"/>
+          <text x="46" y="103" text-anchor="middle" font-size="8" fill="white" font-weight="bold">G</text>
+          <!-- Right (D) -->
+          <circle cx="154" cy="100" r="7" fill="#3498DB"/>
+          <text x="154" y="103" text-anchor="middle" font-size="8" fill="white" font-weight="bold">D</text>
+          <!-- Lines -->
+          <line x1="100" y1="92" x2="100" y2="42" stroke="#E74C3C" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <line x1="100" y1="108" x2="100" y2="158" stroke="#E74C3C" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <line x1="92" y1="100" x2="53" y2="100" stroke="#3498DB" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <line x1="108" y1="100" x2="147" y2="100" stroke="#3498DB" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <!-- Distances -->
+          <text x="114" y="68" font-size="8" fill="#5D6D7E">5m</text>
+          <text x="114" y="140" font-size="8" fill="#5D6D7E">5m</text>
+          <text x="58" y="92" font-size="8" fill="#5D6D7E">3m</text>
+          <text x="128" y="92" font-size="8" fill="#5D6D7E">3m</text>
+          <!-- Labels -->
+          <text x="100" y="20" text-anchor="middle" font-size="8" fill="#E74C3C">↑ Sprint</text>
+          <text x="100" y="188" text-anchor="middle" font-size="8" fill="#E74C3C">↓ Reculer</text>
+          <text x="20" y="90" font-size="7" fill="#3498DB">Chassé</text>
+          <text x="155" y="90" font-size="7" fill="#3498DB">Chassé</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Nordic + Saut -->
+<div class="test-grid-2" style="margin-top:10px;">
+  <div class="test-block">
+    <div class="tb-head" style="background:var(--amber-light);">
+      <div class="tb-name">Nordic Curl — Robustesse excentrique ischio</div>
+      <span class="tb-equip" style="background:var(--amber);color:#fff;">Partenaire ou barre fixe</span>
+    </div>
+    <div class="tb-body">
+      <div class="tb-proto">
+        <b>Position :</b> agenouillé, pieds bloqués. Corps droit tête-genoux.<br>
+        <b>Action :</b> descendre le plus lentement possible vers le sol en gardant le corps droit, en résistant avec les ischio. Se rattraper avec les mains.<br>
+        <b>Résultat :</b> nombre de reps avec descente contrôlée ≥ 3 secondes.
+      </div>
+      <table><thead><tr><th>Reps contrôlées</th><th>Niveau</th></tr></thead>
+      <tbody>
+        <tr><td><span class="scale-low">0–2</span></td><td>Ischio non conditionnés — risque blessure élevé</td></tr>
+        <tr><td><span class="scale-mid">3–5</span></td><td>Base à construire</td></tr>
+        <tr><td><span class="scale-good">6–10</span></td><td>Bon niveau de robustesse</td></tr>
+        <tr><td><span class="scale-elite">&gt; 10</span></td><td>Excellent — niveau pro</td></tr>
+      </tbody></table>
+      <div style="margin-top:8px;font-size:11px;color:var(--slate-mid);">Nombre de reps ≥ 3 sec : _____</div>
+    </div>
+  </div>
+  <div class="test-block">
+    <div class="tb-head" style="background:var(--amber-light);">
+      <div class="tb-name">Broad Jump — Puissance membres inférieurs</div>
+      <span class="tb-equip" style="background:var(--amber);color:#fff;">Sol + ruban</span>
+    </div>
+    <div class="tb-body">
+      <div class="tb-proto">
+        <b>Position :</b> debout, pieds à largeur d'épaules, orteils sur la ligne de départ.<br>
+        <b>Action :</b> flexion + balancé des bras, saut en avant le plus loin possible, réception 2 pieds simultanée.<br>
+        <b>Mesure :</b> talon le plus proche de la ligne de départ. 3 essais, meilleur résultat.
+      </div>
+      <table><thead><tr><th>Distance</th><th>Niveau</th></tr></thead>
+      <tbody>
+        <tr><td><span class="scale-low">&lt; 200 cm</span></td><td>Puissance insuffisante</td></tr>
+        <tr><td><span class="scale-mid">200–220 cm</span></td><td>Acceptable</td></tr>
+        <tr><td><span class="scale-good">220–240 cm</span></td><td>Bon</td></tr>
+        <tr><td><span class="scale-elite">&gt; 240 cm</span></td><td>Excellent — niveau pro</td></tr>
+      </tbody></table>
+      <div style="margin-top:8px;font-size:11px;color:var(--slate-mid);">Essai 1: ___ · Essai 2: ___ · Essai 3: ___ · <b>Meilleur: _____</b></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════ JOUR 3 ══════════════ -->
+<div class="sec">
+<div class="day-hdr dh-for">
+  <div class="day-hdr-num">J3</div>
+  <div class="day-hdr-info">
+    <span class="day-badge">Mercredi</span>
+    <div class="day-title">Tests de Force Maximale — Salle complète</div>
+    <div class="day-meta">⏱ 2h30–3h · Salle de musculation · Spotter obligatoire pour squat & développé couché</div>
+  </div>
+</div>
+
+<div class="info i-blue" style="margin-bottom:1rem;">
+  <b>Protocole 3RM → estimation 1RM :</b> on ne teste pas le vrai 1RM pour tous les exercices — trop long et risqué à froid. On teste le 3RM (la charge maximale sur 3 reps propres) puis on applique la formule : <b>1RM estimé = charge × (1 + 3/30) = charge × 1.10</b>. Pour les exercices à poids de corps (tractions, pompes), on note le max de reps.<br>
+  <b>Repos entre exercices :</b> minimum 5 minutes. Ne pas enchaîner.
+</div>
+
+<div class="card">
+  <div class="card-title">Protocole d'échauffement obligatoire (20 min)</div>
+  <div class="card-sub">Avant le premier exercice, sans exception</div>
+  <table>
+    <thead><tr><th>Phase</th><th>Durée</th><th>Contenu</th></tr></thead>
+    <tbody>
+      <tr><td>Cardio léger</td><td>8 min</td><td>Vélo ou rameur à intensité légère. FC à 110–120 bpm.</td></tr>
+      <tr><td>Mobilité dynamique</td><td>7 min</td><td>Hip circles, squat aérien × 10, fente × 8/côté, bras en rotation, thoracique.</td></tr>
+      <tr><td>Activation spécifique</td><td>5 min</td><td>1 série d'activation à charge très légère (30% 1RM estimé) pour chaque exercice du jour, 8 reps.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="force-grid">
+
+  <div class="force-card">
+    <div class="fc-name">1. Squat</div>
+    <div class="fc-proto">
+      <b>Technique :</b> barre en position haute ou basse selon ta morphologie. Descente cuisses parallèles au sol minimum. Dos neutre, genou dans l'axe.<br>
+      <b>Progression :</b> 50% × 5 reps → 70% × 3 → 85% × 2 → test 3RM<br>
+      <b>Spotter :</b> obligatoire ou utiliser un rack avec barres de sécurité.
+    </div>
+    <span class="fc-std" style="background:var(--blue-light);color:var(--blue-dark);">Standard pro : ≥ 1.5× poids de corps</span>
+    <div style="font-size:11px;color:var(--slate-mid);margin-top:6px;">Charge 3RM : ___kg · 1RM estimé : ___kg</div>
+  </div>
+
+  <div class="force-card">
+    <div class="fc-name">2. Développé couché</div>
+    <div class="fc-proto">
+      <b>Technique :</b> barre en pronation, prise légèrement + large que les épaules. Descente contrôlée touche sternum, coudes à 45–60° du tronc.<br>
+      <b>Progression :</b> idem squat. Spotter obligatoire.<br>
+      <b>Alternative haltères :</b> si pas de rack disponible, haltères 3RM.
+    </div>
+    <span class="fc-std" style="background:var(--blue-light);color:var(--blue-dark);">Standard pro : ≥ 1.0× poids de corps</span>
+    <div style="font-size:11px;color:var(--slate-mid);margin-top:6px;">Charge 3RM : ___kg · 1RM estimé : ___kg</div>
+  </div>
+
+  <div class="force-card">
+    <div class="fc-name">3. Développé militaire (Overhead Press)</div>
+    <div class="fc-proto">
+      <b>Technique :</b> debout, barre au niveau clavicules, poussée verticale. Abdos gainés pour ne pas cambrer. Barre passe devant le visage (pas derrière la nuque).<br>
+      <b>Progression :</b> idem.
+    </div>
+    <span class="fc-std" style="background:var(--blue-light);color:var(--blue-dark);">Standard pro : ≥ 0.7× poids de corps</span>
+    <div style="font-size:11px;color:var(--slate-mid);margin-top:6px;">Charge 3RM : ___kg · 1RM estimé : ___kg</div>
+  </div>
+
+  <div class="force-card">
+    <div class="fc-name">4. Tractions (Pull-ups)</div>
+    <div class="fc-proto">
+      <b>Technique :</b> prise pronation légèrement + large que les épaules. Amplitude complète (bras tendus → menton au-dessus de la barre). Pas de balancement.<br>
+      <b>Test :</b> max de reps strictes à poids de corps. 1 seul essai.
+    </div>
+    <span class="fc-std" style="background:var(--blue-light);color:var(--blue-dark);">Standard pro : ≥ 12–15 reps</span>
+    <div style="font-size:11px;color:var(--slate-mid);margin-top:6px;">Nombre de reps : _____</div>
+  </div>
+
+  <div class="force-card">
+    <div class="fc-name">5. Hip Thrust</div>
+    <div class="fc-proto">
+      <b>Technique :</b> épaules appuyées sur banc, barre sur bassin (pad de protection). Pousser les hanches vers le haut jusqu'à corps horizontal. Hold 1 sec en haut.<br>
+      <b>Progression :</b> poids de corps × 5 → 50% × 3 → test 3RM.
+    </div>
+    <span class="fc-std" style="background:var(--blue-light);color:var(--blue-dark);">Standard pro : ≥ 1.75× poids de corps</span>
+    <div style="font-size:11px;color:var(--slate-mid);margin-top:6px;">Charge 3RM : ___kg · 1RM estimé : ___kg</div>
+  </div>
+
+  <div class="force-card">
+    <div class="fc-name">6. Soulevé de terre (Deadlift)</div>
+    <div class="fc-proto">
+      <b>Technique :</b> pieds à largeur hanches, barre contre les tibias, dos neutre (pas arrondi), poussée pieds dans le sol + extension hanches simultanée. Barre reste au contact du corps.<br>
+      <b>Progression :</b> idem squat. Attention : très fatiguant — faire en 4e ou 5e exercice.
+    </div>
+    <span class="fc-std" style="background:var(--blue-light);color:var(--blue-dark);">Standard pro : ≥ 1.8× poids de corps</span>
+    <div style="font-size:11px;color:var(--slate-mid);margin-top:6px;">Charge 3RM : ___kg · 1RM estimé : ___kg</div>
+  </div>
+
+  <div class="force-card">
+    <div class="fc-name">7. Rowing barre (Bent-over row)</div>
+    <div class="fc-proto">
+      <b>Technique :</b> torse penché à ~45°, barre tirée vers le bas des abdos (pas vers la poitrine). Coudes longent le corps. Dos neutre pendant tout le mouvement.<br>
+      <b>Test :</b> 3RM.
+    </div>
+    <span class="fc-std" style="background:var(--blue-light);color:var(--blue-dark);">Standard pro : ≥ 0.9× poids de corps</span>
+    <div style="font-size:11px;color:var(--slate-mid);margin-top:6px;">Charge 3RM : ___kg · 1RM estimé : ___kg</div>
+  </div>
+
+  <div class="force-card">
+    <div class="fc-name">8. Presse à cuisses (Leg Press)</div>
+    <div class="fc-proto">
+      <b>Technique :</b> pieds à largeur épaules sur la plateforme. Descente contrôlée jusqu'à 90° genoux. Ne pas verrouiller les genoux en extension. Dos contre le dossier.<br>
+      <b>Test :</b> 5RM (plus sécuritaire sur machine).
+    </div>
+    <span class="fc-std" style="background:var(--blue-light);color:var(--blue-dark);">Standard pro : ≥ 3× poids de corps</span>
+    <div style="font-size:11px;color:var(--slate-mid);margin-top:6px;">Charge 5RM : ___kg · 1RM estimé (×1.17) : ___kg</div>
+  </div>
+
+  <div class="force-card">
+    <div class="fc-name">9. Leg Curl (Flexion genou)</div>
+    <div class="fc-proto">
+      <b>Technique :</b> allongé ventre sur la machine, chevilles contre le rouleau. Flexion complète du genou, descente lente (3 sec).<br>
+      <b>Test :</b> 5RM. Comparer les deux jambes — un écart &gt; 10% = déséquilibre à corriger.
+    </div>
+    <span class="fc-std" style="background:var(--blue-light);color:var(--blue-dark);">G/D équilibre : écart &lt; 10%</span>
+    <div style="font-size:11px;color:var(--slate-mid);margin-top:6px;">G 5RM : ___kg · D 5RM : ___kg · Écart : ___%</div>
+  </div>
+
+  <div class="force-card">
+    <div class="fc-name">10. Leg Extension (Extension genou)</div>
+    <div class="fc-proto">
+      <b>Technique :</b> assis sur la machine, extension complète du genou, descente contrôlée 3 sec.<br>
+      <b>Test :</b> 5RM. Comparer les deux jambes.<br>
+      <b>Note :</b> à faire après le leg curl pour éviter fatigue accumulée.
+    </div>
+    <span class="fc-std" style="background:var(--blue-light);color:var(--blue-dark);">Ratio IJ/Q : 0.60–0.70 optimal</span>
+    <div style="font-size:11px;color:var(--slate-mid);margin-top:6px;">G 5RM : ___kg · D 5RM : ___kg</div>
+  </div>
+
+  <div class="force-card">
+    <div class="fc-name">11. Fentes marchées</div>
+    <div class="fc-proto">
+      <b>Technique :</b> pas long, genou avant dans l'axe du pied, genou arrière à 2 cm du sol. Torse droit.<br>
+      <b>Test :</b> max de reps à poids de corps ou avec charge légère (20 kg barre). Sur 20m aller-retour.
+    </div>
+    <span class="fc-std" style="background:var(--blue-light);color:var(--blue-dark);">Standard : ≥ 30 reps clean à PdC</span>
+    <div style="font-size:11px;color:var(--slate-mid);margin-top:6px;">Reps 20m A/R : _____ · Charge : ___kg</div>
+  </div>
+
+  <div class="force-card">
+    <div class="fc-name">12. Pompes (référence endurance)</div>
+    <div class="fc-proto">
+      <b>Technique :</b> corps planche, descente poitrine à 2 cm du sol, extension complète.<br>
+      <b>Test :</b> max en 1 minute, technique stricte. Arrêt si les hanches s'affaissent ou que le mouvement est incomplet.
+    </div>
+    <span class="fc-std" style="background:var(--blue-light);color:var(--blue-dark);">Standard pro : ≥ 40 reps/min</span>
+    <div style="font-size:11px;color:var(--slate-mid);margin-top:6px;">Nombre de reps : _____</div>
+  </div>
+
+</div>
+
+<div class="info i-amber" style="margin-top:1rem;">
+  <b>Ratio ischio/quadriceps (IJ/Q) :</b> divise ta force au leg curl par ta force au leg extension. Le résultat doit être entre 0.60 et 0.70. En dessous de 0.60, le quadriceps domine largement — risque de blessure ischio augmenté. C'est un indicateur clé pour un défenseur.
+</div>
+</div>
+
+<!-- JOUR 4 REPOS -->
+<div class="sec">
+<div class="day-hdr dh-rst">
+  <div class="day-hdr-num">J4</div>
+  <div class="day-hdr-info">
+    <span class="day-badge">Jeudi</span>
+    <div class="day-title">Repos obligatoire</div>
+    <div class="day-meta">Après 3 jours de tests intenses — récupération active légère uniquement</div>
+  </div>
+</div>
+<div class="info i-green">
+  <b>Marche 30–40 min maximum</b> si besoin de bouger. Hydratation ++. Sommeil 8–9h. Stretching doux 15 min. Le test GACON de demain requiert un corps frais — ne sabote pas les résultats.
+</div>
+</div>
+
+<!-- ══════════════ JOUR 5 — GACON ══════════════ -->
+<div class="sec">
+<div class="day-hdr dh-car">
+  <div class="day-hdr-num">J5</div>
+  <div class="day-hdr-info">
+    <span class="day-badge">Vendredi</span>
+    <div class="day-title">Test GACON 30-15 — VMA intermittente football</div>
+    <div class="day-meta">⏱ 45–60 min · Terrain plat · Cônes + signal sonore (app ou fichier audio)</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Pourquoi le GACON 30-15 plutôt que les autres tests cardio</div>
+  <div class="card-sub">Cooper, VAMEVAL, Léger-Boucher mesurent la même chose — prendre un seul</div>
+  <table>
+    <thead><tr><th>Test</th><th>Nature</th><th>Pertinence football</th><th>Résultat</th></tr></thead>
+    <tbody>
+      <tr><td>Cooper 12 min</td><td>Continu</td><td>⚠️ Faible — un match n'est pas continu</td><td>Distance en m</td></tr>
+      <tr><td>VAMEVAL / Léger-Boucher</td><td>Continu progressif</td><td>⚠️ Modérée — toujours continu</td><td>VMA en km/h</td></tr>
+      <tr><td><b>GACON 30-15</b></td><td><b>Intermittent progressif</b></td><td><span class="scale-good">✅ Haute — reproduit les efforts du match</span></td><td>VIFT en km/h</td></tr>
+    </tbody>
+  </table>
+  <div class="info i-green" style="margin-top:10px;">
+    Le GACON alterne 30 secondes d'effort et 15 secondes de récupération passive, exactement comme un match de football. La vitesse augmente progressivement. Il donne la <b>VIFT</b> (Vitesse Intermittente Finale au Test) qui est le meilleur prédicteur de performance footballistique aérobie.
+  </div>
+</div>
+
+<div class="test-block">
+  <div class="tb-head" style="background:var(--green-light);">
+    <div class="tb-name">Protocole GACON 30-15 — Étape par étape</div>
+    <span class="tb-equip" style="background:var(--green-mid);color:#fff;">40m entre cônes · signal audio</span>
+  </div>
+  <div class="tb-body">
+    <div style="display:grid;grid-template-columns:1fr 200px;gap:16px;">
+      <div>
+        <div class="tb-proto">
+          <b>Mise en place terrain :</b> 2 lignes de cônes à 20 mètres l'une de l'autre (total 40m aller-retour = 1 longueur). Ou utilise les lignes des buts d'un terrain de foot.<br><br>
+          <b>Signal audio :</b> télécharge l'application "30-15IFT" ou utilise un fichier MP3 du test GACON. Le signal dit "bip" = tu dois être sur la ligne. Si tu n'atteins pas la ligne avant le bip 2 fois de suite, le test s'arrête.<br><br>
+          <b>Vitesses :</b> commence à 8 km/h, augmente de 0.5 km/h tous les 45 secondes (30 sec effort + 15 sec récup = 1 palier).<br><br>
+          <b>Pendant les 15 sec de repos :</b> marche sur place ou très légèrement — ne t'assieds pas.<br><br>
+          <b>Résultat = VIFT :</b> la vitesse du dernier palier complété. C'est ta référence pour calibrer tes séances de HIIT (travail à VIFT, récup à 50% VIFT).
+        </div>
+        <table>
+          <thead><tr><th>VIFT</th><th>Niveau défenseur</th><th>Application entraînement</th></tr></thead>
+          <tbody>
+            <tr><td><span class="scale-low">&lt; 16.5 km/h</span></td><td>Insuffisant pro</td><td>Travail intensif cardio nécessaire</td></tr>
+            <tr><td><span class="scale-mid">16.5–18.5 km/h</span></td><td>Semi-pro standard</td><td>Base correcte à améliorer</td></tr>
+            <tr><td><span class="scale-good">18.5–20.5 km/h</span></td><td>Niveau national</td><td>Bonne base — SPP peut commencer</td></tr>
+            <tr><td><span class="scale-elite">&gt; 20.5 km/h</span></td><td>Niveau professionnel</td><td>Excellent moteur aérobie intermittent</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:11px;color:var(--slate-mid);"><b>Ta VIFT : _____ km/h · Dernier palier complété : _____</b></div>
+      </div>
+      <div>
+        <div class="diagram-wrap" style="margin:0 0 10px;">
+          <div class="diagram-title">Structure des paliers</div>
+          <div class="gacon-stages">
+            <div class="gs-col"><div class="gs-bar" style="height:30px;background:#85B7EB;"></div><div class="gs-speed">8</div></div>
+            <div class="gs-col"><div class="gs-bar" style="height:36px;background:#85B7EB;"></div><div class="gs-speed">8.5</div></div>
+            <div class="gs-col"><div class="gs-bar" style="height:42px;background:#5DCAA5;"></div><div class="gs-speed">9</div></div>
+            <div class="gs-col"><div class="gs-bar" style="height:48px;background:#5DCAA5;"></div><div class="gs-speed">9.5</div></div>
+            <div class="gs-col"><div class="gs-bar" style="height:54px;background:#97C459;"></div><div class="gs-speed">…</div></div>
+            <div class="gs-col"><div class="gs-bar" style="height:62px;background:#EF9F27;"></div><div class="gs-speed">17</div></div>
+            <div class="gs-col"><div class="gs-bar" style="height:68px;background:#E67E22;"></div><div class="gs-speed">19</div></div>
+            <div class="gs-col"><div class="gs-bar" style="height:76px;background:#E74C3C;"></div><div class="gs-speed">21+</div></div>
+          </div>
+          <div style="font-size:9px;color:var(--slate-mid);text-align:center;">+0.5 km/h tous les 45 sec</div>
+        </div>
+        <div style="background:#E8F2FB;border-radius:8px;padding:10px;font-size:10px;color:var(--blue-dark);line-height:1.5;">
+          <b>VIFT → entraînement :</b><br>
+          HIIT : travail à 100–105% VIFT<br>
+          Récup active : 50–60% VIFT<br>
+          Zone 2 : ~65% VIFT<br><br>
+          Ex : VIFT 19 km/h<br>
+          → HIIT sprint : 19–20 km/h<br>
+          → Zone 2 : ~12 km/h
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════ FICHE RÉCAP ══════════════ -->
+<div class="sec">
+<div class="sec-lbl">Fiche de résultats — À conserver et comparer en S9 et S14</div>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+
+  <div class="score-sheet">
+    <div class="score-title">📏 Corps & Mobilité</div>
+    <div class="score-row"><div class="score-label">Poids</div><div class="score-line"></div><div class="score-unit">kg</div></div>
+    <div class="score-row"><div class="score-label">Tour de taille</div><div class="score-line"></div><div class="score-unit">cm</div></div>
+    <div class="score-row"><div class="score-label">Wall ankle G / D</div><div class="score-line"></div><div class="score-unit">cm</div></div>
+    <div class="score-row"><div class="score-label">Sit and reach</div><div class="score-line"></div><div class="score-unit">cm</div></div>
+    <div class="score-row"><div class="score-label">Adducteurs</div><div class="score-line"></div><div class="score-unit">°</div></div>
+    <div class="score-row"><div class="score-label">Single leg YO G / D</div><div class="score-line"></div><div class="score-unit">sec</div></div>
+    <div class="score-row"><div class="score-label">Single leg YF G / D</div><div class="score-line"></div><div class="score-unit">sec</div></div>
+  </div>
+
+  <div class="score-sheet">
+    <div class="score-title">⚡ Vitesse & Agilité</div>
+    <div class="score-row"><div class="score-label">Sprint 10m</div><div class="score-line"></div><div class="score-unit">sec</div></div>
+    <div class="score-row"><div class="score-label">Sprint 30m</div><div class="score-line"></div><div class="score-unit">sec</div></div>
+    <div class="score-row"><div class="score-label">T-Test</div><div class="score-line"></div><div class="score-unit">sec</div></div>
+    <div class="score-row"><div class="score-label">10 × 5m</div><div class="score-line"></div><div class="score-unit">sec</div></div>
+    <div class="score-row"><div class="score-label">Cazorla</div><div class="score-line"></div><div class="score-unit">sec</div></div>
+    <div class="score-row"><div class="score-label">Broad Jump</div><div class="score-line"></div><div class="score-unit">cm</div></div>
+    <div class="score-row"><div class="score-label">Nordic curl (reps)</div><div class="score-line"></div><div class="score-unit">reps</div></div>
+  </div>
+
+  <div class="score-sheet">
+    <div class="score-title">🏋️ Force maximale (1RM estimé)</div>
+    <div class="score-row"><div class="score-label">Squat</div><div class="score-line"></div><div class="score-unit">kg</div></div>
+    <div class="score-row"><div class="score-label">Développé couché</div><div class="score-line"></div><div class="score-unit">kg</div></div>
+    <div class="score-row"><div class="score-label">Développé militaire</div><div class="score-line"></div><div class="score-unit">kg</div></div>
+    <div class="score-row"><div class="score-label">Tractions (reps)</div><div class="score-line"></div><div class="score-unit">reps</div></div>
+    <div class="score-row"><div class="score-label">Hip Thrust</div><div class="score-line"></div><div class="score-unit">kg</div></div>
+    <div class="score-row"><div class="score-label">Soulevé de terre</div><div class="score-line"></div><div class="score-unit">kg</div></div>
+    <div class="score-row"><div class="score-label">Rowing barre</div><div class="score-line"></div><div class="score-unit">kg</div></div>
+    <div class="score-row"><div class="score-label">Presse à cuisses</div><div class="score-line"></div><div class="score-unit">kg</div></div>
+    <div class="score-row"><div class="score-label">Leg Curl G / D</div><div class="score-line"></div><div class="score-unit">kg</div></div>
+    <div class="score-row"><div class="score-label">Leg Extension G / D</div><div class="score-line"></div><div class="score-unit">kg</div></div>
+    <div class="score-row"><div class="score-label">Ratio IJ/Q</div><div class="score-line"></div><div class="score-unit">ratio</div></div>
+    <div class="score-row"><div class="score-label">Pompes 1 min</div><div class="score-line"></div><div class="score-unit">reps</div></div>
+  </div>
+
+  <div class="score-sheet">
+    <div class="score-title">🫀 Cardio & Récupération</div>
+    <div class="score-row"><div class="score-label">GACON VIFT</div><div class="score-line"></div><div class="score-unit">km/h</div></div>
+    <div class="score-row"><div class="score-label">Dernier palier</div><div class="score-line"></div><div class="score-unit">palier</div></div>
+    <div class="score-row"><div class="score-label">FC repos (moy. 3j)</div><div class="score-line"></div><div class="score-unit">bpm</div></div>
+    <div class="score-row"><div class="score-label">HIIT cible (100% VIFT)</div><div class="score-line"></div><div class="score-unit">km/h</div></div>
+    <div class="score-row"><div class="score-label">Zone 2 cible (65% VIFT)</div><div class="score-line"></div><div class="score-unit">km/h</div></div>
+  </div>
+
+</div>
+</div>
+
+</div>
+</body>
+</html>

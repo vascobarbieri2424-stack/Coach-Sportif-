@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programme Football 14 Semaines</title>
+<style>
+:root{
+  --ink:#1A2332;--im:#4A5568;--il:#718096;
+  --sf:#F8FAFC;--w:#fff;--bo:#E2E8F0;--bd:#CBD5E1;
+  --p1:#C2410C; --p1l:#FFF7ED;
+  --tests:#4338CA; --testsl:#EEF2FF;
+  --p2:#065F46; --p2l:#ECFDF5;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--sf);color:var(--ink);font-size:13px;display:flex;flex-direction:column;}
+
+/* TOP HEADER */
+.top{background:linear-gradient(135deg,#0F172A,#1E293B);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.top-title{color:#fff;font-size:15px;font-weight:700;letter-spacing:-.5px;}
+.top-sub{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;}
+.top-badge{padding:4px 10px;border-radius:20px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);font-size:10px;font-weight:600;}
+
+/* LAYOUT */
+.layout{display:flex;flex:1;overflow:hidden;}
+
+/* SIDEBAR */
+.sidebar{width:240px;flex-shrink:0;background:var(--w);border-right:1px solid var(--bo);overflow-y:auto;display:flex;flex-direction:column;}
+.sidebar-inner{padding:10px 8px 20px;}
+
+.phase-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--il);padding:8px 8px 4px;margin-top:4px;}
+
+.week-btn{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;cursor:pointer;border:none;background:transparent;width:100%;text-align:left;transition:background .15s;}
+.week-btn:hover{background:#F1F5F9;}
+.week-btn.active{background:var(--ink);color:#fff!important;}
+.week-btn.active .wnum{background:rgba(255,255,255,.2)!important;color:#fff!important;}
+.week-btn.active .wlbl{color:rgba(255,255,255,.85)!important;}
+.week-btn.active .wdesc{color:rgba(255,255,255,.5)!important;}
+
+.wnum{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.winfo{flex:1;min-width:0;}
+.wlbl{font-size:11px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wdesc{font-size:10px;color:var(--il);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+
+/* Phase colors */
+.p1 .wnum{background:var(--p1l);color:var(--p1);}
+.p1.active .wnum{background:rgba(255,255,255,.2);color:#fff;}
+.ptests .wnum{background:var(--testsl);color:var(--tests);}
+.ptests.active .wnum{background:rgba(255,255,255,.2);color:#fff;}
+.p2 .wnum{background:var(--p2l);color:var(--p2);}
+.p2.active .wnum{background:rgba(255,255,255,.2);color:#fff;}
+
+/* MAIN CONTENT */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+/* WELCOME SCREEN */
+#welcome{flex:1;overflow-y:auto;padding:2rem;}
+.welcome-hdr{background:linear-gradient(135deg,#0F172A,#334155);border-radius:16px;padding:2rem 2.5rem;margin-bottom:1.5rem;position:relative;overflow:hidden;}
+.welcome-hdr::before{content:'14';position:absolute;right:1.5rem;top:50%;transform:translateY(-50%);font-size:120px;font-weight:900;color:rgba(255,255,255,.04);line-height:1;}
+.wh-eye{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:8px;}
+.wh-title{font-size:28px;font-weight:800;color:#fff;letter-spacing:-1.5px;margin-bottom:6px;}
+.wh-sub{font-size:13px;color:rgba(255,255,255,.45);margin-bottom:1.5rem;line-height:1.6;}
+.wh-stats{display:flex;gap:2rem;flex-wrap:wrap;}
+.whs{display:flex;flex-direction:column;}
+.whs-v{font-size:20px;font-weight:800;color:#fff;}
+.whs-l{font-size:10px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
+
+/* TIMELINE */
+.timeline{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;margin-bottom:1.5rem;}
+.tl-cell{border-radius:6px;padding:8px 4px;text-align:center;cursor:pointer;transition:transform .15s,opacity .15s;border:0.5px solid transparent;}
+.tl-cell:hover{transform:translateY(-2px);opacity:.85;}
+.tl-num{font-size:14px;font-weight:800;}
+.tl-name{font-size:8px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-top:3px;line-height:1.3;}
+.tl-p1{background:#FFF7ED;border-color:#FDBA74;} .tl-p1 .tl-num{color:#C2410C;} .tl-p1 .tl-name{color:#EA580C;}
+.tl-test{background:#EEF2FF;border-color:#A5B4FC;} .tl-test .tl-num{color:#4338CA;} .tl-test .tl-name{color:#6366F1;}
+.tl-p2{background:#ECFDF5;border-color:#6EE7B7;} .tl-p2 .tl-num{color:#065F46;} .tl-p2 .tl-name{color:#059669;}
+
+/* PHASE CARDS */
+.phase-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.5rem;}
+.phase-card{border-radius:10px;padding:1rem 1.25rem;border:1.5px solid transparent;}
+.pc-p1{background:var(--p1l);border-color:#FDBA74;}
+.pc-tests{background:var(--testsl);border-color:#A5B4FC;}
+.pc-p2{background:var(--p2l);border-color:#6EE7B7;}
+.pc-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.pc-p1 .pc-lbl{color:var(--p1);} .pc-tests .pc-lbl{color:var(--tests);} .pc-p2 .pc-lbl{color:var(--p2);}
+.pc-title{font-size:13px;font-weight:700;margin-bottom:5px;}
+.pc-p1 .pc-title{color:#7C2D12;} .pc-tests .pc-title{color:#1E1B4B;} .pc-p2 .pc-title{color:#022C22;}
+.pc-body{font-size:10px;line-height:1.7;}
+.pc-p1 .pc-body{color:#9A3412;} .pc-tests .pc-body{color:#3730A3;} .pc-p2 .pc-body{color:#065F46;}
+
+/* INSTRUCTIONS */
+.instructions{background:var(--w);border:1px solid var(--bo);border-radius:10px;padding:1rem 1.25rem;}
+.ins-title{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:8px;}
+.ins-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.ins-item{display:flex;gap:8px;align-items:flex-start;}
+.ins-icon{font-size:16px;flex-shrink:0;}
+.ins-text{font-size:11px;color:var(--im);line-height:1.5;}
+
+/* IFRAME WRAPPER */
+#iframe-wrapper{flex:1;display:none;position:relative;}
+#week-frame{width:100%;height:100%;border:none;display:block;}
+
+/* LOADING */
+.loading{position:absolute;inset:0;background:var(--sf);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--il);}
+
+/* BREADCRUMB BAR */
+.breadcrumb{background:var(--w);border-bottom:1px solid var(--bo);padding:6px 14px;display:none;align-items:center;gap:8px;font-size:11px;flex-shrink:0;}
+.bc-home{color:var(--bm);cursor:pointer;font-weight:600;}
+.bc-sep{color:var(--bd);}
+.bc-curr{color:var(--ink);font-weight:600;}
+#breadcrumb-bar{display:none;}
+
+.bm{color:var(--b);}
+</style>
+</head>
+<body>
+
+<!-- TOP HEADER -->
+<div class="top">
+  <div>
+    <div class="top-title">⚽ Programme Football — Préparation Défenseur</div>
+    <div class="top-sub">14 semaines · Semi-professionnel → National</div>
+  </div>
+  <div class="top-badge">Juillet – Octobre</div>
+</div>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-inner">
+
+    <div class="phase-label">Phase 1 — Fat Loss & Fondations</div>
+    <button class="week-btn p1" onclick="goHome()">
+      <div class="wnum" style="background:#F1F5F9;color:#475569;font-size:9px;">🏠</div>
+      <div class="winfo"><div class="wlbl">Accueil</div><div class="wdesc">Vue d'ensemble</div></div>
+    </button>
+    <button class="week-btn ptests" onclick="loadWeek(1,'semaine1_tests_complets.html','S1 — Tests initiaux','Tests')">
+      <div class="wnum">1</div><div class="winfo"><div class="wlbl">Tests initiaux</div><div class="wdesc">Baseline complète J1–J5</div></div>
+    </button>
+    <button class="week-btn p1" onclick="loadWeek(2,'semaine2_programme.html','S2 — GPP 60%','Phase 1')">
+      <div class="wnum">2</div><div class="winfo"><div class="wlbl">GPP 60%</div><div class="wdesc">Fondations · Montée douce</div></div>
+    </button>
+    <button class="week-btn p1" onclick="loadWeek(3,'semaine3_programme.html','S3 — GPP 70%','Phase 1')">
+      <div class="wnum">3</div><div class="winfo"><div class="wlbl">GPP 70%</div><div class="wdesc">Squat barre intro</div></div>
+    </button>
+    <button class="week-btn p1" onclick="loadWeek(4,'semaine4_programme.html','S4 — Fat Loss Intensif','Phase 1')">
+      <div class="wnum">4</div><div class="winfo"><div class="wlbl">Fat loss intensif</div><div class="wdesc">−450 kcal · Premier HIIT</div></div>
+    </button>
+    <button class="week-btn p1" onclick="loadWeek(5,'semaine5_programme.html','S5 — Intensification','Phase 1')">
+      <div class="wnum">5</div><div class="winfo"><div class="wlbl">Intensification</div><div class="wdesc">100% VIFT · 2 × HIIT · Peak</div></div>
+    </button>
+    <button class="week-btn p1" onclick="loadWeek(6,'semaine6_programme.html','S6 — Décharge Active','Phase 1')">
+      <div class="wnum">6</div><div class="winfo"><div class="wlbl">Décharge active</div><div class="wdesc">Volume −30% · Supercompensation</div></div>
+    </button>
+    <button class="week-btn p1" onclick="loadWeek(7,'semaine7_programme.html','S7 — Fat Loss Final','Phase 1')">
+      <div class="wnum">7</div><div class="winfo"><div class="wlbl">Fat loss final</div><div class="wdesc">Dernier déficit · Tempo explosif</div></div>
+    </button>
+    <button class="week-btn p1" onclick="loadWeek(8,'semaine8_programme.html','S8 — Taper Pré-Tests','Phase 1')">
+      <div class="wnum">8</div><div class="winfo"><div class="wlbl">Taper pré-tests</div><div class="wdesc">0 HIIT · Recharge glycogène</div></div>
+    </button>
+
+    <div class="phase-label">Tests Mi-Parcours</div>
+    <button class="week-btn ptests" onclick="loadWeek(9,'semaine9_tests.html','S9 — Tests Mi-Parcours','Tests')">
+      <div class="wnum">9</div><div class="winfo"><div class="wlbl">Tests mi-parcours</div><div class="wdesc">Bilan S1 vs S9 · Recalibrage</div></div>
+    </button>
+
+    <div class="phase-label">Phase 2 — Force & Puissance SPP</div>
+    <button class="week-btn p2" onclick="loadWeek(10,'semaine10_programme.html','S10 — Force SPP','Phase 2')">
+      <div class="wnum">10</div><div class="winfo"><div class="wlbl">Force SPP</div><div class="wdesc">2 700 kcal · 4×6–8 lourd</div></div>
+    </button>
+    <button class="week-btn p2" onclick="loadWeek(11,'semaine11_programme.html','S11 — Force + Puissance','Phase 2')">
+      <div class="wnum">11</div><div class="winfo"><div class="wlbl">Force + Puissance</div><div class="wdesc">Box jump · COD HIIT · 85–88%</div></div>
+    </button>
+    <button class="week-btn p2" onclick="loadWeek(12,'semaine12_programme.html','S12 — Puissance Peak','Phase 2')">
+      <div class="wnum">12</div><div class="winfo"><div class="wlbl">Puissance peak</div><div class="wdesc">Depth jump · Nordic complet 🎯</div></div>
+    </button>
+    <button class="week-btn p2" onclick="loadWeek(13,'semaine13_programme.html','S13 — Performance','Phase 2')">
+      <div class="wnum">13</div><div class="winfo"><div class="wlbl">Performance</div><div class="wdesc">Sprint 60m · Simulation match</div></div>
+    </button>
+
+    <div class="phase-label">Tests Finaux</div>
+    <button class="week-btn ptests" onclick="loadWeek(14,'semaine14_tests_finaux.html','S14 — Tests Finaux','Tests')">
+      <div class="wnum">14</div><div class="winfo"><div class="wlbl">Tests finaux</div><div class="wdesc">Bilan S1/S9/S14 · Fin programme</div></div>
+    </button>
+
+    <div class="phase-label">Outils</div>
+    <button class="week-btn" onclick="window.open('https://claude.ai/chat/e6443966-fd37-4700-b340-195c10e581c5','_blank')">
+      <div class="wnum" style="background:#ECFDF5;color:#065F46;">🤖</div>
+      <div class="winfo"><div class="wlbl">Coach IA</div><div class="wdesc">Ouvre Claude · Ce projet</div></div>
+    </button>
+    <button class="week-btn" onclick="loadWeek('hiit','calculateur_hiit.html','Calculateur HIIT','Outils')">
+      <div class="wnum" style="background:#EFF6FF;color:#1E40AF;">⚡</div>
+      <div class="winfo"><div class="wlbl">Calculateur HIIT</div><div class="wdesc">Zones · Vitesses · Tableau semaines</div></div>
+    </button>
+
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb" id="breadcrumb-bar">
+    <span class="bc-home bm" onclick="goHome()">🏠 Programme</span>
+    <span class="bc-sep">›</span>
+    <span class="bc-curr" id="bc-text">—</span>
+  </div>
+
+  <!-- WELCOME -->
+  <div id="welcome" style="flex:1;overflow-y:auto;padding:1.5rem;">
+
+    <div class="welcome-hdr">
+      <div class="wh-eye">Programme Football · Préparation Physique Complète</div>
+      <div class="wh-title">14 Semaines · Défenseur</div>
+      <div class="wh-sub">Semi-professionnel → National · Juillet à Octobre<br>Double mode Salle / Extérieur · Tous les documents inclus</div>
+      <div class="wh-stats">
+        <div class="whs"><span class="whs-v">14</span><span class="whs-l">Semaines</span></div>
+        <div class="whs"><span class="whs-v">80+</span><span class="whs-l">Séances</span></div>
+        <div class="whs"><span class="whs-v">−6 kg</span><span class="whs-l">Poids cible</span></div>
+        <div class="whs"><span class="whs-v">5</span><span class="whs-l">Qualités développées</span></div>
+        <div class="whs"><span class="whs-v">2×</span><span class="whs-l">Salle / Extérieur</span></div>
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--il);margin-bottom:8px;">Cliquer sur une semaine pour l'ouvrir</div>
+    <div class="timeline">
+      <div class="tl-cell tl-test" onclick="loadWeek(1,'semaine1_tests_complets.html','S1 — Tests initiaux','Tests')"><div class="tl-num">1</div><div class="tl-name">Tests</div></div>
+      <div class="tl-cell tl-p1" onclick="loadWeek(2,'semaine2_programme.html','S2 — GPP 60%','Phase 1')"><div class="tl-num">2</div><div class="tl-name">GPP 60%</div></div>
+      <div class="tl-cell tl-p1" onclick="loadWeek(3,'semaine3_programme.html','S3 — GPP 70%','Phase 1')"><div class="tl-num">3</div><div class="tl-name">GPP 70%</div></div>
+      <div class="tl-cell tl-p1" onclick="loadWeek(4,'semaine4_programme.html','S4 — Fat Loss','Phase 1')"><div class="tl-num">4</div><div class="tl-name">Fat Loss</div></div>
+      <div class="tl-cell tl-p1" onclick="loadWeek(5,'semaine5_programme.html','S5 — Peak','Phase 1')"><div class="tl-num">5</div><div class="tl-name">Peak</div></div>
+      <div class="tl-cell tl-p1" onclick="loadWeek(6,'semaine6_programme.html','S6 — Décharge','Phase 1')"><div class="tl-num">6</div><div class="tl-name">Décharge</div></div>
+      <div class="tl-cell tl-p1" onclick="loadWeek(7,'semaine7_programme.html','S7 — Final','Phase 1')"><div class="tl-num">7</div><div class="tl-name">Final</div></div>
+      <div class="tl-cell tl-p1" onclick="loadWeek(8,'semaine8_programme.html','S8 — Taper','Phase 1')"><div class="tl-num">8</div><div class="tl-name">Taper</div></div>
+      <div class="tl-cell tl-test" onclick="loadWeek(9,'semaine9_tests.html','S9 — Tests Mi','Tests')"><div class="tl-num">9</div><div class="tl-name">Tests Mi</div></div>
+      <div class="tl-cell tl-p2" onclick="loadWeek(10,'semaine10_programme.html','S10 — Force','Phase 2')"><div class="tl-num">10</div><div class="tl-name">Force SPP</div></div>
+      <div class="tl-cell tl-p2" onclick="loadWeek(11,'semaine11_programme.html','S11 — Puis.','Phase 2')"><div class="tl-num">11</div><div class="tl-name">Force+Puis.</div></div>
+      <div class="tl-cell tl-p2" onclick="loadWeek(12,'semaine12_programme.html','S12 — Peak','Phase 2')"><div class="tl-num">12</div><div class="tl-name">Puis. Peak</div></div>
+      <div class="tl-cell tl-p2" onclick="loadWeek(13,'semaine13_programme.html','S13 — Perf.','Phase 2')"><div class="tl-num">13</div><div class="tl-name">Perf.</div></div>
+      <div class="tl-cell tl-test" onclick="loadWeek(14,'semaine14_tests_finaux.html','S14 — Tests Finaux','Tests')"><div class="tl-num">14</div><div class="tl-name">Tests Fin.</div></div>
+    </div>
+
+    <!-- PHASE CARDS -->
+    <div class="phase-cards">
+      <div class="phase-card pc-p1">
+        <div class="pc-lbl">Phase 1 · S1–S8</div>
+        <div class="pc-title">Fat Loss & Fondations GPP</div>
+        <div class="pc-body">
+          78 kg → 70–72 kg<br>
+          Déficit −450 kcal<br>
+          GPP 60% → 80% progressif<br>
+          3 × Zone 2 / sem<br>
+          HIIT 30/30 progressif<br>
+          Nordic curl excentrique<br>
+          Qualité mouvement + Base cardio
+        </div>
+      </div>
+      <div class="phase-card pc-tests">
+        <div class="pc-lbl">Tests · S1 / S9 / S14</div>
+        <div class="pc-title">Évaluation Complète</div>
+        <div class="pc-body">
+          J1 : Corps · Mobilité · Équilibre<br>
+          J2 : Sprint 10m · 30m · T-test · Cazorla<br>
+          J3 : Force max (squat, dead, bench…)<br>
+          J4 : Repos obligatoire<br>
+          J5 : GACON 30-15 (VIFT)<br>
+          Tableau comparatif S1 / S9 / S14
+        </div>
+      </div>
+      <div class="phase-card pc-p2">
+        <div class="pc-lbl">Phase 2 · S10–S13</div>
+        <div class="pc-title">Force & Puissance SPP</div>
+        <div class="pc-body">
+          2 700–2 900 kcal surplus<br>
+          4 × 6–8 lourd → force-vitesse<br>
+          SPP défenseur (Copenhagen, COD)<br>
+          Plyométrie : box jump → depth jump<br>
+          Nordic assisté → Nordic complet S12<br>
+          Sprints 10m → 30m → 60m<br>
+          Simulation match (S13)
+        </div>
+      </div>
+    </div>
+
+    <!-- INSTRUCTIONS -->
+    <div class="instructions">
+      <div class="ins-title">Comment utiliser ce programme</div>
+      <div class="ins-grid">
+        <div class="ins-item"><div class="ins-icon">🏋️</div><div class="ins-text"><strong>Mode Salle :</strong> chaque semaine a un bouton toggle. Clique "Mode Salle" pour voir uniquement les exercices avec équipement (machines, barres).</div></div>
+        <div class="ins-item"><div class="ins-icon">🌳</div><div class="ins-text"><strong>Mode Extérieur :</strong> chaque exercice a une alternative sans salle — poids de corps, sac lesté, barre de parc. Clique "Mode Extérieur".</div></div>
+        <div class="ins-item"><div class="ins-icon">📋</div><div class="ins-text"><strong>Tests S1 + S9 + S14 :</strong> remplir les tableaux au fur et à mesure. La comparaison sur 3 colonnes (S14) montrera tout le travail accompli.</div></div>
+        <div class="ins-item"><div class="ins-icon">🔄</div><div class="ins-text"><strong>Sans club après S14 :</strong> blocs rotatifs A (développement) → B (consolidation) → C (fraîcheur / essai direct). Semaine C = disponible pour un essai.</div></div>
+        <div class="ins-item"><div class="ins-icon">📁</div><div class="ins-text"><strong>Fonctionnement :</strong> tous les fichiers semaine*.html doivent être dans le même dossier que cet index.html pour que la navigation fonctionne.</div></div>
+        <div class="ins-item"><div class="ins-icon">⚡</div><div class="ins-text"><strong>Progression :</strong> la pyramide — Mouvement → Robustesse → Cardio → Force → Puissance. L'ordre ne peut pas être sauté. S11 est le premier travail réellement explosif.</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- IFRAME WRAPPER -->
+  <div id="iframe-wrapper">
+    <div class="loading" id="loading-overlay">Chargement…</div>
+    <iframe id="week-frame" onload="frameLoaded()" src="about:blank"></iframe>
+  </div>
+
+</div>
+</div>
+
+<script>
+var currentWeek = null;
+
+function loadWeek(num, file, label, phase) {
+  currentWeek = num;
+
+  // Update sidebar active state
+  document.querySelectorAll('.week-btn').forEach(function(b){b.classList.remove('active');});
+  var btns = document.querySelectorAll('.week-btn');
+  // Find the button for this week by onclick content
+  btns.forEach(function(b){
+    if(b.getAttribute('onclick') && b.getAttribute('onclick').indexOf("loadWeek("+num+",") === 0){
+      b.classList.add('active');
+    }
+  });
+
+  // Show breadcrumb
+  var bar = document.getElementById('breadcrumb-bar');
+  bar.style.display = 'flex';
+  document.getElementById('bc-text').textContent = label;
+
+  // Show iframe, hide welcome
+  document.getElementById('welcome').style.display = 'none';
+  var iw = document.getElementById('iframe-wrapper');
+  iw.style.display = 'flex';
+  iw.style.flexDirection = 'column';
+  iw.style.flex = '1';
+
+  // Show loading
+  document.getElementById('loading-overlay').style.display = 'flex';
+
+  // Load file
+  document.getElementById('week-frame').src = file;
+}
+
+function frameLoaded() {
+  document.getElementById('loading-overlay').style.display = 'none';
+}
+
+function goHome() {
+  currentWeek = null;
+  document.querySelectorAll('.week-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('breadcrumb-bar').style.display = 'none';
+  document.getElementById('welcome').style.display = 'block';
+  document.getElementById('iframe-wrapper').style.display = 'none';
+  document.getElementById('week-frame').src = 'about:blank';
+}
+</script>
+</body>
+</html>

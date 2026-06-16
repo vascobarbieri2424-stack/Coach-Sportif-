@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semaine 3 — Programme Football</title>
+<style>
+:root{
+  --ink:#1A2332;--ink-mid:#4A5568;--ink-light:#718096;
+  --grass:#0F5132;--grass-mid:#1D8A52;--grass-light:#D1FAE5;--grass-acc:#10B981;
+  --blue:#1E40AF;--blue-light:#DBEAFE;--blue-mid:#3B82F6;
+  --amber:#D97706;--amber-light:#FEF3C7;--amber-dark:#78350F;
+  --red:#B91C1C;--purple:#5B21B6;--purple-light:#F5F3FF;
+  --salle-bg:#EFF6FF;--salle-border:#93C5FD;--salle-text:#1E3A8A;
+  --ext-bg:#F0FDF4;--ext-border:#6EE7B7;--ext-text:#065F46;
+  --surface:#F8FAFC;--white:#fff;--border:#E2E8F0;--border-dark:#CBD5E1;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--surface);color:var(--ink);font-size:14px;line-height:1.5;}
+.wrap{max-width:960px;margin:0 auto;padding:1.5rem 1.5rem 5rem;}
+
+.hdr{background:#1A3A5C;border-radius:16px;padding:1.75rem 2rem 1.5rem;margin-bottom:0;position:relative;overflow:hidden;}
+.hdr::before{content:'3';position:absolute;right:1.5rem;top:50%;transform:translateY(-50%);font-size:110px;font-weight:900;color:rgba(255,255,255,.05);line-height:1;}
+.eye{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#60A5FA;margin-bottom:6px;}
+.hdr-title{font-size:24px;font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:3px;}
+.hdr-sub{font-size:12px;color:rgba(255,255,255,.45);margin-bottom:1rem;}
+.pills{display:flex;flex-wrap:wrap;gap:6px;}
+.pill{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+.pb{background:rgba(96,165,250,.2);color:#93C5FD;}
+.pa{background:rgba(217,119,6,.25);color:#FCD34D;}
+.pw{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);}
+.hdr-stats{background:#0F2540;border-radius:8px;padding:8px 2rem;display:flex;gap:2rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.hs{display:flex;flex-direction:column;}
+.hs-v{font-size:14px;font-weight:700;color:#60A5FA;}
+.hs-l{font-size:9px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.06em;}
+
+/* PROGRESSION STRIP */
+.prog-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.5rem;}
+.ps-card{background:var(--white);border:0.5px solid var(--border);border-radius:10px;padding:10px 12px;}
+.ps-l{font-size:10px;font-weight:700;color:var(--ink-light);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;}
+.ps-from{font-size:10px;color:var(--ink-light);text-decoration:line-through;margin-bottom:2px;}
+.ps-to{font-size:12px;font-weight:700;color:var(--blue-mid);}
+.delta{display:inline-block;padding:1px 6px;border-radius:10px;font-size:9px;font-weight:700;}
+.d-up{background:#D1FAE5;color:#065F46;}
+.d-new{background:#DBEAFE;color:#1E3A8A;}
+
+/* MODE TOGGLE */
+.mode-toggle{display:flex;gap:0;border:1.5px solid var(--border-dark);border-radius:10px;overflow:hidden;margin-bottom:1.5rem;background:var(--white);}
+.mt-btn{flex:1;padding:10px;text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s;border:none;background:transparent;color:var(--ink-light);}
+.mt-btn.a-salle{background:var(--salle-bg);color:var(--salle-text);}
+.mt-btn.a-ext{background:var(--ext-bg);color:var(--ext-text);}
+.mt-div{width:1px;background:var(--border-dark);}
+
+/* WEEK STRIP */
+.week-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:1.5rem;}
+.ws{border-radius:8px;padding:8px 3px;text-align:center;border:0.5px solid transparent;}
+.ws-n{font-size:9px;font-weight:700;text-transform:uppercase;margin-bottom:3px;}
+.ws-t{font-size:8px;line-height:1.3;}
+.ws-d{width:5px;height:5px;border-radius:50%;margin:4px auto 0;}
+.wb{background:#EFF6FF;border-color:#93C5FD;} .wb .ws-n{color:#1E3A8A;} .wb .ws-t,.wb .ws-d{color:#3B82F6;}  .wb .ws-d{background:#3B82F6;}
+.wg{background:var(--grass-light);border-color:#6EE7B7;} .wg .ws-n{color:var(--grass);} .wg .ws-d{background:var(--grass-acc);}
+.wr{background:#F1F5F9;border-color:#CBD5E1;} .wr .ws-n{color:#475569;} .wr .ws-d{background:#CBD5E1;}
+.wa{background:var(--amber-light);border-color:#FCD34D;} .wa .ws-n{color:var(--amber-dark);} .wa .ws-d{background:var(--amber);}
+.wp{background:var(--purple-light);border-color:#C4B5FD;} .wp .ws-n{color:var(--purple);} .wp .ws-d{background:var(--purple);}
+.wre{background:#FFF1F2;border-color:#FECDD3;} .wre .ws-n{color:var(--red);} .wre .ws-d{background:var(--red);}
+
+.sec{margin-bottom:2rem;}
+.sec-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-light);padding-bottom:5px;border-bottom:2px solid var(--border-dark);margin-bottom:1rem;}
+
+.day-block{margin-bottom:1.5rem;}
+.day-hdr{border-radius:10px 10px 0 0;padding:10px 16px;}
+.day-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;border-radius:4px;}
+.day-title{font-size:15px;font-weight:700;color:var(--ink);margin:3px 0 2px;}
+.day-meta{font-size:11px;color:var(--ink-light);}
+.day-body{border:0.5px solid var(--border);border-top:none;border-radius:0 0 10px 10px;padding:12px;background:var(--white);}
+
+.dh-b{background:#EFF6FF;} .dh-b .day-badge{background:#1E3A8A;color:#fff;}
+.dh-g{background:var(--grass-light);} .dh-g .day-badge{background:var(--grass);color:#fff;}
+.dh-re{background:#F1F5F9;} .dh-re .day-badge{background:#475569;color:#fff;}
+.dh-a{background:var(--amber-light);} .dh-a .day-badge{background:var(--amber);color:#fff;}
+.dh-p{background:var(--purple-light);} .dh-p .day-badge{background:var(--purple);color:#fff;}
+
+.ib{display:flex;align-items:center;gap:8px;background:var(--surface);border-radius:6px;padding:5px 10px;margin-bottom:10px;}
+.ib-l{font-size:10px;font-weight:600;color:var(--ink-mid);width:75px;flex-shrink:0;}
+.ib-t{flex:1;height:6px;background:var(--border-dark);border-radius:3px;overflow:hidden;}
+.ib-f{height:100%;border-radius:3px;}
+.ib-v{font-size:11px;font-weight:700;width:30px;text-align:right;}
+
+.exo-block{background:var(--white);border:0.5px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden;}
+.exo-head{padding:10px 16px;display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;}
+.exo-name{font-size:13px;font-weight:700;color:var(--ink);}
+.exo-vol{font-size:11px;font-weight:600;color:var(--ink-mid);white-space:nowrap;}
+.exo-rest{font-size:10px;color:var(--ink-light);white-space:nowrap;}
+.exo-body{padding:0 16px 10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.exo-salle{background:var(--salle-bg);border:0.5px solid var(--salle-border);border-radius:8px;padding:8px 10px;}
+.exo-ext{background:var(--ext-bg);border:0.5px solid var(--ext-border);border-radius:8px;padding:8px 10px;}
+.mode-tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+.exo-salle .mode-tag{color:var(--salle-text);}
+.exo-ext .mode-tag{color:var(--ext-text);}
+.exo-desc{font-size:11px;line-height:1.6;}
+.exo-salle .exo-desc{color:#1E40AF;}
+.exo-ext .exo-desc{color:#065F46;}
+.exo-tech{padding:6px 16px 10px;border-top:0.5px solid var(--border);background:#FAFBFC;}
+.tech-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-light);margin-bottom:2px;}
+.tech-txt{font-size:11px;color:var(--ink-mid);line-height:1.5;}
+.exo-body-single{padding:0 16px 10px;}
+.exo-unified{background:var(--surface);border:0.5px solid var(--border);border-radius:8px;padding:8px 10px;font-size:11px;color:var(--ink-mid);line-height:1.6;}
+
+/* Decision tree */
+.decision{background:var(--white);border:1.5px solid var(--border-dark);border-radius:10px;padding:1rem;margin-bottom:10px;}
+.dec-q{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:8px;}
+.dec-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.dec-yes{background:var(--grass-light);border:0.5px solid #6EE7B7;border-radius:8px;padding:9px 11px;}
+.dec-no{background:var(--amber-light);border:0.5px solid #FCD34D;border-radius:8px;padding:9px 11px;}
+.dec-head{font-size:11px;font-weight:700;margin-bottom:3px;}
+.dec-body{font-size:11px;line-height:1.55;}
+.dec-yes .dec-head{color:var(--grass-mid);} .dec-yes .dec-body{color:#065F46;}
+.dec-no .dec-head{color:var(--amber-dark);} .dec-no .dec-body{color:var(--amber-dark);}
+
+.info{border-radius:7px;padding:9px 12px;font-size:11px;line-height:1.65;margin:8px 0;}
+.info b{font-weight:700;}
+.i-g{background:var(--grass-light);border-left:3px solid var(--grass-acc);color:#065F46;}
+.i-a{background:var(--amber-light);border-left:3px solid var(--amber);color:var(--amber-dark);}
+.i-b{background:#EFF6FF;border-left:3px solid var(--blue-mid);color:var(--blue);}
+.i-p{background:var(--purple-light);border-left:3px solid var(--purple);color:var(--purple);}
+
+.ctbl{width:100%;border-collapse:collapse;font-size:12px;}
+.ctbl th{padding:6px 10px;background:var(--surface);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-light);border-bottom:1px solid var(--border-dark);text-align:left;}
+.ctbl td{padding:8px 10px;border-bottom:0.5px solid var(--border);color:var(--ink-mid);vertical-align:top;font-size:11px;line-height:1.5;}
+.ctbl tr:last-child td{border-bottom:none;}
+
+.macro-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1rem;}
+.mc{border-radius:10px;padding:10px 12px;border:0.5px solid transparent;}
+.mc-p{background:#EFF6FF;border-color:#93C5FD;} .mc-g{background:var(--amber-light);border-color:#FCD34D;} .mc-f{background:var(--grass-light);border-color:#6EE7B7;}
+.mc-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+.mc-p .mc-l{color:#1E3A8A;} .mc-g .mc-l{color:var(--amber-dark);} .mc-f .mc-l{color:var(--grass);}
+.mc-v{font-size:20px;font-weight:800;letter-spacing:-1px;}
+.mc-p .mc-v{color:var(--blue-mid);} .mc-g .mc-v{color:var(--amber);} .mc-f .mc-v{color:var(--grass-mid);}
+.mc-s{font-size:10px;color:var(--ink-light);margin-top:1px;}
+
+.prog-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.pg-card{background:var(--white);border:0.5px solid var(--border);border-radius:8px;padding:10px 14px;display:flex;gap:10px;}
+.pg-icon{font-size:20px;flex-shrink:0;}
+.pg-title{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:2px;}
+.pg-desc{font-size:11px;color:var(--ink-light);line-height:1.45;}
+.pg-ok{border-left:3px solid var(--grass-acc);}
+.pg-warn{border-left:3px solid var(--amber);}
+
+.bridge{background:#1A3A5C;border-radius:12px;padding:1.25rem 1.5rem;margin-top:2rem;}
+.bridge-t{font-size:11px;font-weight:700;color:#60A5FA;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
+.bg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.bg-card{background:rgba(255,255,255,.07);border-radius:8px;padding:9px 11px;}
+.bg-l{font-size:10px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+.bg-s3{font-size:10px;color:rgba(255,255,255,.4);text-decoration:line-through;margin-bottom:3px;}
+.bg-s4{font-size:11px;color:#FCD34D;font-weight:600;}
+
+.chip{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600;}
+.cs{background:#F1F5F9;color:#475569;} .cg{background:var(--grass-light);color:var(--grass);} .cb{background:#EFF6FF;color:var(--blue);}
+
+@media(max-width:640px){
+  .prog-strip,.macro-row,.bg-grid,.prog-grid{grid-template-columns:1fr;}
+  .exo-body,.dec-row{grid-template-columns:1fr;}
+  .week-strip{grid-template-columns:repeat(4,1fr);}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <div class="eye">Phase 1 · GPP · Semaine 3 sur 14</div>
+  <div class="hdr-title">Montée en charge — 70%</div>
+  <div class="hdr-sub">Patterns S2 acquis. +1 série, barre au squat, zone 2 plus longue.</div>
+  <div class="pills">
+    <span class="pill pb">6 séances</span>
+    <span class="pill pa">70% intensité</span>
+    <span class="pill pw">2 400 kcal · déficit −250</span>
+    <span class="pill pw">4 × 10–12 reps</span>
+  </div>
+</div>
+<div class="hdr-stats">
+  <div class="hs"><span class="hs-v">70%</span><span class="hs-l">Intensité</span></div>
+  <div class="hs"><span class="hs-v">4 × 10–12</span><span class="hs-l">Séries × Reps</span></div>
+  <div class="hs"><span class="hs-v">RPE 6–7</span><span class="hs-l">Effort /10</span></div>
+  <div class="hs"><span class="hs-v">40 min</span><span class="hs-l">Zone 2 / session</span></div>
+  <div class="hs"><span class="hs-v">−0,4 kg</span><span class="hs-l">Perte attendue</span></div>
+</div>
+
+<!-- PROGRESSION S2→S3 -->
+<div class="prog-strip">
+  <div class="ps-card"><div class="ps-l">Volume muscu</div><div class="ps-from">3 × 8–10 reps</div><div class="ps-to">4 × 10–12 <span class="delta d-up">+1 série</span></div></div>
+  <div class="ps-card"><div class="ps-l">Zone 2</div><div class="ps-from">2 × 35 min</div><div class="ps-to">2 × 40 min <span class="delta d-up">+5 min</span></div></div>
+  <div class="ps-card"><div class="ps-l">Nordic</div><div class="ps-from">3 × 4 reps · 4 sec</div><div class="ps-to">3 × 5 reps · 5 sec <span class="delta d-up">+1 rep</span></div></div>
+  <div class="ps-card"><div class="ps-l">Squat</div><div class="ps-from">Goblet squat</div><div class="ps-to">Barre légère <span class="delta d-new">Si tech. ✓</span></div></div>
+</div>
+
+<!-- MODE TOGGLE -->
+<div class="mode-toggle">
+  <button class="mt-btn a-salle" id="btn-salle" onclick="setMode('salle')">🏋️ Mode Salle</button>
+  <div class="mt-div"></div>
+  <button class="mt-btn" id="btn-both" onclick="setMode('both')">👁 Voir les deux</button>
+  <div class="mt-div"></div>
+  <button class="mt-btn" id="btn-ext" onclick="setMode('ext')">🌳 Mode Extérieur</button>
+</div>
+
+<!-- WEEK STRIP -->
+<div class="week-strip">
+  <div class="ws wb"><div class="ws-n">Lun</div><div class="ws-t">Muscu bas</div><div class="ws-d"></div></div>
+  <div class="ws wg"><div class="ws-n">Mar</div><div class="ws-t">Zone 2 + ballon</div><div class="ws-d"></div></div>
+  <div class="ws wr"><div class="ws-n">Mer</div><div class="ws-t">Récup mobilité</div><div class="ws-d"></div></div>
+  <div class="ws wa"><div class="ws-n">Jeu</div><div class="ws-t">Muscu haut + core</div><div class="ws-d"></div></div>
+  <div class="ws wg"><div class="ws-n">Ven</div><div class="ws-t">Zone 2 + éducatifs</div><div class="ws-d"></div></div>
+  <div class="ws wp"><div class="ws-n">Sam</div><div class="ws-t">Défensif + circuit</div><div class="ws-d"></div></div>
+  <div class="ws wre"><div class="ws-n">Dim</div><div class="ws-t">Repos</div><div class="ws-d"></div></div>
+</div>
+
+<!-- ─── LUNDI ─── -->
+<div class="sec">
+<div class="sec-lbl">Programme journalier</div>
+
+<div class="day-block">
+  <div class="day-hdr dh-b">
+    <span class="day-badge">Lundi · Séance 1</span>
+    <div class="day-title">Musculation — Bas du corps (70%)</div>
+    <div class="day-meta">⏱ 65 min · RPE 6–7/10 · 4 séries</div>
+  </div>
+  <div class="day-body">
+    <div class="ib"><div class="ib-l">Intensité</div><div class="ib-t"><div class="ib-f" style="width:70%;background:#3B82F6;"></div></div><div class="ib-v" style="color:#3B82F6;">70%</div></div>
+
+    <div class="decision">
+      <div class="dec-q">🤔 Squat barre ou goblet squat ce lundi ?</div>
+      <div class="dec-row">
+        <div class="dec-yes">
+          <div class="dec-head">✅ Passe à la barre si en S2 :</div>
+          <div class="dec-body">Talons au sol ✓ · Genoux dans l'axe ✓ · Torse droit ✓ · 3 sec tenu en bas sans perdre la posture ✓ → Barre : ~50–55% de ton 1RM estimé (tests S1)</div>
+        </div>
+        <div class="dec-no">
+          <div class="dec-head">⚠️ Reste au goblet si :</div>
+          <div class="dec-body">Talons se levaient · Genoux rentraient · Dos s'arrondissait → Goblet squat +5 kg vs S2. Re-test barre en S4.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Squat -->
+    <div class="exo-block">
+      <div class="exo-head">
+        <div class="exo-name">Squat — Barre ou Goblet</div>
+        <div class="exo-vol">4 × 10 <span class="delta d-up">+1 série</span></div>
+        <div class="exo-rest">Repos 2 min</div>
+      </div>
+      <div class="exo-body">
+        <div class="exo-salle show-salle">
+          <div class="mode-tag">🏋️ Avec salle</div>
+          <div class="exo-desc"><b>Squat barre</b> (si technique propre) au rack : ~50–55% 1RM. Barre en position haute. Descente 3 sec, cuisses parallèles min. Si tech pas encore propre : <b>goblet squat haltère +5 kg vs S2</b>.</div>
+        </div>
+        <div class="exo-ext show-ext">
+          <div class="mode-tag">🌳 Extérieur</div>
+          <div class="exo-desc"><b>Squat aérien lesté</b> : sac à dos avec 8–12 kg de bouteilles d'eau. Descente 3 sec, pause 2 sec en bas. Si pas de sac : squat sauté à atterrissage très lent (3 sec descente + saut contrôlé).</div>
+        </div>
+      </div>
+      <div class="exo-tech"><div class="tech-lbl">Technique clé</div><div class="tech-txt">Descente 3 sec · genoux suivent les orteils · talons au sol · drive des hanches à la montée</div></div>
+    </div>
+
+    <!-- RDL -->
+    <div class="exo-block">
+      <div class="exo-head">
+        <div class="exo-name">Deadlift roumain (RDL)</div>
+        <div class="exo-vol">4 × 10 <span class="delta d-up">+1 série</span></div>
+        <div class="exo-rest">Repos 2 min</div>
+      </div>
+      <div class="exo-body">
+        <div class="exo-salle show-salle">
+          <div class="mode-tag">🏋️ Avec salle</div>
+          <div class="exo-desc"><b>RDL barre légère</b> : ~40–50% du deadlift 1RM. Barre contre les tibias. Hanches en arrière, dos neutre, descente lente.</div>
+        </div>
+        <div class="exo-ext show-ext">
+          <div class="mode-tag">🌳 Extérieur</div>
+          <div class="exo-desc"><b>Hip hinge poids de corps + sac</b> : sac à dos lesté (8–12 kg) sur le dos. Mains sur les cuisses, pousser les hanches en arrière. Ou bien <b>nordic curl version étirée</b> : position à genoux, descendre lentement en avant en poussant les hanches en arrière.</div>
+        </div>
+      </div>
+      <div class="exo-tech"><div class="tech-lbl">Technique clé</div><div class="tech-txt">Dos neutre ABSOLUMENT · barre reste contre les jambes · arrêt si dos se courbe · descente 3 sec</div></div>
+    </div>
+
+    <!-- Squat bulgare -->
+    <div class="exo-block">
+      <div class="exo-head">
+        <div class="exo-name">Squat bulgare — Chargé</div>
+        <div class="exo-vol">3 × 10/jambe</div>
+        <div class="exo-rest">Repos 90 sec</div>
+      </div>
+      <div class="exo-body">
+        <div class="exo-salle show-salle">
+          <div class="mode-tag">🏋️ Avec salle</div>
+          <div class="exo-desc">Si technique propre en S2 (PdC) → ajouter <b>2 haltères de 5–10 kg chacun</b>. Sinon : poids de corps + descente 4 sec.</div>
+        </div>
+        <div class="exo-ext show-ext">
+          <div class="mode-tag">🌳 Extérieur</div>
+          <div class="exo-desc">Pied arrière sur <b>banc public, muret ou escalier</b> (40–60 cm). Sac à dos lesté (5–8 kg) si disponible. Descente 3 sec, même technique.</div>
+        </div>
+      </div>
+      <div class="exo-tech"><div class="tech-lbl">Technique clé</div><div class="tech-txt">Genou avant dans l'axe · torse droit · 90% du travail sur la jambe avant</div></div>
+    </div>
+
+    <!-- Pont fessier -->
+    <div class="exo-block">
+      <div class="exo-head">
+        <div class="exo-name">Pont fessier unilatéral — Chargé</div>
+        <div class="exo-vol">4 × 12/jambe <span class="delta d-up">+1 série</span></div>
+        <div class="exo-rest">Repos 75 sec</div>
+      </div>
+      <div class="exo-body">
+        <div class="exo-salle show-salle">
+          <div class="mode-tag">🏋️ Avec salle</div>
+          <div class="exo-desc">Haltère posé sur le bassin (10–20 kg) ou plaque de musculation. Même mouvement, plus de résistance.</div>
+        </div>
+        <div class="exo-ext show-ext">
+          <div class="mode-tag">🌳 Extérieur</div>
+          <div class="exo-desc">Poids de corps mais avec <b>hold 3 sec en haut</b> et descente lente 3 sec. Ou mettre le sac à dos sur le bassin. Le temps sous tension remplace la charge.</div>
+        </div>
+      </div>
+      <div class="exo-tech"><div class="tech-lbl">Technique clé</div><div class="tech-txt">Bassin horizontal · serrer le fessier fort · ne pas cambrer le bas du dos</div></div>
+    </div>
+
+    <!-- Nordic -->
+    <div class="exo-block">
+      <div class="exo-head">
+        <div class="exo-name">Nordic curl — Progression excentrique</div>
+        <div class="exo-vol">3 × 5 <span class="delta d-up">+1 rep</span></div>
+        <div class="exo-rest">Repos 2 min</div>
+      </div>
+      <div class="exo-body">
+        <div class="exo-salle show-salle">
+          <div class="mode-tag">🏋️ Avec salle</div>
+          <div class="exo-desc">Pieds bloqués sous la barre du rack (poids posé dessus) ou machine leg curl. Descente 5 sec (était 4 sec en S2). Se rattraper avec les mains.</div>
+        </div>
+        <div class="exo-ext show-ext">
+          <div class="mode-tag">🌳 Extérieur</div>
+          <div class="exo-desc">Pieds bloqués sous <b>barre de parc, banc ou par un partenaire</b>. Descente 5 sec. Même mouvement qu'en salle. Progression : aller légèrement plus loin avant de se rattraper.</div>
+        </div>
+      </div>
+      <div class="exo-tech"><div class="tech-lbl">Technique clé — CRITIQUE</div><div class="tech-txt" style="color:var(--red);">Descente 5 sec seulement · STOP si douleur ischio · corps rigide tête–genou</div></div>
+    </div>
+
+    <!-- Gainage -->
+    <div class="exo-block">
+      <div class="exo-head"><div class="exo-name">Gainage latéral</div><div class="exo-vol">3 × 30 sec/côté <span class="delta d-up">+5 sec</span></div><div class="exo-rest">45 sec</div></div>
+      <div class="exo-body-single"><div class="exo-unified">✅ Identique salle et extérieur. Sol suffit.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MARDI -->
+<div class="day-block">
+  <div class="day-hdr dh-g">
+    <span class="day-badge">Mardi · Séance 2</span>
+    <div class="day-title">Cardio zone 2 + Technique ballon</div>
+    <div class="day-meta">⏱ 75 min · 40 min zone 2 (+5 min vs S2) · FC 65–72%</div>
+  </div>
+  <div class="day-body">
+    <div class="info i-b"><b>Zone 2 à 40 min désormais.</b> En salle : vélo, elliptique ou tapis. En extérieur : course à pied. L'important est la FC dans la zone, pas la vitesse. Note ta vitesse de zone 2 ce mardi — elle doit être supérieure à mardi S2 de 0,2–0,5 km/h.</div>
+    <table class="ctbl">
+      <thead><tr><th>Phase</th><th>Durée</th><th>Contenu</th><th>FC</th></tr></thead>
+      <tbody>
+        <tr><td>Activation</td><td>10 min</td><td>Jogging ou vélo très léger</td><td>&lt; 55%</td></tr>
+        <tr><td>Zone 2</td><td>40 min</td><td>Course ou cardio machine. Allure conversation. +5 min vs S2.</td><td>65–72%</td></tr>
+        <tr><td>Transition</td><td>5 min</td><td>Marche + hydratation</td><td>&lt; 55%</td></tr>
+        <tr><td>Technique</td><td>15 min</td><td>Contrôle + passe sous fatigue · Relance longue · Sortie en conduite + passe de rupture (nouveau en S3)</td><td>Modéré</td></tr>
+        <tr><td>Retour calme</td><td>5 min</td><td>Marche + 3 étirements</td><td>Léger</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- MERCREDI -->
+<div class="day-block">
+  <div class="day-hdr dh-re">
+    <span class="day-badge">Mercredi · Récupération</span>
+    <div class="day-title">Récupération active + Mobilité complète</div>
+    <div class="day-meta">⏱ 45 min · Identique S2</div>
+  </div>
+  <div class="day-body">
+    <div class="info i-g">Protocole identique à la semaine 2. Marche légère 15 min → mobilité hanches → ischio PNF → thoracique → cheville → cohérence cardiaque 5 min. La récupération ne se surcharge pas.</div>
+  </div>
+</div>
+
+<!-- JEUDI -->
+<div class="day-block">
+  <div class="day-hdr dh-a">
+    <span class="day-badge">Jeudi · Séance 3</span>
+    <div class="day-title">Musculation — Haut du corps + Core (70%)</div>
+    <div class="day-meta">⏱ 60 min · RPE 6–7/10 · 2 nouveaux exercices</div>
+  </div>
+  <div class="day-body">
+    <div class="ib"><div class="ib-l">Intensité</div><div class="ib-t"><div class="ib-f" style="width:70%;background:var(--amber);"></div></div><div class="ib-v" style="color:var(--amber);">70%</div></div>
+
+    <!-- Pompes / Dev couché -->
+    <div class="exo-block">
+      <div class="exo-head">
+        <div class="exo-name">Poussée horizontale — Pompes / Développé couché</div>
+        <div class="exo-vol">4 × 12 <span class="delta d-up">+1 série</span></div>
+        <div class="exo-rest">Repos 75 sec</div>
+      </div>
+      <div class="exo-body">
+        <div class="exo-salle show-salle">
+          <div class="mode-tag">🏋️ Avec salle</div>
+          <div class="exo-desc"><b>Développé couché barre légère</b> (~50% 1RM) si technique pompes maîtrisée. Sinon : pompes déclinées (pieds sur banc) · pompes avec pause 2 sec en bas.</div>
+        </div>
+        <div class="exo-ext show-ext">
+          <div class="mode-tag">🌳 Extérieur</div>
+          <div class="exo-desc">Pompes au sol. Progressions sans matériel : <b>pieds sur banc public</b> (déclinées) · pompes en pause 2 sec en bas · pompes avec transfer de poids (archer push-up).</div>
+        </div>
+      </div>
+      <div class="exo-tech"><div class="tech-lbl">Technique clé</div><div class="tech-txt">Corps planche · coudes à 45° · descente 2 sec</div></div>
+    </div>
+
+    <!-- Rangée -->
+    <div class="exo-block">
+      <div class="exo-head">
+        <div class="exo-name">Rangée — Tirage horizontal</div>
+        <div class="exo-vol">4 × 10/côté <span class="delta d-up">+1 série</span></div>
+        <div class="exo-rest">Repos 75 sec</div>
+      </div>
+      <div class="exo-body">
+        <div class="exo-salle show-salle">
+          <div class="mode-tag">🏋️ Avec salle</div>
+          <div class="exo-desc">Rangée haltère unilatérale +2 kg vs S2. Ou rowing barre penché à 45°.</div>
+        </div>
+        <div class="exo-ext show-ext">
+          <div class="mode-tag">🌳 Extérieur</div>
+          <div class="exo-desc">Body rows sous table de pique-nique ou barre basse. Plus difficile qu'en S2 : pieds plus éloignés, corps plus horizontal. Ou élastique de résistance attaché à un poteau.</div>
+        </div>
+      </div>
+      <div class="exo-tech"><div class="tech-lbl">Technique clé</div><div class="tech-txt">Coude guide le mouvement · pas de rotation du tronc</div></div>
+    </div>
+
+    <!-- Développé militaire — NOUVEAU -->
+    <div class="exo-block">
+      <div class="exo-head">
+        <div class="exo-name">Développé militaire — NOUVEAU S3</div>
+        <div class="exo-vol">3 × 10 <span class="delta d-new">Nouveau</span></div>
+        <div class="exo-rest">Repos 90 sec</div>
+      </div>
+      <div class="exo-body">
+        <div class="exo-salle show-salle">
+          <div class="mode-tag">🏋️ Avec salle</div>
+          <div class="exo-desc">Développé militaire haltères debout ou assis : ~60–65% du OHP 1RM. Haltères à hauteur d'épaules, pousser vers le haut. Abdos gainés, pas de cambrure.</div>
+        </div>
+        <div class="exo-ext show-ext">
+          <div class="mode-tag">🌳 Extérieur</div>
+          <div class="exo-desc"><b>Pike push-up</b> : mains au sol, hanches en l'air (position inverted V), descendre la tête vers le sol en fléchissant les coudes. Ressemble à un développé militaire. Plus les hanches sont hautes, plus c'est difficile.</div>
+        </div>
+      </div>
+      <div class="exo-tech"><div class="tech-lbl">Technique clé</div><div class="tech-txt">Dos neutre · abdos gainés · pas de cambrure lombaire</div></div>
+    </div>
+
+    <!-- Tractions -->
+    <div class="exo-block">
+      <div class="exo-head">
+        <div class="exo-name">Tractions</div>
+        <div class="exo-vol">4 × max <span class="delta d-up">+1 série</span></div>
+        <div class="exo-rest">Repos 2 min</div>
+      </div>
+      <div class="exo-body">
+        <div class="exo-salle show-salle">
+          <div class="mode-tag">🏋️ Avec salle</div>
+          <div class="exo-desc">Barre de traction. Machine assistée si &lt; 5 reps. Objectif : +1 à 2 reps vs S2.</div>
+        </div>
+        <div class="exo-ext show-ext">
+          <div class="mode-tag">🌳 Extérieur</div>
+          <div class="exo-desc">Barre de traction au parc. Si &lt; 5 reps : body rows sous table. Si &gt; 10 reps faciles : sac à dos lesté.</div>
+        </div>
+      </div>
+      <div class="exo-tech"><div class="tech-lbl">Technique clé</div><div class="tech-txt">Amplitude complète · descente contrôlée · pas de balancement</div></div>
+    </div>
+
+    <!-- Pallof press — NOUVEAU -->
+    <div class="exo-block">
+      <div class="exo-head">
+        <div class="exo-name">Pallof press — Gainage anti-rotation — NOUVEAU</div>
+        <div class="exo-vol">3 × 10/côté <span class="delta d-new">Nouveau</span></div>
+        <div class="exo-rest">Repos 45 sec</div>
+      </div>
+      <div class="exo-body">
+        <div class="exo-salle show-salle">
+          <div class="mode-tag">🏋️ Avec salle</div>
+          <div class="exo-desc">Bande élastique ou câble fixé latéralement à hauteur de poitrine. Pousser les bras tendus devant soi et maintenir 2 sec. Corps résiste à la rotation. 10 reps/côté.</div>
+        </div>
+        <div class="exo-ext show-ext">
+          <div class="mode-tag">🌳 Extérieur</div>
+          <div class="exo-desc"><b>Bande élastique fixée à un arbre ou poteau</b> (même principe). Ou à défaut : <b>bird dog isométrique</b> : quadrupédie, tendre bras droit + jambe gauche, maintenir 30 sec sans bouger le tronc. ×3/côté. Travaille le gainage anti-rotation différemment.</div>
+        </div>
+      </div>
+      <div class="exo-tech"><div class="tech-lbl">Technique clé</div><div class="tech-txt">Corps face au mur (pas de rotation) · hanches et épaules parallèles · résister à la traction</div></div>
+    </div>
+
+    <!-- Core identiques -->
+    <div class="exo-block">
+      <div class="exo-head"><div class="exo-name">Core : Gainage + Dead bug + Superman</div><div class="exo-vol">4 × 50 sec / 4 × 8 / 3 × 30 sec</div><div class="exo-rest">45 sec</div></div>
+      <div class="exo-body-single"><div class="exo-unified">✅ Identique salle et extérieur. Tous ces exercices se font au sol, aucun équipement nécessaire.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- VENDREDI -->
+<div class="day-block">
+  <div class="day-hdr dh-g">
+    <span class="day-badge">Vendredi · Séance 4</span>
+    <div class="day-title">Zone 2 + Éducatifs + Accélérations progressives</div>
+    <div class="day-meta">⏱ 70 min · Zone 2 40 min + éducatifs plus dynamiques</div>
+  </div>
+  <div class="day-body">
+    <div class="info i-p"><b>Accélérations progressives ≠ sprints.</b> 70–75% vitesse max uniquement. Apprendre la mécanique, pas tester la vitesse. Identique salle/extérieur sauf que l'éducatif se fait en extérieur (ou couloir si salle).</div>
+    <table class="ctbl">
+      <thead><tr><th>Phase</th><th>Durée</th><th>Contenu</th><th>FC</th></tr></thead>
+      <tbody>
+        <tr><td>Activation</td><td>10 min</td><td>Jogging léger ou vélo doux</td><td>&lt; 55%</td></tr>
+        <tr><td>Zone 2</td><td>40 min</td><td>Course ou cardio machine · allure conversation</td><td>65–72%</td></tr>
+        <tr><td>Transition</td><td>3 min</td><td>Marche</td><td>Léger</td></tr>
+        <tr><td>Éducatifs S2 rappel</td><td>5 min</td><td>Montées genoux + talons-fesses + pas chassés à vitesse modérée</td><td>55%</td></tr>
+        <tr><td>Accélérations progressives</td><td>7 min</td><td>× 4 passages 30 m : jogging → monter à 70–75% vitesse sur les 20 derniers mètres. Récup jogging retour. Extérieur ou couloir de salle.</td><td>65–75%</td></tr>
+        <tr><td>Retour calme</td><td>5 min</td><td>Marche + étirements</td><td>Léger</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SAMEDI -->
+<div class="day-block">
+  <div class="day-hdr dh-p">
+    <span class="day-badge">Samedi · Séance 5</span>
+    <div class="day-title">Technique défensive + Circuit GPP (nouveau)</div>
+    <div class="day-meta">⏱ 75 min · RPE 6/10 · Terrain recommandé</div>
+  </div>
+  <div class="day-body">
+    <div class="info i-b"><b>Si pas de terrain :</b> remplace technique ballon par 20 min jogging zone 2 supplémentaires. Le circuit GPP s'effectue partout.</div>
+    <table class="ctbl">
+      <thead><tr><th>Phase</th><th>Durée</th><th>Contenu</th></tr></thead>
+      <tbody>
+        <tr><td>Activation</td><td>10 min</td><td>Jogging léger + passes courtes</td></tr>
+        <tr><td>Technique défensive</td><td>28 min</td><td>Placement (cône attaquant, appuis chassés) · Sprint transition + duel + tacle imagé · Relance sous pressing (sprint 8 m + contrôle + passe)</td></tr>
+        <tr><td>Circuit GPP 🆕</td><td>15 min</td><td><b>3 rounds, 45 sec repos entre rounds :</b> 10 pompes · 10 squats aériens · 10 fentes alternées · 20 sec gainage frontal · 10 step-ups. Repos 30 sec entre exercices. RPE 6/10 max.</td></tr>
+        <tr><td>Retour au calme</td><td>12 min</td><td>Marche 5 min + routine mobilité complète</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- NUTRITION -->
+<div class="sec">
+<div class="sec-lbl">Nutrition — 2 400 kcal · Déficit −250 kcal/j</div>
+<div class="macro-row">
+  <div class="mc mc-p"><div class="mc-l">Protéines</div><div class="mc-v">156 g</div><div class="mc-s">2 g/kg · 624 kcal · 26%</div></div>
+  <div class="mc mc-g"><div class="mc-l">Glucides</div><div class="mc-v">255 g</div><div class="mc-s">−10 g vs S2 · 1 020 kcal · 43%</div></div>
+  <div class="mc mc-f"><div class="mc-l">Lipides</div><div class="mc-v">84 g</div><div class="mc-s">1.1 g/kg · 756 kcal · 31%</div></div>
+</div>
+<table class="ctbl">
+  <thead><tr><th>Repas</th><th>Heure</th><th>Contenu</th><th>Kcal</th></tr></thead>
+  <tbody>
+    <tr><td><b>Petit-déj.</b></td><td>7h30</td><td>70 g flocons d'avoine + 200 ml lait écrémé + 1 banane + 25 g whey</td><td>500</td></tr>
+    <tr><td><b>Collation</b></td><td>10h30</td><td>150 g fromage blanc 0% + 100 g fruits rouges + 10 g amandes</td><td>225</td></tr>
+    <tr><td><b>Déjeuner</b></td><td>13h</td><td>150 g riz + 180 g poulet + 200 g légumes + 1 cs huile olive</td><td>560</td></tr>
+    <tr><td><b>Pré-séance</b></td><td>60 min avant</td><td>1 banane + café noir</td><td>110</td></tr>
+    <tr><td><b>Post-séance</b></td><td>≤ 30 min</td><td>30 g whey + 150 ml lait écrémé + 1 banane</td><td>260</td></tr>
+    <tr><td><b>Dîner</b></td><td>19h30</td><td>140 g cabillaud ou poulet + 220 g patate douce + salade + 1 cs huile olive</td><td>520</td></tr>
+    <tr><td><b>Collation soir</b></td><td>22h</td><td>200 g fromage blanc 0% + 1 cs beurre d'amande</td><td>190</td></tr>
+  </tbody>
+</table>
+</div>
+
+<!-- INDICATEURS -->
+<div class="sec">
+<div class="sec-lbl">Indicateurs fin S3</div>
+<div class="prog-grid">
+  <div class="pg-card pg-ok"><div class="pg-icon">✅</div><div><div class="pg-title">Bonne trajectoire</div><div class="pg-desc">−0,3 à −0,5 kg · Squat technique propre sur 4 séries · Zone 2 légèrement plus rapide qu'en S2 · Circuit GPP terminé sans épuisement</div></div></div>
+  <div class="pg-card pg-ok"><div class="pg-icon">📋</div><div><div class="pg-title">Technique à valider avant S4</div><div class="pg-desc">Squat barre (ou goblet) : genoux dans l'axe ✓ · RDL : dos neutre ✓ · Militaire ou pike push-up : pas de cambrure ✓ · Nordic : 5 reps × 5 sec sans douleur ✓</div></div></div>
+  <div class="pg-card pg-warn"><div class="pg-icon">⚠️</div><div><div class="pg-title">Signaux à surveiller</div><div class="pg-desc">Douleur genou → vérifier alignement + réduire charge · Fatigue excessive dès jeudi → supprimer circuit GPP samedi · Faim intense → +150 kcal jours de séances lourdes</div></div></div>
+  <div class="pg-card pg-ok"><div class="pg-icon">📊</div><div><div class="pg-title">Bilan 3 semaines</div><div class="pg-desc">Perte estimée cumulée : −0,8 à −1,5 kg depuis les tests S1. Patterns fondamentaux en place. Corps conditionné pour le déficit plein de S4.</div></div></div>
+</div>
+</div>
+
+<!-- BRIDGE -->
+<div class="bridge">
+  <div class="bridge-t">Ce qui change en Semaine 4 — Fat loss intensif · Déficit plein</div>
+  <div class="bg-grid">
+    <div class="bg-card"><div class="bg-l">Nutrition</div><div class="bg-s3">2 400 kcal · −250</div><div class="bg-s4">2 200 kcal · −450 · déficit plein</div></div>
+    <div class="bg-card"><div class="bg-l">Cardio</div><div class="bg-s3">2 × zone 2</div><div class="bg-s4">3 × zone 2 + 1 HIIT (premier HIIT)</div></div>
+    <div class="bg-card"><div class="bg-l">Intensité muscu</div><div class="bg-s3">70% · RPE 6–7</div><div class="bg-s4">75–80% · RPE 7 · charges augmentent</div></div>
+    <div class="bg-card"><div class="bg-l">Nordic curl</div><div class="bg-s3">3 × 5 · 5 sec</div><div class="bg-s4">3 × 6 · 5 sec</div></div>
+    <div class="bg-card"><div class="bg-l">Séances</div><div class="bg-s3">5 séances</div><div class="bg-s4">6 séances · semaine la plus chargée</div></div>
+    <div class="bg-card"><div class="bg-l">Objectif poids</div><div class="bg-s3">Fin S3 : ~77 kg</div><div class="bg-s4">Cible S4 : −0,7 à −1 kg</div></div>
+  </div>
+</div>
+
+</div>
+<script>
+function setMode(mode) {
+  var s = document.querySelectorAll('.show-salle');
+  var e = document.querySelectorAll('.show-ext');
+  var bs = document.getElementById('btn-salle');
+  var bb = document.getElementById('btn-both');
+  var be = document.getElementById('btn-ext');
+  [bs,bb,be].forEach(function(b){b.classList.remove('a-salle','a-ext');});
+  if(mode==='salle'){
+    s.forEach(function(el){el.style.display='';});
+    e.forEach(function(el){el.style.display='none';});
+    bs.classList.add('a-salle');
+  } else if(mode==='ext'){
+    s.forEach(function(el){el.style.display='none';});
+    e.forEach(function(el){el.style.display='';});
+    be.classList.add('a-ext');
+  } else {
+    s.forEach(function(el){el.style.display='';});
+    e.forEach(function(el){el.style.display='';});
+  }
+}
+// Default: salle
+setMode('salle');
+</script>
+</body>
+</html>

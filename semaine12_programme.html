@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semaine 12 — Puissance Peak</title>
+<style>
+:root{
+  --ink:#1A2332;--im:#4A5568;--il:#718096;
+  --peak:#7C2D12;--peak-mid:#DC2626;--peak-light:#FEF2F2;--peak-acc:#F87171;
+  --g:#0F5132;--gm:#1D8A52;--gl:#D1FAE5;--ga:#10B981;
+  --b:#1E40AF;--bm:#3B82F6;--bl:#DBEAFE;
+  --am:#D97706;--al:#FEF3C7;--ad:#78350F;
+  --em:#065F46;--em-l:#ECFDF5;--em-acc:#34D399;
+  --volt:#C2410C;--volt-l:#FFF7ED;--volt-acc:#FB923C;
+  --sb:#EFF6FF;--sbd:#93C5FD;--st:#1E3A8A;
+  --eb:#F0FDF4;--ebd:#6EE7B7;--et:#065F46;
+  --sf:#F8FAFC;--w:#fff;--bo:#E2E8F0;--bd:#CBD5E1;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--sf);color:var(--ink);font-size:14px;line-height:1.5;}
+.wrap{max-width:960px;margin:0 auto;padding:1.5rem 1.5rem 5rem;}
+
+.hdr{background:linear-gradient(135deg,#450A0A,#DC2626);border-radius:16px;padding:1.75rem 2rem 1.5rem;position:relative;overflow:hidden;}
+.hdr::before{content:'12';position:absolute;right:1.5rem;top:50%;transform:translateY(-50%);font-size:96px;font-weight:900;color:rgba(255,255,255,.06);line-height:1;}
+.eye{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--peak-acc);margin-bottom:6px;}
+.ht{font-size:24px;font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:3px;}
+.hs2{font-size:12px;color:rgba(255,255,255,.45);margin-bottom:1rem;}
+.pills{display:flex;flex-wrap:wrap;gap:6px;}
+.pill{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+.pk{background:rgba(248,113,113,.2);color:var(--peak-acc);}
+.pa{background:rgba(217,119,6,.25);color:#FCD34D;}
+.pw{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);}
+.hst{background:#2D0707;border-radius:8px;padding:8px 2rem;display:flex;gap:2rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.hsi{display:flex;flex-direction:column;}
+.hv{font-size:14px;font-weight:700;color:var(--peak-acc);}
+.hlb{font-size:9px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.06em;}
+
+.ps-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.5rem;}
+.ps{background:var(--w);border:0.5px solid var(--bo);border-radius:10px;padding:10px 12px;}
+.ps-l{font-size:10px;font-weight:700;color:var(--il);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;}
+.ps-f{font-size:10px;color:var(--il);text-decoration:line-through;margin-bottom:2px;}
+.ps-t{font-size:12px;font-weight:700;color:var(--peak-mid);}
+.dt{display:inline-block;padding:1px 6px;border-radius:10px;font-size:9px;font-weight:700;}
+.du{background:#D1FAE5;color:#065F46;} .dn{background:#FFEDD5;color:#9A3412;}
+.dnew{background:var(--peak-light);color:var(--peak);}
+.dmilestone{background:#FEF3C7;color:#78350F;}
+
+.mt{display:flex;gap:0;border:1.5px solid var(--bd);border-radius:10px;overflow:hidden;margin-bottom:1.5rem;background:var(--w);}
+.mt-btn{flex:1;padding:10px;text-align:center;cursor:pointer;font-size:12px;font-weight:600;border:none;background:transparent;color:var(--il);}
+.mt-btn.as{background:var(--sb);color:var(--st);}
+.mt-btn.ae{background:var(--eb);color:var(--et);}
+.mt-d{width:1px;background:var(--bd);}
+
+.ws{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:1.5rem;}
+.wc{border-radius:8px;padding:8px 3px;text-align:center;border:0.5px solid transparent;}
+.wn{font-size:9px;font-weight:700;text-transform:uppercase;margin-bottom:3px;}
+.wt2{font-size:8px;line-height:1.3;}
+.wd{width:5px;height:5px;border-radius:50%;margin:4px auto 0;}
+.wpk{background:var(--peak-light);border-color:#FCA5A5;border-width:1.5px;} .wpk .wn{color:var(--peak);} .wpk .wt2{color:var(--peak-mid);} .wpk .wd{background:var(--peak-mid);}
+.wg{background:var(--gl);border-color:#6EE7B7;} .wg .wn{color:var(--g);} .wg .wd{background:var(--ga);}
+.wf{background:#FFF7ED;border-color:#FDBA74;} .wf .wn{color:#9A3412;} .wf .wd{background:var(--volt);}
+.wam{background:var(--al);border-color:#FCD34D;} .wam .wn{color:var(--ad);} .wam .wd{background:var(--am);}
+.wr{background:#F1F5F9;border-color:#CBD5E1;} .wr .wn{color:#475569;} .wr .wd{background:#CBD5E1;}
+.wp{background:#F5F3FF;border-color:#C4B5FD;} .wp .wn{color:#5B21B6;} .wp .wd{background:#7C3AED;}
+.wrest{background:#FFF1F2;border-color:#FECDD3;} .wrest .wn{color:var(--red);} .wrest .wd{background:var(--red);}
+
+.sec{margin-bottom:2rem;}
+.sl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--il);padding-bottom:5px;border-bottom:2px solid var(--bd);margin-bottom:1rem;}
+
+.day{margin-bottom:1.25rem;}
+.dh{border-radius:10px 10px 0 0;padding:10px 16px;}
+.db2{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;border-radius:4px;}
+.dt3{font-size:15px;font-weight:700;color:var(--ink);margin:3px 0 2px;}
+.dm{font-size:11px;color:var(--il);}
+.db{border:0.5px solid var(--bo);border-top:none;border-radius:0 0 10px 10px;padding:12px;background:var(--w);}
+
+.dhpk{background:var(--peak-light);} .dhpk .db2{background:var(--peak-mid);color:#fff;}
+.dhg{background:var(--gl);} .dhg .db2{background:var(--g);color:#fff;}
+.dhf{background:#FFF7ED;} .dhf .db2{background:var(--volt);color:#fff;}
+.dha{background:var(--al);} .dha .db2{background:var(--am);color:#fff;}
+.dhr{background:#F1F5F9;} .dhr .db2{background:#475569;color:#fff;}
+.dhp{background:#F5F3FF;} .dhp .db2{background:#5B21B6;color:#fff;}
+.dhrest{background:#FFF1F2;} .dhrest .db2{background:var(--red);color:#fff;}
+
+.ib{display:flex;align-items:center;gap:8px;background:var(--sf);border-radius:6px;padding:5px 10px;margin-bottom:10px;}
+.ibl{font-size:10px;font-weight:600;color:var(--im);width:75px;flex-shrink:0;}
+.ibt{flex:1;height:6px;background:var(--bd);border-radius:3px;overflow:hidden;}
+.ibf{height:100%;border-radius:3px;}
+.ibv{font-size:11px;font-weight:700;width:34px;text-align:right;}
+
+.eb2{background:var(--w);border:0.5px solid var(--bo);border-radius:12px;margin-bottom:8px;overflow:hidden;}
+.eh{padding:10px 16px;display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;}
+.en{font-size:13px;font-weight:700;color:var(--ink);}
+.ev{font-size:11px;font-weight:600;color:var(--im);white-space:nowrap;}
+.er{font-size:10px;color:var(--il);white-space:nowrap;}
+.esp{padding:0 16px 10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.es{background:var(--sb);border:0.5px solid var(--sbd);border-radius:8px;padding:8px 10px;}
+.ee{background:var(--eb);border:0.5px solid var(--ebd);border-radius:8px;padding:8px 10px;}
+.mt2{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+.es .mt2{color:var(--st);} .ee .mt2{color:var(--et);}
+.ed{font-size:11px;line-height:1.6;}
+.es .ed{color:#1E40AF;} .ee .ed{color:#065F46;}
+.etk{padding:6px 16px 10px;border-top:0.5px solid var(--bo);background:#FAFBFC;}
+.tl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--il);margin-bottom:2px;}
+.tt{font-size:11px;color:var(--im);line-height:1.5;}
+.eu{padding:0 16px 10px;}
+.euu{background:var(--sf);border:0.5px solid var(--bo);border-radius:8px;padding:8px 10px;font-size:11px;color:var(--im);line-height:1.6;}
+
+.tag{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:9px;font-weight:700;margin-left:5px;}
+.tag-spp{background:var(--em-l);color:var(--em);}
+.tag-pow{background:var(--volt-l);color:var(--volt);}
+.tag-new{background:var(--peak-light);color:var(--peak);}
+.tag-ms{background:#FEF3C7;color:#78350F;}
+
+/* FORCE-VITESSE CURVE */
+.fv-curve{display:flex;gap:4px;margin:10px 0;height:60px;align-items:flex-end;}
+.fv-seg{flex:1;border-radius:4px 4px 0 0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;}
+.fv-seg span{font-size:9px;font-weight:700;writing-mode:horizontal-tb;color:rgba(255,255,255,.9);}
+.fv-label{font-size:9px;color:var(--il);text-align:center;margin-top:3px;}
+
+/* DEPTH JUMP DIAGRAM */
+.dj-diagram{display:flex;align-items:flex-end;gap:6px;background:var(--sf);border-radius:8px;padding:10px;margin:8px 0;}
+.dj-step{text-align:center;flex:1;}
+.dj-icon{font-size:20px;margin-bottom:3px;}
+.dj-label{font-size:9px;color:var(--im);line-height:1.3;}
+.dj-arrow{font-size:16px;color:var(--il);flex-shrink:0;margin-bottom:8px;}
+
+/* NORDIC MILESTONE */
+.nordic-milestone{background:linear-gradient(135deg,#ECFDF5,#D1FAE5);border:2px solid var(--em-acc);border-radius:12px;padding:1rem 1.25rem;margin:10px 0;}
+.nm-title{font-size:14px;font-weight:800;color:var(--em);margin-bottom:6px;}
+.nm-body{font-size:11px;color:#065F46;line-height:1.65;}
+
+.info{border-radius:7px;padding:9px 12px;font-size:11px;line-height:1.65;margin:8px 0;}
+.info b{font-weight:700;}
+.ig{background:var(--gl);border-left:3px solid var(--ga);color:#065F46;}
+.ia{background:var(--al);border-left:3px solid var(--am);color:var(--ad);}
+.ipk{background:var(--peak-light);border-left:3px solid var(--peak-acc);color:var(--peak);}
+.iv{background:var(--volt-l);border-left:3px solid var(--volt-acc);color:var(--volt);}
+.ib2{background:#EFF6FF;border-left:3px solid var(--bm);color:var(--b);}
+.ie{background:var(--em-l);border-left:3px solid var(--em-acc);color:var(--em);}
+
+.mr{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1rem;}
+.mc2{border-radius:10px;padding:10px 12px;border:0.5px solid transparent;}
+.mc2-p{background:#EFF6FF;border-color:#93C5FD;} .mc2-g{background:var(--al);border-color:#FCD34D;} .mc2-f{background:var(--gl);border-color:#6EE7B7;}
+.ml{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+.mc2-p .ml{color:#1E3A8A;} .mc2-g .ml{color:var(--ad);} .mc2-f .ml{color:var(--g);}
+.mv{font-size:20px;font-weight:800;letter-spacing:-1px;}
+.mc2-p .mv{color:var(--bm);} .mc2-g .mv{color:var(--am);} .mc2-f .mv{color:var(--gm);}
+.mc-s{font-size:10px;color:var(--il);margin-top:1px;}
+
+.pg{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.pgc{background:var(--w);border:0.5px solid var(--bo);border-radius:8px;padding:10px 14px;display:flex;gap:10px;}
+.pi{font-size:20px;flex-shrink:0;}
+.pti{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:2px;}
+.pd{font-size:11px;color:var(--il);line-height:1.45;}
+.pok{border-left:3px solid var(--ga);}
+.pwn{border-left:3px solid var(--am);}
+
+.bridge{background:#2D0707;border-radius:12px;padding:1.25rem 1.5rem;margin-top:2rem;}
+.bt{font-size:11px;font-weight:700;color:var(--peak-acc);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
+.bgr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.bgc{background:rgba(255,255,255,.07);border-radius:8px;padding:9px 11px;}
+.bgl{font-size:10px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+.bgs12{font-size:10px;color:rgba(255,255,255,.4);text-decoration:line-through;margin-bottom:3px;}
+.bgs13{font-size:11px;color:#FCD34D;font-weight:600;}
+
+@media(max-width:640px){
+  .ps-row,.mr,.pg,.bgr{grid-template-columns:1fr;}
+  .esp{grid-template-columns:1fr;}
+  .ws{grid-template-columns:repeat(4,1fr);}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <div class="eye">Phase 2 · Puissance Peak · Semaine 12 sur 14</div>
+  <div class="ht">Puissance Maximale — Premier Nordic complet</div>
+  <div class="hs2">Force-vitesse. Depth jumps. Nordic sans aide. Sprints 30m. Le pic physique du programme.</div>
+  <div class="pills">
+    <span class="pill pk">6 séances</span>
+    <span class="pill pk">Force-vitesse 75–88%</span>
+    <span class="pill pa">2 900 kcal</span>
+    <span class="pill pw">Nordic complet 🎯</span>
+    <span class="pill pw">Depth jump 🆕</span>
+  </div>
+</div>
+<div class="hst">
+  <div class="hsi"><span class="hv">Force-vitesse</span><span class="hlb">Nouveau paradigme</span></div>
+  <div class="hsi"><span class="hv">4 × 3–5</span><span class="hlb">Reps · mouvement rapide</span></div>
+  <div class="hsi"><span class="hv">RPE 9</span><span class="hlb">Effort /10</span></div>
+  <div class="hsi"><span class="hv">2 900 kcal</span><span class="hlb">+100 vs S11</span></div>
+  <div class="hsi"><span class="hv">Nordic ✓</span><span class="hlb">Premier sans aide</span></div>
+</div>
+
+<!-- PROGRESSION S11→S12 -->
+<div class="ps-row">
+  <div class="ps"><div class="ps-l">Force</div><div class="ps-f">85–88% · 4 × 5</div><div class="ps-t">75–88% force-vitesse <span class="dt dn">Changement</span></div></div>
+  <div class="ps"><div class="ps-l">Plyométrie</div><div class="ps-f">Box jump · 3 × 5</div><div class="ps-t">Depth jump · 4 × 5 <span class="dt dnew">🆕</span></div></div>
+  <div class="ps"><div class="ps-l">Nordic</div><div class="ps-f">Assisté · −50% aide</div><div class="ps-t">Complet sans aide <span class="dt dmilestone">🎯 Milestone</span></div></div>
+  <div class="ps"><div class="ps-l">Sprints</div><div class="ps-f">10m × 8</div><div class="ps-t">10m × 10 + 30m × 4 <span class="dt du">+vol.</span></div></div>
+</div>
+
+<!-- MODE TOGGLE -->
+<div class="mt">
+  <button class="mt-btn as" id="bs" onclick="setMode('salle')">🏋️ Mode Salle</button>
+  <div class="mt-d"></div>
+  <button class="mt-btn" id="bb" onclick="setMode('both')">👁 Voir les deux</button>
+  <div class="mt-d"></div>
+  <button class="mt-btn" id="be" onclick="setMode('ext')">🌳 Mode Extérieur</button>
+</div>
+
+<!-- WEEK STRIP -->
+<div class="ws">
+  <div class="wc wpk"><div class="wn">Lun</div><div class="wt2">Force-vit. + Depth jump</div><div class="wd"></div></div>
+  <div class="wc wg"><div class="wn">Mar</div><div class="wt2">Zone 2 + défensif</div><div class="wd"></div></div>
+  <div class="wc wf"><div class="wn">Mer</div><div class="wt2">T-test répété + COD</div><div class="wd"></div></div>
+  <div class="wc wpk"><div class="wn">Jeu</div><div class="wt2">Force-vit. haut + Plyo</div><div class="wd"></div></div>
+  <div class="wc wr"><div class="wn">Ven</div><div class="wt2">Récup mobilité</div><div class="wd"></div></div>
+  <div class="wc wp"><div class="wn">Sam</div><div class="wt2">Sprints 30m + Plyo</div><div class="wd"></div></div>
+  <div class="wc wrest"><div class="wn">Dim</div><div class="wt2">Repos complet</div><div class="wd"></div></div>
+</div>
+
+<!-- FORCE-VITESSE CONCEPT -->
+<div class="sec">
+<div class="sl">Nouveau concept — Force-vitesse : pourquoi on change le paradigme maintenant</div>
+
+<div style="background:var(--sf);border-radius:10px;padding:12px;margin-bottom:1rem;">
+  <div style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:8px;">La courbe force-vitesse — où on était et où on va</div>
+  <div class="fv-curve">
+    <div class="fv-seg" style="background:#CBD5E1;height:55px;"><span style="color:#475569;">Force max<br>lente</span></div>
+    <div class="fv-seg" style="background:#93C5FD;height:50px;"><span>Force<br>lourde</span></div>
+    <div class="fv-seg" style="background:#3B82F6;height:44px;"><span>S10–S11<br>85–88%</span></div>
+    <div class="fv-seg" style="background:var(--peak-mid);height:38px;border:2px solid #fff;"><span>S12<br>Force-vit.</span></div>
+    <div class="fv-seg" style="background:var(--volt);height:28px;"><span>Puissance<br>légère</span></div>
+    <div class="fv-seg" style="background:var(--am);height:18px;"><span>Vitesse<br>max</span></div>
+  </div>
+  <div style="font-size:10px;color:var(--il);margin-top:4px;">← Plus lourd / plus lent &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Plus léger / plus vite →</div>
+</div>
+
+<div class="ipk"><b>Ce qui change concrètement :</b> en S10–S11, on soulevait 85–88% 1RM lentement (force maximale). En S12, on travaille dans la zone "force-vitesse" : charges légèrement réduites (75–80% 1RM) mais avec l'intention de se déplacer aussi vite que possible. Le muscle produit plus de puissance (force × vitesse) dans cette zone. C'est le maillon manquant entre la salle et le terrain.</div>
+</div>
+
+<!-- NORDIC MILESTONE -->
+<div class="sec">
+<div class="sl">Le moment le plus attendu du programme — Premier Nordic complet</div>
+<div class="nordic-milestone">
+  <div class="nm-title">🎯 S12 : Premier Nordic curl sans aide des mains</div>
+  <div class="nm-body">
+    Depuis la Semaine 2, on conditionne le tendon ischio-jambier avec des descentes excentriques progressives. 10 semaines plus tard, le tendon est suffisamment robuste pour tolérer le travail concentrique complet.<br><br>
+    <b>Protocole du premier Nordic complet :</b><br>
+    · Échauffement ischio dédié : 5 min PNF avant la série<br>
+    · 1ère série exploratoire : 2 reps sans aide, évaluer la sensation<br>
+    · Si OK → 3 × 3 reps sans aide, repos 3 min entre séries<br>
+    · Si trop difficile → bande élastique fine autour du torse comme assistance partielle (mains libres)<br><br>
+    <b>Ce qui est normal :</b> la remontée sera très difficile, même sur 3 reps. C'est attendu — c'est la première fois que les ischio travaillent concentriquement sous charge maximale. La force augmentera rapidement sur 2–4 semaines.
+  </div>
+</div>
+</div>
+
+<!-- ─── LUNDI ─── -->
+<div class="sec">
+<div class="sl">Programme journalier</div>
+
+<div class="day">
+<div class="dh dhpk">
+  <span class="db2">Lundi · Séance 1</span>
+  <div class="dt3">Force-vitesse bas du corps + Depth jump + Nordic complet</div>
+  <div class="dm">⏱ 100 min · Force-vitesse d'abord · Depth jump · Nordic milestone en fin</div>
+</div>
+<div class="db">
+<div class="ib"><div class="ibl">Intensité</div><div class="ibt"><div class="ibf" style="width:90%;background:var(--peak-mid);"></div></div><div class="ibv" style="color:var(--peak-mid);">90%</div></div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Squat — Force-vitesse (2 blocs)</div><div class="ev">Bloc A + B</div><div class="er">Repos 3 min</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">
+      <b>Bloc A — Force :</b> 2 × 3 @ 87–90% 1RM · tempo 3-1-X · force maximale<br>
+      <b>Bloc B — Vitesse :</b> 2 × 5 @ 70% 1RM · intention de vitesse maximale à la montée<br>
+      Repos 3 min entre toutes les séries. <b>Le Bloc B n'est pas "léger" — c'est un effort maximal avec une charge plus légère.</b>
+    </div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">
+      <b>Bloc A :</b> 2 × 3 Bulgarian split squat · charge max disponible<br>
+      <b>Bloc B :</b> 2 × 5 squat jump (saut depuis position squat profonde · atterrissage 2 sec)<br>
+      L'enchaînement force → vitesse est le cœur de la force-vitesse.
+    </div></div>
+  </div>
+  <div class="etk"><div class="tl">Concept force-vitesse</div><div class="tt">Le cerveau retient le pattern "lourd mais rapide" après le Bloc A · le Bloc B bénéficie de ce recrutement nerveux · c'est le mécanisme d'activation post-tétanique (PAP)</div></div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Deadlift — Charge max</div><div class="ev">3 × 3</div><div class="er">Repos 4 min</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">87–90% 1RM. 3 reps seulement — le deadlift lourd est très taxant sur le SNC. Repos 4 min entre les séries. Concentration maximale sur chaque rep. C'est la charge la plus lourde du programme sur cet exercice.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Single-leg RDL : charge max possible × 3/jambe · 3 séries · repos 3 min. Ou <b>isométrie deadlift max</b> : pousser contre un obstacle fixe 6 sec à effort maximal × 4 sets. Stimulus fort sans barre.</div></div>
+  </div>
+  <div class="etk"><div class="tl">Repos 4 min impératif</div><div class="tt">À 87–90%, le SNC a besoin de 3–4 min pour se récupérer pleinement · moins de repos = -10 à -15% de force sur la série suivante</div></div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Hip thrust explosif max <span class="tag tag-spp">SPP</span></div><div class="ev">4 × 6</div><div class="er">Repos 2 min</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Charge maximale + drive explosif. L'objectif S12 : dépasser la charge de S11. Si S11 = 120 kg → essayer 125–130 kg. C'est l'exercice où les gains progressent le plus vite en Phase 2.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Version unilatérale avec sac max. 4 × 8/jambe. Drive explosif vers le haut — simule le départ de sprint. Ou hip thrust bilatéral sur banc avec pieds surélevés (amplitude augmentée).</div></div>
+  </div>
+</div>
+
+<!-- DEPTH JUMP -->
+<div class="info ia" style="margin:10px 0;"><b>Transition force → plyométrie : 5 min de récupération obligatoire.</b> Boire, marcher, respirer. La plyométrie après la force lourde demande un SNC frais pour être sécurisée et efficace.</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Depth jump <span class="tag tag-new">🆕 Plyométrie avancée</span></div><div class="ev">4 × 5</div><div class="er">30 sec/rep · 2 min/série</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">
+      Caisse 25–30 cm. <b>Étape par étape :</b><br>
+      1. Monter sur la caisse<br>
+      2. Poser un pied au sol (step off — ne pas sauter depuis la caisse)<br>
+      3. Dès que les deux pieds touchent le sol → saut vertical maximal immédiat<br>
+      4. Contact au sol le plus court possible (réactivité = clé)<br>
+      Atterrissage : genoux fléchis, silencieux. 30 sec entre chaque rep.
+    </div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">
+      Muret de parc 25–30 cm. Même protocole :<br>
+      1. Monter sur le muret<br>
+      2. Step off (pas de saut depuis)<br>
+      3. Contact sol → saut vertical max immédiat<br>
+      Si pas de muret adapté → <b>reactive squat jump</b> : descente rapide squat → remontée immédiate explosive · 4 × 5 · 20 sec/rep. Même signal neural que le depth jump.
+    </div></div>
+  </div>
+  <div class="etk"><div class="tl">Depth jump vs Box jump</div><div class="tt">Box jump (S11) = saut déclenché par toi · Depth jump (S12) = saut déclenché par l'impact · Le depth jump entraîne la réactivité tendineuse — bien plus spécifique aux démarrages défensifs (réaction à un adversaire)</div></div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Lateral reactive bound <span class="tag tag-pow">Puissance</span></div><div class="ev">4 × 5/côté</div><div class="er">15 sec/rep · 2 min/série</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Même que S11 mais contact au sol plus court (réactif). Sauter latéralement → atterrir sur 1 jambe → rebond immédiat vers l'autre côté sans pause. Le temps de contact au sol doit être minimal — comme une balle qui rebondit.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Même principe. Placer 2 plots à 1,5m d'écart. Alterne : saut latéral gauche → atterrissage pied droit → rebond → saut droite → atterrissage pied gauche. × 5 allers-retours. Contact minimal au sol.</div></div>
+  </div>
+</div>
+
+<!-- NORDIC COMPLET -->
+<div class="nordic-milestone" style="margin:10px 0;">
+  <div class="nm-title">🎯 Nordic curl complet — Premier vrai</div>
+  <div class="nm-body">
+    <b>Protocole exact :</b><br>
+    · 5 min échauffement ischio (PNF × 3/jambe)<br>
+    · 1 série exploratoire : 2 reps sans aide → évaluer<br>
+    · Si OK : 3 × 3 reps sans aide · repos 3 min entre séries<br>
+    · Si trop difficile : 3 × 4 reps avec bande élastique fine (assistance 20–30%)<br><br>
+    <b>Ce que tu ressentiras :</b> la remontée sera très difficile, même sur 3 reps. C'est normal. Le record à battre en S14 est 3 reps propres sans aide.
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Copenhagen + Calf raise</div><div class="ev">3 × 30 sec + 3 × 10</div><div class="er">—</div></div>
+  <div class="eu"><div class="euu">✅ Identique salle et extérieur. Copenhagen 3 × 30 sec/côté (+5 sec vs S11). Calf raise unilatéral sur marche 3 × 10/jambe · descente 4 sec. Fin de la longue séance de lundi.</div></div>
+</div>
+</div>
+</div>
+
+<!-- MARDI -->
+<div class="day">
+<div class="dh dhg">
+  <span class="db2">Mardi · Séance 2</span>
+  <div class="dt3">Zone 2 (30 min) + Technique défensive avancée</div>
+  <div class="dm">⏱ 60 min · FC 65–70% · Récupération après lundi lourd</div>
+</div>
+<div class="db">
+<div class="eb2">
+  <div class="eh"><div class="en">Zone 2 — 30 min</div><div class="ev">30 min</div><div class="er">FC 65–70%</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Vélo ou tapis. FC légèrement plus basse que d'habitude (65–70%) — après depth jump et deadlift lourd de lundi, les jambes méritent un travail très léger. Si lourdes → vélo plutôt que tapis.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Course très légère ou marche rapide si les jambes sont lourdes. FC 65–70% seulement. Pas de pression sur l'allure — l'objectif est la circulation sanguine, pas le cardio.</div></div>
+  </div>
+</div>
+<div class="eb2">
+  <div class="eh"><div class="en">Technique défensive avancée <span class="tag tag-spp">SPP</span></div><div class="ev">25 min</div><div class="er">—</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Shuffles bande avec changements de direction réactifs 8 min + sprint repli couloir + repositionnement × 8 + Pallof press lourd 3 × 10. Focus sur la décision rapide.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">1v1 imagé avec blocage de trajectoire 8 min · transition repli + placement × 10 · relance longue pied faible × 6 · duel aérien avec prise de zone 5 min. Niveau de réactivité maximal du programme.</div></div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- MERCREDI — T-TEST RÉPÉTÉ -->
+<div class="day">
+<div class="dh dhf">
+  <span class="db2">Mercredi · Séance 3</span>
+  <div class="dt3">T-test répété + 5-0-5 COD — HIIT Football-spécifique</div>
+  <div class="dm">⏱ 55 min · Agilité au max à chaque rep · Repos complet entre les efforts</div>
+</div>
+<div class="db">
+<div class="info iv"><b>T-test répété :</b> le T-test de S9 était un test de mesure. Ici, on l'utilise comme outil d'entraînement de l'agilité maximale. Chaque répétition doit être au niveau de performance test — pas "presque à fond". Le but est de développer la capacité à répéter des efforts d'agilité maximale avec récupération courte.</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Échauffement agilité</div><div class="ev">18 min</div><div class="er">—</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Jogging 6 min + éducatifs 6 min + 3 COD à 70%, 80%, 90%. Mettre les cônes en place avant l'échauffement pour ne pas perdre de temps.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Jogging 6 min + éducatifs 6 min (pas chassés + montées genoux + changements direction) + 3 T-tests à 70%, 80%, 90%. Corps bien activé avant les efforts à 100%.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">T-test répété × 6 à max</div><div class="ev">6 reps</div><div class="er">Repos 2 min complet</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Mettre les 4 cônes selon le schéma T-test (de S9). Effectuer le T-test à vitesse maximale × 6 fois. Repos 2 min complet entre chaque. <b>Chronométrer chaque rep.</b> Les 6 temps doivent être proches — si le 6ème est +0.5 sec vs le 1er, le repos est insuffisant.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">T-test × 6 répétitions à vitesse maximale · repos 2 min. Note chaque temps. Comparer au résultat des tests S9 — tu dois être plus rapide en S12 qu'en S9 sur chaque rep. C'est la progression SPP en action.</div></div>
+  </div>
+  <div class="etk"><div class="tl">Progression attendue</div><div class="tt">Être 0.2–0.5 sec plus rapide au T-test vs S9 · la force des jambes (S10–S12) + le travail de réactivité (S11–S12) se traduisent directement en agilité améliorée</div></div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">5-0-5 drill × 10</div><div class="ev">10 reps</div><div class="er">Repos 90 sec</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">2 cônes à 5m. Sprint 5m → demi-tour immédiat → sprint 5m → demi-tour → sprint 5m = 1 rep. Repos 90 sec. 10 reps. Focus sur la qualité du demi-tour : baisser le centre de gravité + appui explosif sur le pied extérieur.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Même protocole. 2 plots à 5m. 10 reps × 3 allers-retours. Ce drill développe exactement ce qu'un défenseur fait dans les couloirs et lors des reprises de marquage après un duel.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Retour au calme</div><div class="ev">10 min</div><div class="er">—</div></div>
+  <div class="eu"><div class="euu">✅ Identique — marche 5 min + mobilité mollets et hanches 5 min. Les demi-tours sollicitent fortement les chevilles et les ischio.</div></div>
+</div>
+</div>
+</div>
+
+<!-- JEUDI -->
+<div class="day">
+<div class="dh dhpk">
+  <span class="db2">Jeudi · Séance 4</span>
+  <div class="dt3">Force-vitesse haut du corps + Plyométrie épaules</div>
+  <div class="dm">⏱ 70 min · Même concept force-vitesse qu'au squat · Puissance de contact</div>
+</div>
+<div class="db">
+<div class="ib"><div class="ibl">Intensité</div><div class="ibt"><div class="ibf" style="width:88%;background:var(--am);"></div></div><div class="ibv" style="color:var(--am);">88%</div></div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Développé couché — Force-vitesse (2 blocs)</div><div class="ev">Bloc A + B</div><div class="er">Repos 3 min</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">
+      <b>Bloc A Force :</b> 2 × 3 @ 87–90% · tempo 3-1-X<br>
+      <b>Bloc B Vitesse :</b> 2 × 5 @ 70% · poussée aussi rapide que possible<br>
+      3 min repos entre toutes les séries. Même principe PAP qu'au squat.
+    </div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">
+      <b>Bloc A :</b> 2 × 4 pompes déclinées ultra-lestées<br>
+      <b>Bloc B :</b> 2 × 5 pompes explosives (décoller les mains) · atterrissage contrôlé<br>
+      L'enchaînement lourd → explosif.
+    </div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Tractions lestées max</div><div class="ev">4 × 4</div><div class="er">Repos 3 min</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Lest maximum possible sur 4 reps propres. Si tu faisais 5 × 10 kg en S11 → essayer 5 × 12–14 kg. La 4ème rep doit être un effort RPE 9.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Barre de parc avec sac lourd. 4 × 4. Descente 3 sec · pause 1 sec · remontée explosive. Ou super-série : 3 tractions lestées + 5 body rows rapides enchaînés sans repos.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Med ball slam <span class="tag tag-new">🆕</span></div><div class="ev">4 × 8</div><div class="er">Repos 75 sec</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed"><b>Nouveau exercice puissance :</b> ballon médicinal 4–6 kg. Tenir au-dessus de la tête, projection violente au sol devant soi. Ramasser et recommencer. Reproduit la puissance verticale du duel aérien (bras qui vont vers le bas = force de jeu de tête). 8 slams à intensité maximale.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Sur terrain (herbe ou tarmac résistant). Même mouvement. Si pas de med ball → <b>burpee explosif</b> : descente rapide → push-up → saut vertical max × 8 · repos 75 sec. Signal neural similaire.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Med ball rotation + Chest pass + Militaire · Core</div><div class="ev">3 × 8 chacun + core</div><div class="er">—</div></div>
+  <div class="eu"><div class="euu">✅ Rotation throw 3 × 8/côté · Chest pass 3 × 8 · Militaire force-vitesse (Bloc A : 2 × 3 lourd + Bloc B : 2 × 5 rapide).<br>
+  Core : Pallof lourd 3 × 10 · Dead bug lesté 3 × 8 · Gainage 3 × 60 sec.<br>
+  🏋️ Med ball : salle/mur · 🌳 Extérieur : mur terrain ou partenaire · Militaire et core : identiques partout.</div></div>
+</div>
+</div>
+</div>
+
+<!-- VENDREDI -->
+<div class="day">
+<div class="dh dhr">
+  <span class="db2">Vendredi · Récupération</span>
+  <div class="dt3">Récupération active + Mobilité — Priorité tendon Achille + ischio</div>
+  <div class="dm">⏱ 50 min · Depth jumps + Nordic complet ont fortement stressé les tendons</div>
+</div>
+<div class="db">
+<div class="eb2">
+  <div class="eh"><div class="en">Récupération complète</div><div class="ev">50 min</div><div class="er">—</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Vélo très léger 15 min (FC &lt; 55%) + foam rolling intensif 10 min (mollets, IT band, ischio, adducteurs) + mobilité complète 25 min. Après depth jump et Nordic complet, les tendons sont en phase d'adaptation intense — leur donner le maximum de récupération avant les sprints de samedi.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Marche 15 min + auto-massage manuel 10 min (mollets, ischio) + mobilité complète 25 min. Si une légère sensation de tension dans les ischio ou le tendon d'Achille → glaçage 10 min en complément de la mobilité.</div></div>
+  </div>
+</div>
+<div class="info ig"><b>Signal d'alarme à surveiller ce vendredi :</b> si tu ressens une douleur localisée dans le milieu du tendon ischio (pas juste derrière le genou, mais sur la longueur du muscle) après le Nordic complet → repos ischio jusqu'à S14 et ne pas recommencer le Nordic. La priorité est d'arriver aux tests finaux sans blessure.</div>
+</div>
+</div>
+
+<!-- SAMEDI -->
+<div class="day">
+<div class="dh dhp">
+  <span class="db2">Samedi · Séance 5</span>
+  <div class="dt3">Sprints 10m + 30m + Plyométrie 4 rounds + Technique</div>
+  <div class="dm">⏱ 85 min · Sprints en premier (corps frais) · Plyométrie · Technique pour finir</div>
+</div>
+<div class="db">
+
+<div class="eb2">
+  <div class="eh"><div class="en">Échauffement sprint</div><div class="ev">20 min</div><div class="er">—</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Couloir ou extérieur nécessaire pour les sprints. Jogging 8 min + éducatifs 7 min + montées progressives (60%→70%→80%→90%) sur 20m × 4.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Jogging 8 min + éducatifs 7 min + 4 accélérations progressives sur 30m à 60%, 70%, 80%, 90%. Même surface qu'en S11 pour comparer les sensations.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Sprints 10m — 10 reps à 100%</div><div class="ev">10 × 10m</div><div class="er">Repos 90 sec complet</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Couloir minimum 12m. 10 sprints à vitesse maximale absolue. Repos 90 sec complet entre chaque — si tu ne récupères pas, tu n'es plus à 100%. <b>+2 reps vs S11.</b></div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">10 × 10m à 100%. Récup 90 sec. Note : tu devrais courir légèrement plus vite qu'en S11 grâce à la semaine supplémentaire de force-vitesse et de depth jump. La différence peut être minime mais réelle.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Sprints 30m — 4 reps à 100% <span class="tag tag-new">🆕</span></div><div class="ev">4 × 30m</div><div class="er">Repos 3 min complet</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Si couloir disponible (minimum 32m). Sinon, réaliser en extérieur lors d'une autre session. 4 sprints à 100% sur 30m. Repos 3 min complet. C'est la première fois dans ce programme qu'on fait des sprints 30m à vitesse maximale — un moment clé.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">4 × 30m à vitesse maximale absolue. Repos 3 min. Note tes sensations — est-ce que tu peux "sentir" la différence avec les 30m de S9 (tests) ? La combinaison poids perdu + force + plyométrie devrait se traduire par une vitesse de pointe supérieure.</div></div>
+  </div>
+  <div class="etk"><div class="tl">10m vs 30m</div><div class="tt">Le 10m mesure l'accélération (qualité de ton 1er pas) · Le 30m mesure la vitesse maximale (qualité de ta foulée en pleine vitesse) · Les deux ont progressé pour des raisons différentes</div></div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Circuit plyométrie — 4 rounds intensifiés</div><div class="ev">4 rounds</div><div class="er">2 min entre rounds</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed"><b>Round :</b> 4 × Depth jump (réactif) · 4 × Box jump · 4 × Lateral reactive bound/côté · 4 × Broad jump. Récup 20 sec/rep. 2 min entre rounds. <b>4 rounds vs 3 en S11.</b></div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed"><b>Round :</b> 4 × reactive squat jump · 4 × lateral reactive bound · 4 × broad jump · 4 × sprint 5m + atterrissage unilatéral. 4 rounds · 2 min entre. Qualité maximale sur chaque saut.</div></div>
+  </div>
+</div>
+
+<div class="eb2">
+  <div class="eh"><div class="en">Technique défensive + Retour calme</div><div class="ev">15 min</div><div class="er">—</div></div>
+  <div class="esp">
+    <div class="es show-salle"><div class="mt2">🏋️ Salle</div><div class="ed">Shuffles bande 5 min + mobilité complète 10 min. Corps fatigué après sprints + plyométrie — garder la technique légère.</div></div>
+    <div class="ee show-ext"><div class="mt2">🌳 Extérieur</div><div class="ed">Placement défensif détendu 5 min + mobilité complète 10 min. Finir sur une bonne sensation de légèreté après la séance explosive.</div></div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- DIMANCHE -->
+<div class="day">
+<div class="dh dhrest">
+  <span class="db2">Dimanche · Repos complet</span>
+  <div class="dt3">Repos — Pic de puissance atteint · S13 commence demain</div>
+  <div class="dm">0 min · Le corps adapte depth jump + Nordic complet + sprints 30m</div>
+</div>
+<div class="db">
+<div class="eu"><div class="euu">✅ Marche 30 min max. 9h de sommeil. S12 est le pic de puissance du programme — la semaine la plus exigeante sur le système nerveux central. S13 (performance + simulation) commence avec un léger volume réduit pour permettre d'exprimer tout ce qui a été construit. Ne pas s'entraîner ce dimanche.</div></div>
+</div>
+</div>
+</div>
+
+<!-- MOBILITÉ -->
+<div class="sec">
+<div class="sl">Mobilité quotidienne — Priorités critiques S12</div>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">
+  <div style="background:var(--w);border:0.5px solid var(--bo);border-radius:8px;padding:9px 11px;"><div style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:3px;">🦵 Ischio — 6 min (PRIORITÉ 1)</div><div style="font-size:11px;color:var(--im);line-height:1.55;">PNF × 4/jambe. Après le premier Nordic complet, les ischio ont subi un stress concentrique sans précédent. La mobilité quotidienne des 7 prochains jours est la protection principale contre une blessure ischio qui annulerait les tests S14.</div></div>
+  <div style="background:var(--w);border:0.5px solid var(--bo);border-radius:8px;padding:9px 11px;"><div style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:3px;">🦶 Tendon Achille + Mollet — 5 min</div><div style="font-size:11px;color:var(--im);line-height:1.55;">Étirement mollet debout 45 sec × 3 + calf raise lent × 15. Le depth jump et les sprints 30m mettent le tendon d'Achille sous tension maximale. L'entretenir prévient la tendinite.</div></div>
+  <div style="background:var(--w);border:0.5px solid var(--bo);border-radius:8px;padding:9px 11px;"><div style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:3px;">🦵 Adducteurs — 4 min</div><div style="font-size:11px;color:var(--im);line-height:1.55;">Les T-test répétés et 5-0-5 drills sollicitent fortement les adducteurs dans les demi-tours. Étirement en papillon + écart jambes tendues.</div></div>
+  <div style="background:var(--w);border:0.5px solid var(--bo);border-radius:8px;padding:9px 11px;"><div style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:3px;">🦵 Genoux — 3 min (Nouveau)</div><div style="font-size:11px;color:var(--im);line-height:1.55;">Mobilisation rotule + étirement ITB + quad debout. Le depth jump crée un stress sur le tendon rotulien — l'entretenir prévient la tendinite rotulienne (jumper's knee).</div></div>
+</div>
+</div>
+
+<!-- NUTRITION -->
+<div class="sec">
+<div class="sl">Nutrition — Semaine 12 · 2 900 kcal · +100 vs S11</div>
+<div class="mr">
+  <div class="mc2 mc2-p"><div class="ml">Protéines</div><div class="mv">180 g</div><div class="mc-s">2.5 g/kg · 720 kcal · 25%</div></div>
+  <div class="mc2 mc2-g"><div class="ml">Glucides</div><div class="mv">325 g</div><div class="mc-s">4.5 g/kg · 1 300 kcal · 45%</div></div>
+  <div class="mc2 mc2-f"><div class="ml">Lipides</div><div class="mv">97 g</div><div class="mc-s">1.3 g/kg · 873 kcal · 30%</div></div>
+</div>
+<div class="info iv"><b>Jours de plyométrie + sprints (lundi + samedi) :</b> ajouter 40 g de glucides supplémentaires (2 tranches de pain complet + miel, ou 1 grande banane + 40 g d'avoine). La puissance anaérobie des depth jumps et sprints consomme du glycogène phosphate — recharger avant et après améliore la qualité des efforts.</div>
+</div>
+
+<!-- INDICATEURS -->
+<div class="sec">
+<div class="sl">Indicateurs fin de semaine 12</div>
+<div class="pg">
+  <div class="pgc pok"><div class="pi">🎯</div><div><div class="pti">Nordic complet — Milestone atteint si</div><div class="pd">3 reps complètes sans aide des mains (ou avec bande légère) · Aucune douleur pendant ou après · Le mouvement est difficile mais contrôlé · Tu arrives à garder le corps aligné durant la remontée</div></div></div>
+  <div class="pgc pok"><div class="pi">⚡</div><div><div class="pti">Depth jump réussi si</div><div class="pd">Contact au sol court et réactif · Atterrissage silencieux · Tu remarques que tu rebondis "naturellement" sans effort conscient · Pas de douleur genou ou cheville pendant ou après</div></div></div>
+  <div class="pgc pok"><div class="pi">🏃</div><div><div class="pti">Sprints 30m réussis si</div><div class="pd">4 reps complètes à 100% · Sensation de légèreté différente des sprints de S9 (tests) · Récupération plus rapide entre les reps qu'en S9</div></div></div>
+  <div class="pgc pwn"><div class="pi">⚠️</div><div><div class="pti">Signaux d'alerte — Priorité S14</div><div class="pd">Douleur tendon d'Achille → stop depth jump + repos · Douleur ischio localisée → stop Nordic + repos + médecin · Douleur genou à l'atterrissage → réduire hauteur depth jump immédiatement · Objectif absolu : arriver aux tests S14 sans blessure</div></div></div>
+</div>
+</div>
+
+<!-- BRIDGE -->
+<div class="bridge">
+  <div class="bt">Semaine 13 — Performance + Simulation match · Préparation finale</div>
+  <div class="bgr">
+    <div class="bgc"><div class="bgl">Intensité</div><div class="bgs12">Pic puissance S12</div><div class="bgs13">Légèrement réduite · fraîcheur pour simulation</div></div>
+    <div class="bgc"><div class="bgl">Plyométrie</div><div class="bgs12">Depth jump · 4 rounds</div><div class="bgs13">Maintenue · 3 rounds · qualité préservée</div></div>
+    <div class="bgc"><div class="bgl">Simulation</div><div class="bgs12">—</div><div class="bgs13">Simulation match 60–70 min · football complet</div></div>
+    <div class="bgc"><div class="bgl">Sprints</div><div class="bgs12">10m + 30m</div><div class="bgs13">Idem + 60m × 2 · vitesse maximale</div></div>
+    <div class="bgc"><div class="bgl">Nordic</div><div class="bgs12">Complet 3 × 3</div><div class="bgs13">3 × 4 si S12 bien toléré · progression finale</div></div>
+    <div class="bgc"><div class="bgl">Préparation S14</div><div class="bgs12">—</div><div class="bgs13">S13 finit avec décharge 3 jours avant tests</div></div>
+  </div>
+</div>
+
+</div>
+<script>
+function setMode(m){
+  var s=document.querySelectorAll('.show-salle');
+  var e=document.querySelectorAll('.show-ext');
+  var bs=document.getElementById('bs');
+  var bb=document.getElementById('bb');
+  var be=document.getElementById('be');
+  [bs,bb,be].forEach(function(b){b.classList.remove('as','ae');});
+  if(m==='salle'){s.forEach(function(el){el.style.display='';});e.forEach(function(el){el.style.display='none';});bs.classList.add('as');}
+  else if(m==='ext'){s.forEach(function(el){el.style.display='none';});e.forEach(function(el){el.style.display='';});be.classList.add('ae');}
+  else{s.forEach(function(el){el.style.display='';});e.forEach(function(el){el.style.display='';}); }
+}
+setMode('salle');
+</script>
+</body>
+</html>
