@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saisie de données — Programme Football</title>
+<style>
+:root{
+  --bg:#0D1117;--surface:#161B22;--panel:#1C2128;--border:#30363D;
+  --text:#E6EDF3;--mid:#8B949E;--dim:#484F58;
+  --green:#3FB950;--green-d:#1A3B1E;
+  --blue:#58A6FF;--blue-d:#1A2A3B;
+  --orange:#F0883E;--orange-d:#3B1F0A;
+  --red:#F85149;--red-d:#3B0F0D;
+  --purple:#BC8CFF;--purple-d:#2B1B4E;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:13px;}
+
+.topnav{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;}
+.nav-title{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.btn{padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s;}
+.btn-ghost{background:transparent;color:var(--mid);border:1px solid var(--border);}
+.btn-ghost:hover{color:var(--text);}
+
+.wrap{max-width:760px;margin:0 auto;padding:20px;}
+
+/* TABS */
+.tabs{display:flex;gap:4px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px;}
+.tab{padding:8px 16px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--mid);border:1px solid var(--border);background:var(--surface);white-space:nowrap;transition:all .15s;}
+.tab:hover{color:var(--text);}
+.tab.active{background:var(--green-d);color:var(--green);border-color:var(--green);}
+
+/* FORM */
+.form-panel{display:none;}
+.form-panel.active{display:block;}
+.form-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.fc-title{font-size:14px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.fc-sub{font-size:11px;color:var(--mid);margin-bottom:18px;}
+
+.field-group{margin-bottom:16px;}
+.group-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.field-row.single{grid-template-columns:1fr;}
+.field{display:flex;flex-direction:column;gap:5px;}
+.field label{font-size:11px;color:var(--mid);font-weight:600;}
+.field input,.field select,.field textarea{
+  background:var(--panel);border:1px solid var(--border);border-radius:8px;
+  padding:9px 12px;color:var(--text);font-size:13px;font-family:inherit;outline:none;
+  transition:border-color .15s;
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--green);}
+.field input::placeholder{color:var(--dim);}
+.field textarea{resize:vertical;min-height:60px;}
+
+.checkbox-row{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--panel);border-radius:8px;cursor:pointer;}
+.checkbox-row input{width:16px;height:16px;accent-color:var(--green);cursor:pointer;}
+.checkbox-row label{font-size:12px;color:var(--text);cursor:pointer;}
+
+.submit-row{display:flex;gap:10px;align-items:center;margin-top:6px;}
+.submit-btn{flex:1;padding:11px;background:var(--green);color:#000;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;}
+.submit-btn:hover{background:#52C563;}
+.submit-btn:disabled{background:var(--border);color:var(--dim);cursor:not-allowed;}
+
+.status-msg{padding:10px 14px;border-radius:8px;font-size:12px;margin-top:10px;display:none;}
+.status-ok{background:var(--green-d);color:var(--green);}
+.status-err{background:var(--red-d);color:var(--red);}
+
+/* QUICK ADD SEANCE */
+.seance-types{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.st-btn{padding:10px;border-radius:8px;background:var(--panel);border:1px solid var(--border);color:var(--mid);font-size:11px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s;}
+.st-btn.selected{background:var(--green-d);color:var(--green);border-color:var(--green);}
+
+.hint{font-size:10px;color:var(--dim);margin-top:4px;}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="nav-title">📝 Saisie de données</div>
+  <button class="btn btn-ghost" onclick="window.location.href='dashboard.html'">← Retour au dashboard</button>
+</div>
+
+<div class="wrap">
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('seance')">✅ Séance</button>
+    <button class="tab" onclick="showTab('mesures')">⚖️ Mesures</button>
+    <button class="tab" onclick="showTab('force')">💪 Force</button>
+    <button class="tab" onclick="showTab('physique')">🏃 Physique</button>
+    <button class="tab" onclick="showTab('mobilite')">🤸 Mobilité</button>
+    <button class="tab" onclick="showTab('saison')">⚽ Saison</button>
+  </div>
+
+  <!-- ═══ SÉANCE ═══ -->
+  <div class="form-panel active" id="panel-seance">
+    <div class="form-card">
+      <div class="fc-title">✅ Enregistrer une séance</div>
+      <div class="fc-sub">Saisie rapide — pour suivre ton assiduité</div>
+
+      <div class="field-row">
+        <div class="field"><label>Date</label><input type="date" id="se-date"></div>
+        <div class="field"><label>Semaine du programme</label><input type="number" id="se-semaine" min="1" max="14" placeholder="ex: 4"></div>
+      </div>
+
+      <div class="field-row single">
+        <div class="field"><label>Type de séance</label>
+          <select id="se-type">
+            <option value="Muscu bas">Muscu bas du corps</option>
+            <option value="Muscu haut">Muscu haut du corps</option>
+            <option value="Zone 2">Zone 2 (cardio)</option>
+            <option value="HIIT">HIIT</option>
+            <option value="Récupération">Récupération / Mobilité</option>
+            <option value="Technique">Technique défensive</option>
+            <option value="Simulation">Simulation match</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="checkbox-row" onclick="document.getElementById('se-effectuee').click()" style="margin-bottom:14px;">
+        <input type="checkbox" id="se-effectuee" checked>
+        <label>Séance effectuée</label>
+      </div>
+
+      <button class="submit-btn" onclick="submitSeance()">Enregistrer la séance</button>
+      <div class="status-msg" id="status-seance"></div>
+    </div>
+  </div>
+
+  <!-- ═══ MESURES ═══ -->
+  <div class="form-panel" id="panel-mesures">
+    <div class="form-card">
+      <div class="fc-title">⚖️ Mesures corporelles</div>
+      <div class="fc-sub">Poids, tours de corps, masse grasse</div>
+
+      <div class="field-row">
+        <div class="field"><label>Date</label><input type="date" id="me-date"></div>
+        <div class="field"><label>Poids (kg)</label><input type="number" step="0.1" id="me-poids" placeholder="76.3"></div>
+      </div>
+
+      <div class="field-group">
+        <div class="group-label">Informations générales</div>
+        <div class="field-row">
+          <div class="field"><label>Taille (cm)</label><input type="number" step="0.1" id="me-taille" placeholder="174"></div>
+          <div class="field"><label>Âge</label><input type="number" id="me-age" placeholder="23"></div>
+        </div>
+        <div class="field-row single">
+          <div class="field"><label>Masse grasse estimée (%)</label><input type="number" step="0.1" id="me-mg" placeholder="18"></div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="group-label">Tours de corps (cm)</div>
+        <div class="field-row">
+          <div class="field"><label>Pectoraux</label><input type="number" step="0.1" id="me-pec"></div>
+          <div class="field"><label>Ventre</label><input type="number" step="0.1" id="me-ventre"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Bras Gauche</label><input type="number" step="0.1" id="me-bras-g"></div>
+          <div class="field"><label>Bras Droit</label><input type="number" step="0.1" id="me-bras-d"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Cuisse Gauche</label><input type="number" step="0.1" id="me-cuisse-g"></div>
+          <div class="field"><label>Cuisse Droit</label><input type="number" step="0.1" id="me-cuisse-d"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Mollet Gauche</label><input type="number" step="0.1" id="me-mollet-g"></div>
+          <div class="field"><label>Mollet Droit</label><input type="number" step="0.1" id="me-mollet-d"></div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="group-label">Blessures (optionnel)</div>
+        <div class="field-row">
+          <div class="field"><label>Côté gauche</label><input type="text" id="me-blessure-g" placeholder="ex: Ischio gauche"></div>
+          <div class="field"><label>Côté droit</label><input type="text" id="me-blessure-d" placeholder="ex: Péroné droit"></div>
+        </div>
+      </div>
+
+      <div class="field-row single">
+        <div class="field"><label>Notes</label><textarea id="me-notes" placeholder="Remarques libres…"></textarea></div>
+      </div>
+
+      <button class="submit-btn" onclick="submitMesures()">Enregistrer les mesures</button>
+      <div class="status-msg" id="status-mesures"></div>
+    </div>
+  </div>
+
+  <!-- ═══ FORCE ═══ -->
+  <div class="form-panel" id="panel-force">
+    <div class="form-card">
+      <div class="fc-title">💪 Tests de force</div>
+      <div class="fc-sub">1RM et résultats des tests de force maximale</div>
+
+      <div class="field-row single">
+        <div class="field"><label>Date</label><input type="date" id="fo-date"></div>
+      </div>
+
+      <div class="field-group">
+        <div class="group-label">Haut du corps</div>
+        <div class="field-row">
+          <div class="field"><label>Développé couché G (kg)</label><input type="number" step="0.5" id="fo-bench-g"></div>
+          <div class="field"><label>Développé couché D (kg)</label><input type="number" step="0.5" id="fo-bench-d"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Développé militaire (kg)</label><input type="number" step="0.5" id="fo-militaire"></div>
+          <div class="field"><label>Tractions (reps)</label><input type="number" id="fo-traction"></div>
+        </div>
+        <div class="field-row single">
+          <div class="field"><label>Rowing (kg)</label><input type="number" step="0.5" id="fo-rowing"></div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="group-label">Bas du corps</div>
+        <div class="field-row">
+          <div class="field"><label>Squat G (kg)</label><input type="number" step="0.5" id="fo-squat-g"></div>
+          <div class="field"><label>Squat D (kg)</label><input type="number" step="0.5" id="fo-squat-d"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Soulevé de terre (kg)</label><input type="number" step="0.5" id="fo-deadlift"></div>
+          <div class="field"><label>Presse à cuisse (kg)</label><input type="number" step="0.5" id="fo-presse"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Hip thrust G (kg)</label><input type="number" step="0.5" id="fo-hip-g"></div>
+          <div class="field"><label>Hip thrust D (kg)</label><input type="number" step="0.5" id="fo-hip-d"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Leg Curl G (kg)</label><input type="number" step="0.5" id="fo-curl-g"></div>
+          <div class="field"><label>Leg Curl D (kg)</label><input type="number" step="0.5" id="fo-curl-d"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Leg Extension G (kg)</label><input type="number" step="0.5" id="fo-ext-g"></div>
+          <div class="field"><label>Leg Extension D (kg)</label><input type="number" step="0.5" id="fo-ext-d"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Fente (kg)</label><input type="number" step="0.5" id="fo-fente"></div>
+          <div class="field"><label>Nordic curl (reps)</label><input type="number" step="0.5" id="fo-nordic"></div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="group-label">Gainage</div>
+        <div class="field-row">
+          <div class="field"><label>Sorensen (sec)</label><input type="number" step="0.1" id="fo-sorensen"></div>
+          <div class="field"><label>Shirado-ito (sec)</label><input type="number" step="0.1" id="fo-shirado"></div>
+        </div>
+        <div class="field-row single">
+          <div class="field"><label>Sargent — saut puissance (cm)</label><input type="number" step="0.5" id="fo-sargent"></div>
+        </div>
+      </div>
+
+      <div class="field-row single">
+        <div class="field"><label>Notes</label><textarea id="fo-notes"></textarea></div>
+      </div>
+
+      <button class="submit-btn" onclick="submitForce()">Enregistrer les tests de force</button>
+      <div class="status-msg" id="status-force"></div>
+    </div>
+  </div>
+
+  <!-- ═══ PHYSIQUE ═══ -->
+  <div class="form-panel" id="panel-physique">
+    <div class="form-card">
+      <div class="fc-title">🏃 Tests physiques</div>
+      <div class="fc-sub">Vitesse, agilité, endurance</div>
+
+      <div class="field-row single">
+        <div class="field"><label>Date</label><input type="date" id="ph-date"></div>
+      </div>
+
+      <div class="field-group">
+        <div class="group-label">Vitesse &amp; Agilité</div>
+        <div class="field-row">
+          <div class="field"><label>Sprint 10m (sec)</label><input type="number" step="0.01" id="ph-s10"></div>
+          <div class="field"><label>Sprint 30m (sec)</label><input type="number" step="0.01" id="ph-s30"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>T-test (sec)</label><input type="number" step="0.01" id="ph-ttest"></div>
+          <div class="field"><label>10×5m (sec)</label><input type="number" step="0.01" id="ph-10x5"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Cazorla (sec)</label><input type="number" step="0.01" id="ph-cazorla"></div>
+          <div class="field"><label>CMJ — saut vertical (cm)</label><input type="number" step="0.5" id="ph-cmj"></div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="group-label">Endurance</div>
+        <div class="field-row">
+          <div class="field"><label>VMA (km/h)</label><input type="number" step="0.1" id="ph-vma"></div>
+          <div class="field"><label>VIFT — GACON (km/h)</label><input type="number" step="0.1" id="ph-vift"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>GACON — palier</label><input type="number" id="ph-gacon-palier"></div>
+          <div class="field"><label>Distance 5km (min)</label><input type="number" step="0.1" id="ph-5km"></div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="group-label">Autres</div>
+        <div class="field-row">
+          <div class="field"><label>Gainage max (sec)</label><input type="number" step="0.1" id="ph-gainage"></div>
+          <div class="field"><label>Équilibre yeux fermés G (sec)</label><input type="number" step="0.1" id="ph-eq-g"></div>
+        </div>
+        <div class="field-row single">
+          <div class="field"><label>Équilibre yeux fermés D (sec)</label><input type="number" step="0.1" id="ph-eq-d"></div>
+        </div>
+      </div>
+
+      <div class="field-row single">
+        <div class="field"><label>Notes</label><textarea id="ph-notes"></textarea></div>
+      </div>
+
+      <button class="submit-btn" onclick="submitPhysique()">Enregistrer les tests physiques</button>
+      <div class="status-msg" id="status-physique"></div>
+    </div>
+  </div>
+
+  <!-- ═══ MOBILITÉ ═══ -->
+  <div class="form-panel" id="panel-mobilite">
+    <div class="form-card">
+      <div class="fc-title">🤸 Mobilité &amp; FMS</div>
+      <div class="fc-sub">Tests de souplesse et Functional Movement Screen</div>
+
+      <div class="field-row single">
+        <div class="field"><label>Date</label><input type="date" id="mo-date"></div>
+      </div>
+
+      <div class="field-group">
+        <div class="group-label">FMS (notes de 0 à 3)</div>
+        <div class="field-row">
+          <div class="field"><label>Test de squat</label><input type="number" min="0" max="3" id="mo-fms-squat"></div>
+          <div class="field"><label>Passage de haie</label><input type="number" min="0" max="3" id="mo-fms-haie"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Test de fente</label><input type="number" min="0" max="3" id="mo-fms-fente"></div>
+          <div class="field"><label>Chaîne postérieure</label><input type="number" min="0" max="3" id="mo-fms-chaine"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Test de pompe</label><input type="number" min="0" max="3" id="mo-fms-pompe"></div>
+          <div class="field"><label>Test de stabilité</label><input type="number" min="0" max="3" id="mo-fms-stab"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Mobilité bassin</label><input type="number" min="0" max="3" id="mo-fms-bassin"></div>
+          <div class="field"><label>Total FMS (sur 21)</label><input type="number" min="0" max="21" id="mo-fms-total"></div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="group-label">Souplesse (cm)</div>
+        <div class="field-row">
+          <div class="field"><label>Épaule Gauche</label><input type="number" step="0.5" id="mo-epaule-g"></div>
+          <div class="field"><label>Épaule Droite</label><input type="number" step="0.5" id="mo-epaule-d"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Ischio Gauche</label><input type="number" step="0.5" id="mo-ischio-g"></div>
+          <div class="field"><label>Ischio Droite</label><input type="number" step="0.5" id="mo-ischio-d"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Adducteur Gauche</label><input type="number" step="0.5" id="mo-add-g"></div>
+          <div class="field"><label>Adducteur Droite</label><input type="number" step="0.5" id="mo-add-d"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Cheville Gauche</label><input type="number" step="0.5" id="mo-chev-g"></div>
+          <div class="field"><label>Cheville Droite</label><input type="number" step="0.5" id="mo-chev-d"></div>
+        </div>
+      </div>
+
+      <div class="field-row single">
+        <div class="field"><label>Notes</label><textarea id="mo-notes"></textarea></div>
+      </div>
+
+      <button class="submit-btn" onclick="submitMobilite()">Enregistrer la mobilité</button>
+      <div class="status-msg" id="status-mobilite"></div>
+    </div>
+  </div>
+
+  <!-- ═══ SAISON ═══ -->
+  <div class="form-panel" id="panel-saison">
+    <div class="form-card">
+      <div class="fc-title">⚽ Suivi de saison</div>
+      <div class="fc-sub">Statistiques mensuelles de matchs</div>
+
+      <div class="field-row">
+        <div class="field"><label>Mois</label>
+          <select id="sa-mois">
+            <option>Juin</option><option>Juillet</option><option>Août</option>
+            <option>Septembre</option><option>Octobre</option><option>Novembre</option>
+            <option>Décembre</option><option>Janvier</option><option>Février</option>
+            <option>Mars</option><option>Avril</option><option>Mai</option>
+          </select>
+        </div>
+        <div class="field"><label>Année</label><input type="number" id="sa-annee" value="2026"></div>
+      </div>
+
+      <div class="field-row">
+        <div class="field"><label>Matchs joués</label><input type="number" id="sa-matchs"></div>
+        <div class="field"><label>Titularisations</label><input type="number" id="sa-tit"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Clean sheets</label><input type="number" id="sa-cs"></div>
+        <div class="field"><label>Buts</label><input type="number" id="sa-buts"></div>
+      </div>
+      <div class="field-row single">
+        <div class="field"><label>Passes décisives</label><input type="number" id="sa-pd"></div>
+      </div>
+
+      <div class="field-row single">
+        <div class="field"><label>Notes</label><textarea id="sa-notes"></textarea></div>
+      </div>
+
+      <button class="submit-btn" onclick="submitSaison()">Enregistrer le mois</button>
+      <div class="status-msg" id="status-saison"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var SB_URL = 'https://huyompxzamrpciyvvglr.supabase.co';
+var SB_KEY = 'sb_publishable_HtW5ovL_RCrcbT0MKnyJhg_dK0md2Ya';
+var HEADERS = {
+  'apikey': SB_KEY,
+  'Authorization': 'Bearer ' + SB_KEY,
+  'Content-Type': 'application/json',
+  'Prefer': 'return=minimal'
+};
+
+// Set today's date on all date fields by default
+window.addEventListener('DOMContentLoaded', function(){
+  var today = new Date().toISOString().split('T')[0];
+  ['se-date','me-date','fo-date','ph-date','mo-date'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.value = today;
+  });
+});
+
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.form-panel').forEach(function(p){p.classList.remove('active');});
+  event.target.classList.add('active');
+  document.getElementById('panel-'+name).classList.add('active');
+}
+
+function showStatus(id, ok, msg) {
+  var el = document.getElementById(id);
+  el.className = 'status-msg ' + (ok ? 'status-ok' : 'status-err');
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(function(){ el.style.display = 'none'; }, 3500);
+}
+
+function num(id) {
+  var v = document.getElementById(id).value;
+  return v === '' ? null : parseFloat(v);
+}
+function int(id) {
+  var v = document.getElementById(id).value;
+  return v === '' ? null : parseInt(v);
+}
+function str(id) {
+  var v = document.getElementById(id).value;
+  return v === '' ? null : v;
+}
+
+async function postRow(table, payload, statusId, resetFn) {
+  try {
+    var res = await fetch(SB_URL + '/rest/v1/' + table, {
+      method: 'POST',
+      headers: HEADERS,
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) {
+      var err = await res.text();
+      throw new Error(err || 'Erreur ' + res.status);
+    }
+    showStatus(statusId, true, '✅ Enregistré avec succès');
+    if (resetFn) resetFn();
+  } catch (e) {
+    showStatus(statusId, false, '⚠️ Erreur : ' + e.message);
+  }
+}
+
+// ── SÉANCE ──
+function submitSeance() {
+  var payload = {
+    date: str('se-date'),
+    semaine: int('se-semaine'),
+    type: str('se-type'),
+    effectuee: document.getElementById('se-effectuee').checked
+  };
+  postRow('seances', payload, 'status-seance', function(){
+    document.getElementById('se-semaine').value = '';
+  });
+}
+
+// ── MESURES ──
+function submitMesures() {
+  var payload = {
+    date: str('me-date'),
+    poids: num('me-poids'),
+    taille: num('me-taille'),
+    age: int('me-age'),
+    tour_pectoraux: num('me-pec'),
+    tour_ventre: num('me-ventre'),
+    tour_bras_gauche: num('me-bras-g'),
+    tour_bras_droit: num('me-bras-d'),
+    tour_cuisse_gauche: num('me-cuisse-g'),
+    tour_cuisse_droit: num('me-cuisse-d'),
+    tour_mollet_gauche: num('me-mollet-g'),
+    tour_mollet_droit: num('me-mollet-d'),
+    masse_grasse_estimee: num('me-mg'),
+    blessure_gauche: str('me-blessure-g'),
+    blessure_droite: str('me-blessure-d'),
+    notes: str('me-notes')
+  };
+  postRow('mesures_corporelles', payload, 'status-mesures');
+}
+
+// ── FORCE ──
+function submitForce() {
+  var payload = {
+    date: str('fo-date'),
+    devel_couche_gauche: num('fo-bench-g'),
+    devel_couche_droit: num('fo-bench-d'),
+    devel_militaire: num('fo-militaire'),
+    traction: int('fo-traction'),
+    rowing: num('fo-rowing'),
+    squat_gauche: num('fo-squat-g'),
+    squat_droit: num('fo-squat-d'),
+    souleve_de_terre: num('fo-deadlift'),
+    presse_cuisse: num('fo-presse'),
+    hiptrust_gauche: num('fo-hip-g'),
+    hiptrust_droit: num('fo-hip-d'),
+    leg_curl_gauche: num('fo-curl-g'),
+    leg_curl_droit: num('fo-curl-d'),
+    leg_extension_gauche: num('fo-ext-g'),
+    leg_extension_droit: num('fo-ext-d'),
+    fente: num('fo-fente'),
+    nordic: num('fo-nordic'),
+    sorensen_temps: num('fo-sorensen'),
+    shirado_ito_temps: num('fo-shirado'),
+    sargent_distance: num('fo-sargent'),
+    notes: str('fo-notes')
+  };
+  // calcul ratio sorensen/shirado si les deux présents
+  if (payload.sorensen_temps && payload.shirado_ito_temps) {
+    payload.ratio_sorensen_shirado = Math.round((payload.sorensen_temps / payload.shirado_ito_temps) * 1000) / 1000;
+  }
+  postRow('tests_force', payload, 'status-force');
+}
+
+// ── PHYSIQUE ──
+function submitPhysique() {
+  var payload = {
+    date: str('ph-date'),
+    sprint_10m: num('ph-s10'),
+    sprint_30m: num('ph-s30'),
+    t_test: num('ph-ttest'),
+    sprint_10x5m: num('ph-10x5'),
+    cazorla_temps: num('ph-cazorla'),
+    cmj: num('ph-cmj'),
+    vma: num('ph-vma'),
+    vift: num('ph-vift'),
+    gacon_palier: int('ph-gacon-palier'),
+    distance_5km: num('ph-5km'),
+    gainage_max_temps: num('ph-gainage'),
+    equilibre_yeux_fermes_gauche: num('ph-eq-g'),
+    equilibre_yeux_fermes_droit: num('ph-eq-d'),
+    notes: str('ph-notes')
+  };
+  postRow('tests_physiques', payload, 'status-physique');
+}
+
+// ── MOBILITÉ ──
+function submitMobilite() {
+  var payload = {
+    date: str('mo-date'),
+    fms_squat: int('mo-fms-squat'),
+    fms_passage_haie: int('mo-fms-haie'),
+    fms_fente: int('mo-fms-fente'),
+    fms_chaine_posterieure: int('mo-fms-chaine'),
+    fms_pompe: int('mo-fms-pompe'),
+    fms_stabilite: int('mo-fms-stab'),
+    fms_mobilite_bassin: int('mo-fms-bassin'),
+    fms_total: int('mo-fms-total'),
+    souplesse_epaule_gauche: num('mo-epaule-g'),
+    souplesse_epaule_droite: num('mo-epaule-d'),
+    souplesse_ischio_gauche: num('mo-ischio-g'),
+    souplesse_ischio_droite: num('mo-ischio-d'),
+    souplesse_adducteur_gauche: num('mo-add-g'),
+    souplesse_adducteur_droite: num('mo-add-d'),
+    souplesse_cheville_gauche: num('mo-chev-g'),
+    souplesse_cheville_droite: num('mo-chev-d'),
+    notes: str('mo-notes')
+  };
+  postRow('tests_mobilite', payload, 'status-mobilite');
+}
+
+// ── SAISON ──
+function submitSaison() {
+  var payload = {
+    mois: str('sa-mois'),
+    annee: int('sa-annee'),
+    matchs_joues: int('sa-matchs') || 0,
+    titularisations: int('sa-tit') || 0,
+    clean_sheets: int('sa-cs') || 0,
+    buts: int('sa-buts') || 0,
+    passes_decisives: int('sa-pd') || 0,
+    notes: str('sa-notes')
+  };
+  postRow('suivi_saison', payload, 'status-saison');
+}
+</script>
+</body>
+</html>
