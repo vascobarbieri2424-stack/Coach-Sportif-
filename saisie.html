@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Saisie de données — Programme Football</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 :root{
   --bg:#0D1117;--surface:#161B22;--panel:#1C2128;--border:#30363D;
@@ -422,12 +423,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <script>
 var SB_URL = 'https://huyompxzamrpciyvvglr.supabase.co';
 var SB_KEY = 'sb_publishable_HtW5ovL_RCrcbT0MKnyJhg_dK0md2Ya';
-var HEADERS = {
-  'apikey': SB_KEY,
-  'Authorization': 'Bearer ' + SB_KEY,
-  'Content-Type': 'application/json',
-  'Prefer': 'return=minimal'
-};
+var sb = window.supabase.createClient(SB_URL, SB_KEY);
 
 // Set today's date on all date fields by default
 window.addEventListener('DOMContentLoaded', function(){
@@ -467,20 +463,12 @@ function str(id) {
 }
 
 async function postRow(table, payload, statusId, resetFn) {
-  try {
-    var res = await fetch(SB_URL + '/rest/v1/' + table, {
-      method: 'POST',
-      headers: HEADERS,
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) {
-      var err = await res.text();
-      throw new Error(err || 'Erreur ' + res.status);
-    }
+  var { error } = await sb.from(table).insert(payload);
+  if (error) {
+    showStatus(statusId, false, '⚠️ Erreur : ' + error.message);
+  } else {
     showStatus(statusId, true, '✅ Enregistré avec succès');
     if (resetFn) resetFn();
-  } catch (e) {
-    showStatus(statusId, false, '⚠️ Erreur : ' + e.message);
   }
 }
 

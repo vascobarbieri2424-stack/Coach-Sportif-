@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard — Programme Football</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
 :root{
@@ -94,6 +95,11 @@ td.highlight{color:var(--text);font-weight:600;}
 .empty-icon{font-size:32px;margin-bottom:8px;}
 .empty-text{font-size:12px;}
 
+/* DELETE BUTTON */
+.del-btn{background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px;transition:all .15s;}
+.del-btn:hover{background:var(--red-d);color:var(--red);border-color:var(--red);}
+th.action-col,td.action-col{width:36px;text-align:center;}
+
 /* SAISON TABLE */
 .saison-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:12px;}
 .sg-cell{background:var(--panel);border-radius:8px;padding:10px;text-align:center;}
@@ -164,8 +170,8 @@ td.highlight{color:var(--text);font-weight:600;}
   <div class="data-table">
     <div class="dt-header"><div class="dt-title">Historique tests physiques</div></div>
     <table>
-      <thead><tr><th>Date</th><th>Sprint 10m</th><th>Sprint 30m</th><th>T-test</th><th>VIFT</th><th>CMJ</th><th>Cazorla</th><th>Gainage max</th></tr></thead>
-      <tbody id="tbody-physique"><tr><td colspan="8" class="loading"><div class="spinner"></div></td></tr></tbody>
+      <thead><tr><th>Date</th><th>Sprint 10m</th><th>Sprint 30m</th><th>T-test</th><th>VIFT</th><th>CMJ</th><th>Cazorla</th><th>Gainage max</th><th class="action-col"></th></tr></thead>
+      <tbody id="tbody-physique"><tr><td colspan="9" class="loading"><div class="spinner"></div></td></tr></tbody>
     </table>
   </div>
   <div class="grid-2">
@@ -197,8 +203,8 @@ td.highlight{color:var(--text);font-weight:600;}
   <div class="data-table">
     <div class="dt-header"><div class="dt-title">Historique tests de force</div></div>
     <table>
-      <thead><tr><th>Date</th><th>Squat G/D</th><th>Deadlift</th><th>Dev. Couché</th><th>Tractions</th><th>Hip thrust G/D</th><th>Nordic</th></tr></thead>
-      <tbody id="tbody-force"><tr><td colspan="7" class="loading"><div class="spinner"></div></td></tr></tbody>
+      <thead><tr><th>Date</th><th>Squat G/D</th><th>Deadlift</th><th>Dev. Couché</th><th>Tractions</th><th>Hip thrust G/D</th><th>Nordic</th><th class="action-col"></th></tr></thead>
+      <tbody id="tbody-force"><tr><td colspan="8" class="loading"><div class="spinner"></div></td></tr></tbody>
     </table>
   </div>
 </div>
@@ -216,8 +222,8 @@ td.highlight{color:var(--text);font-weight:600;}
   <div class="data-table">
     <div class="dt-header"><div class="dt-title">Historique mobilité &amp; FMS</div></div>
     <table>
-      <thead><tr><th>Date</th><th>FMS Total</th><th>Squat</th><th>Haie</th><th>Fente</th><th>Chaîne post.</th><th>Ischio G/D</th><th>Adduct. G/D</th></tr></thead>
-      <tbody id="tbody-mobilite"><tr><td colspan="8" class="loading"><div class="spinner"></div></td></tr></tbody>
+      <thead><tr><th>Date</th><th>FMS Total</th><th>Squat</th><th>Haie</th><th>Fente</th><th>Chaîne post.</th><th>Ischio G/D</th><th>Adduct. G/D</th><th class="action-col"></th></tr></thead>
+      <tbody id="tbody-mobilite"><tr><td colspan="9" class="loading"><div class="spinner"></div></td></tr></tbody>
     </table>
   </div>
 </div>
@@ -239,8 +245,8 @@ td.highlight{color:var(--text);font-weight:600;}
   <div class="data-table">
     <div class="dt-header"><div class="dt-title">Détail par mois</div></div>
     <table>
-      <thead><tr><th>Mois</th><th>Matchs</th><th>Titularisations</th><th>Clean sheets</th><th>Buts</th><th>Passes D</th></tr></thead>
-      <tbody id="tbody-saison"><tr><td colspan="6" class="loading"><div class="spinner"></div></td></tr></tbody>
+      <thead><tr><th>Mois</th><th>Matchs</th><th>Titularisations</th><th>Clean sheets</th><th>Buts</th><th>Passes D</th><th class="action-col"></th></tr></thead>
+      <tbody id="tbody-saison"><tr><td colspan="7" class="loading"><div class="spinner"></div></td></tr></tbody>
     </table>
   </div>
 </div>
@@ -248,7 +254,7 @@ td.highlight{color:var(--text);font-weight:600;}
 <script>
 var SB_URL = 'https://huyompxzamrpciyvvglr.supabase.co';
 var SB_KEY = 'sb_publishable_HtW5ovL_RCrcbT0MKnyJhg_dK0md2Ya';
-var HEADERS = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY };
+var sb = window.supabase.createClient(SB_URL, SB_KEY);
 
 var charts = {};
 
@@ -259,11 +265,12 @@ function showSection(id) {
   event.target.classList.add('active');
 }
 
-async function fetchTable(table, order) {
-  var url = SB_URL + '/rest/v1/' + table + '?select=*&order=' + (order||'date.asc');
-  var res = await fetch(url, { headers: HEADERS });
-  if (!res.ok) return [];
-  return await res.json();
+async function fetchTable(table, orderCol, ascending) {
+  var q = sb.from(table).select('*');
+  if (orderCol) q = q.order(orderCol, { ascending: ascending !== false });
+  var { data, error } = await q;
+  if (error) { console.error(table, error); return []; }
+  return data || [];
 }
 
 function fmtDate(d) {
@@ -381,7 +388,7 @@ async function loadPhysique() {
   // Table physique
   var tbody = document.getElementById('tbody-physique');
   if (rows.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8"><div class="empty"><div class="empty-icon">📊</div><div class="empty-text">Aucune donnée — saisir les résultats des tests</div></div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9"><div class="empty"><div class="empty-icon">📊</div><div class="empty-text">Aucune donnée — saisir les résultats des tests</div></div></td></tr>';
     return;
   }
   tbody.innerHTML = rows.slice().reverse().map(function(r){
@@ -394,6 +401,7 @@ async function loadPhysique() {
       '<td>'+val(r.cmj,' cm')+'</td>'+
       '<td>'+val(r.cazorla_temps,' s')+'</td>'+
       '<td>'+val(r.gainage_max_temps,' s')+'</td>'+
+      '<td class="action-col"><button class="del-btn" onclick="deleteRow(\'tests_physiques\','+r.id+',loadPhysique)">🗑️</button></td>'+
     '</tr>';
   }).join('');
 }
@@ -435,7 +443,7 @@ async function loadForce() {
   // Table force
   var tbody = document.getElementById('tbody-force');
   if (rows.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="7"><div class="empty"><div class="empty-icon">💪</div><div class="empty-text">Aucune donnée</div></div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8"><div class="empty"><div class="empty-icon">💪</div><div class="empty-text">Aucune donnée</div></div></td></tr>';
     return;
   }
   tbody.innerHTML = rows.slice().reverse().map(function(r){
@@ -447,6 +455,7 @@ async function loadForce() {
       '<td>'+val(r.traction,' reps')+'</td>'+
       '<td>'+val(r.hiptrust_gauche)+' / '+val(r.hiptrust_droit)+' kg</td>'+
       '<td>'+val(r.nordic)+'</td>'+
+      '<td class="action-col"><button class="del-btn" onclick="deleteRow(\'tests_force\','+r.id+',loadForce)">🗑️</button></td>'+
     '</tr>';
   }).join('');
 }
@@ -465,7 +474,7 @@ async function loadMobilite() {
 
   var tbody = document.getElementById('tbody-mobilite');
   if (rows.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8"><div class="empty"><div class="empty-icon">🤸</div><div class="empty-text">Aucune donnée</div></div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9"><div class="empty"><div class="empty-icon">🤸</div><div class="empty-text">Aucune donnée</div></div></td></tr>';
     return;
   }
   tbody.innerHTML = rows.slice().reverse().map(function(r){
@@ -479,13 +488,14 @@ async function loadMobilite() {
       '<td>'+val(r.fms_chaine_posterieure)+'</td>'+
       '<td>'+val(r.souplesse_ischio_gauche)+' / '+val(r.souplesse_ischio_droite)+' cm</td>'+
       '<td>'+val(r.souplesse_adducteur_gauche)+' / '+val(r.souplesse_adducteur_droite)+' cm</td>'+
+      '<td class="action-col"><button class="del-btn" onclick="deleteRow(\'tests_mobilite\','+r.id+',loadMobilite)">🗑️</button></td>'+
     '</tr>';
   }).join('');
 }
 
 // ── SAISON ──
 async function loadSaison() {
-  var rows = await fetchTable('suivi_saison','mois.asc');
+  var rows = await fetchTable('suivi_saison','mois',true);
   var totMatchs=0,totTit=0,totCS=0,totButs=0,totPD=0;
   rows.forEach(function(r){
     totMatchs+=r.matchs_joues||0; totTit+=r.titularisations||0;
@@ -507,7 +517,7 @@ async function loadSaison() {
 
   var tbody = document.getElementById('tbody-saison');
   if (rows.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6"><div class="empty"><div class="empty-icon">⚽</div><div class="empty-text">Aucune donnée saison</div></div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7"><div class="empty"><div class="empty-icon">⚽</div><div class="empty-text">Aucune donnée saison</div></div></td></tr>';
     return;
   }
   tbody.innerHTML = rows.slice().reverse().map(function(r){
@@ -518,8 +528,17 @@ async function loadSaison() {
       '<td>'+val(r.clean_sheets)+'</td>'+
       '<td>'+val(r.buts)+'</td>'+
       '<td>'+val(r.passes_decisives)+'</td>'+
+      '<td class="action-col"><button class="del-btn" onclick="deleteRow(\'suivi_saison\','+r.id+',loadSaison)">🗑️</button></td>'+
     '</tr>';
   }).join('');
+}
+
+// ── SUPPRESSION ──
+async function deleteRow(table, id, reloadFn) {
+  if (!confirm('Supprimer définitivement cette ligne ?')) return;
+  var { error } = await sb.from(table).delete().eq('id', id);
+  if (error) { alert('Erreur : ' + error.message); return; }
+  if (reloadFn) await reloadFn();
 }
 
 async function loadAll() {
