@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Programme Football</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0D1117;--surface:#161B22;--panel:#1C2128;--border:#30363D;
+  --text:#E6EDF3;--mid:#8B949E;--dim:#484F58;
+  --green:#3FB950;--green-d:#1A3B1E;
+  --blue:#58A6FF;--blue-d:#1A2A3B;
+  --orange:#F0883E;--orange-d:#3B1F0A;
+  --red:#F85149;--red-d:#3B0F0D;
+  --purple:#BC8CFF;--purple-d:#2B1B4E;
+  --yellow:#E3B341;--yellow-d:#332B00;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:13px;}
+
+/* NAV */
+.topnav{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;}
+.nav-title{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.nav-title span{font-size:18px;}
+.nav-tabs{display:flex;gap:2px;}
+.nav-tab{padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;color:var(--mid);border:none;background:transparent;transition:all .15s;}
+.nav-tab:hover{background:var(--panel);color:var(--text);}
+.nav-tab.active{background:var(--panel);color:var(--text);}
+.nav-right{display:flex;gap:8px;}
+.btn{padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s;}
+.btn-green{background:var(--green);color:#000;}
+.btn-green:hover{background:#52C563;}
+.btn-ghost{background:transparent;color:var(--mid);border:1px solid var(--border);}
+.btn-ghost:hover{color:var(--text);}
+
+/* SECTIONS */
+.section{display:none;padding:20px;}
+.section.active{display:block;}
+
+/* CARDS ROW */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:20px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+.card-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mid);margin-bottom:6px;}
+.card-val{font-size:26px;font-weight:800;letter-spacing:-1px;line-height:1;}
+.card-sub{font-size:11px;color:var(--mid);margin-top:4px;}
+.card-green .card-val{color:var(--green);}
+.card-blue .card-val{color:var(--blue);}
+.card-orange .card-val{color:var(--orange);}
+.card-red .card-val{color:var(--red);}
+.card-purple .card-val{color:var(--purple);}
+.card-yellow .card-val{color:var(--yellow);}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
+
+/* CHART PANELS */
+.chart-panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;}
+.cp-title{font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;}
+.chart-wrap{position:relative;height:200px;}
+
+/* TABLE */
+.data-table{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px;}
+.dt-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.dt-title{font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;}
+table{width:100%;border-collapse:collapse;}
+th{padding:8px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--dim);border-bottom:1px solid var(--border);}
+td{padding:9px 12px;border-bottom:1px solid rgba(48,54,61,.5);font-size:12px;color:var(--mid);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--panel);}
+td.highlight{color:var(--text);font-weight:600;}
+
+/* BADGE */
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;}
+.badge-green{background:var(--green-d);color:var(--green);}
+.badge-red{background:var(--red-d);color:var(--red);}
+.badge-blue{background:var(--blue-d);color:var(--blue);}
+.badge-orange{background:var(--orange-d);color:var(--orange);}
+
+/* PROGRESS BAR */
+.progress-wrap{margin-bottom:10px;}
+.progress-label{display:flex;justify-content:space-between;font-size:11px;color:var(--mid);margin-bottom:4px;}
+.progress-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:3px;transition:width .5s;}
+
+/* LOADING */
+.loading{text-align:center;padding:40px;color:var(--mid);}
+.spinner{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* EMPTY */
+.empty{text-align:center;padding:40px;color:var(--dim);}
+.empty-icon{font-size:32px;margin-bottom:8px;}
+.empty-text{font-size:12px;}
+
+/* DELETE BUTTON */
+.del-btn{background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px;transition:all .15s;}
+.del-btn:hover{background:var(--red-d);color:var(--red);border-color:var(--red);}
+th.action-col,td.action-col{width:36px;text-align:center;}
+
+/* SAISON TABLE */
+.saison-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:12px;}
+.sg-cell{background:var(--panel);border-radius:8px;padding:10px;text-align:center;}
+.sg-val{font-size:20px;font-weight:800;color:var(--text);}
+.sg-lbl{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;margin-top:3px;}
+
+@media(max-width:700px){
+  .grid-2,.grid-3{grid-template-columns:1fr;}
+  .saison-grid{grid-template-columns:repeat(3,1fr);}
+  .nav-tabs{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="nav-title"><span>📊</span> Dashboard Football</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showSection('apercu')">Vue d'ensemble</button>
+    <button class="nav-tab" onclick="showSection('physique')">Physique</button>
+    <button class="nav-tab" onclick="showSection('force')">Force</button>
+    <button class="nav-tab" onclick="showSection('mobilite')">Mobilité</button>
+    <button class="nav-tab" onclick="showSection('saison')">Saison</button>
+  </div>
+  <div class="nav-right">
+    <button class="btn btn-ghost" onclick="loadAll()">↻ Actualiser</button>
+    <button class="btn btn-green" onclick="window.location.href='saisie.html'">+ Saisir données</button>
+  </div>
+</div>
+
+<!-- ─── APERÇU ─── -->
+<div class="section active" id="apercu">
+  <div class="cards" id="cards-assiduite">
+    <div class="loading"><div class="spinner"></div>Chargement…</div>
+  </div>
+  <div class="grid-2">
+    <div class="chart-panel">
+      <div class="cp-title">📉 Évolution du poids (kg)</div>
+      <div class="chart-wrap"><canvas id="chart-poids"></canvas></div>
+    </div>
+    <div class="chart-panel">
+      <div class="cp-title">⚡ Évolution VIFT (km/h)</div>
+      <div class="chart-wrap"><canvas id="chart-vift"></canvas></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="chart-panel">
+      <div class="cp-title">✅ Assiduité par semaine</div>
+      <div class="chart-wrap"><canvas id="chart-assiduite"></canvas></div>
+    </div>
+    <div class="chart-panel">
+      <div class="cp-title">🏃 Sprints 10m &amp; 30m (sec)</div>
+      <div class="chart-wrap"><canvas id="chart-sprints"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PHYSIQUE ─── -->
+<div class="section" id="physique">
+  <div class="cards">
+    <div class="card card-blue" id="card-sprint10"><div class="card-lbl">Sprint 10m</div><div class="card-val" id="val-sprint10">—</div><div class="card-sub">secondes · objectif &lt; 1.70</div></div>
+    <div class="card card-blue" id="card-sprint30"><div class="card-lbl">Sprint 30m</div><div class="card-val" id="val-sprint30">—</div><div class="card-sub">secondes · objectif &lt; 4.00</div></div>
+    <div class="card card-green" id="card-vift"><div class="card-lbl">VIFT</div><div class="card-val" id="val-vift">—</div><div class="card-sub">km/h · objectif ≥ 20.5</div></div>
+    <div class="card card-orange" id="card-ttest"><div class="card-lbl">T-test</div><div class="card-val" id="val-ttest">—</div><div class="card-sub">secondes · objectif &lt; 9.5</div></div>
+    <div class="card card-purple" id="card-cmj"><div class="card-lbl">CMJ (saut vertical)</div><div class="card-val" id="val-cmj">—</div><div class="card-sub">cm · objectif ≥ 45</div></div>
+    <div class="card card-yellow" id="card-cazorla"><div class="card-lbl">Cazorla</div><div class="card-val" id="val-cazorla">—</div><div class="card-sub">secondes</div></div>
+  </div>
+  <div class="data-table">
+    <div class="dt-header"><div class="dt-title">Historique tests physiques</div></div>
+    <table>
+      <thead><tr><th>Date</th><th>Sprint 10m</th><th>Sprint 30m</th><th>T-test</th><th>VIFT</th><th>CMJ</th><th>Cazorla</th><th>Gainage max</th><th class="action-col"></th></tr></thead>
+      <tbody id="tbody-physique"><tr><td colspan="9" class="loading"><div class="spinner"></div></td></tr></tbody>
+    </table>
+  </div>
+  <div class="grid-2">
+    <div class="chart-panel">
+      <div class="cp-title">🏃 Évolution sprints</div>
+      <div class="chart-wrap"><canvas id="chart-sprints2"></canvas></div>
+    </div>
+    <div class="chart-panel">
+      <div class="cp-title">⚡ VMA &amp; VIFT</div>
+      <div class="chart-wrap"><canvas id="chart-cardio"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── FORCE ─── -->
+<div class="section" id="force">
+  <div class="cards">
+    <div class="card card-green"><div class="card-lbl">Squat</div><div class="card-val" id="val-squat">—</div><div class="card-sub">kg · objectif ≥ 1.5× BW</div></div>
+    <div class="card card-blue"><div class="card-lbl">Deadlift</div><div class="card-val" id="val-dead">—</div><div class="card-sub">kg · objectif ≥ 1.8× BW</div></div>
+    <div class="card card-orange"><div class="card-lbl">Développé couché</div><div class="card-val" id="val-bench">—</div><div class="card-sub">kg · objectif ≥ 1× BW</div></div>
+    <div class="card card-purple"><div class="card-lbl">Tractions</div><div class="card-val" id="val-pull">—</div><div class="card-sub">reps · objectif ≥ 12</div></div>
+    <div class="card card-yellow"><div class="card-lbl">Hip thrust</div><div class="card-val" id="val-hip">—</div><div class="card-sub">kg · objectif ≥ 2× BW</div></div>
+    <div class="card card-red"><div class="card-lbl">Nordic curl</div><div class="card-val" id="val-nordic">—</div><div class="card-sub">reps complètes</div></div>
+  </div>
+  <div id="force-progress" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;">
+    <div class="cp-title">Standards professionnels — Progression</div>
+    <div id="force-bars"></div>
+  </div>
+  <div class="data-table">
+    <div class="dt-header"><div class="dt-title">Historique tests de force</div></div>
+    <table>
+      <thead><tr><th>Date</th><th>Squat G/D</th><th>Deadlift</th><th>Dev. Couché</th><th>Tractions</th><th>Hip thrust G/D</th><th>Nordic</th><th class="action-col"></th></tr></thead>
+      <tbody id="tbody-force"><tr><td colspan="8" class="loading"><div class="spinner"></div></td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ─── MOBILITÉ ─── -->
+<div class="section" id="mobilite">
+  <div class="cards">
+    <div class="card card-green"><div class="card-lbl">Score FMS Total</div><div class="card-val" id="val-fms">—</div><div class="card-sub">/21 · objectif ≥ 14</div></div>
+    <div class="card card-blue"><div class="card-lbl">Souplesse ischio G</div><div class="card-val" id="val-ischio-g">—</div><div class="card-sub">cm · objectif &lt; 10</div></div>
+    <div class="card card-blue"><div class="card-lbl">Souplesse ischio D</div><div class="card-val" id="val-ischio-d">—</div><div class="card-sub">cm · objectif &lt; 10</div></div>
+    <div class="card card-orange"><div class="card-lbl">Adducteur G</div><div class="card-val" id="val-add-g">—</div><div class="card-sub">cm</div></div>
+    <div class="card card-orange"><div class="card-lbl">Adducteur D</div><div class="card-val" id="val-add-d">—</div><div class="card-sub">cm</div></div>
+    <div class="card card-purple"><div class="card-lbl">Cheville G</div><div class="card-val" id="val-chev-g">—</div><div class="card-sub">cm (wall ankle)</div></div>
+  </div>
+  <div class="data-table">
+    <div class="dt-header"><div class="dt-title">Historique mobilité &amp; FMS</div></div>
+    <table>
+      <thead><tr><th>Date</th><th>FMS Total</th><th>Squat</th><th>Haie</th><th>Fente</th><th>Chaîne post.</th><th>Ischio G/D</th><th>Adduct. G/D</th><th class="action-col"></th></tr></thead>
+      <tbody id="tbody-mobilite"><tr><td colspan="9" class="loading"><div class="spinner"></div></td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ─── SAISON ─── -->
+<div class="section" id="saison">
+  <div class="saison-grid" id="saison-totals">
+    <div class="sg-cell"><div class="sg-val" id="sv-matchs">—</div><div class="sg-lbl">Matchs joués</div></div>
+    <div class="sg-cell"><div class="sg-val" id="sv-tit">—</div><div class="sg-lbl">Titularisations</div></div>
+    <div class="sg-cell"><div class="sg-val" id="sv-cs">—</div><div class="sg-lbl">Clean sheets</div></div>
+    <div class="sg-cell"><div class="sg-val" id="sv-buts">—</div><div class="sg-lbl">Buts</div></div>
+    <div class="sg-cell"><div class="sg-val" id="sv-pd">—</div><div class="sg-lbl">Passes D</div></div>
+    <div class="sg-cell"><div class="sg-val" id="sv-tx">—</div><div class="sg-lbl">Taux tit. %</div></div>
+  </div>
+  <div class="chart-panel" style="margin-bottom:12px;">
+    <div class="cp-title">📅 Statistiques par mois</div>
+    <div class="chart-wrap" style="height:250px;"><canvas id="chart-saison"></canvas></div>
+  </div>
+  <div class="data-table">
+    <div class="dt-header"><div class="dt-title">Détail par mois</div></div>
+    <table>
+      <thead><tr><th>Mois</th><th>Matchs</th><th>Titularisations</th><th>Clean sheets</th><th>Buts</th><th>Passes D</th><th class="action-col"></th></tr></thead>
+      <tbody id="tbody-saison"><tr><td colspan="7" class="loading"><div class="spinner"></div></td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+var SB_URL = 'https://huyompxzamrpciyvvglr.supabase.co';
+var SB_KEY = 'sb_publishable_HtW5ovL_RCrcbT0MKnyJhg_dK0md2Ya';
+var sb = window.supabase.createClient(SB_URL, SB_KEY);
+
+var charts = {};
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+async function fetchTable(table, orderCol, ascending) {
+  var q = sb.from(table).select('*');
+  if (orderCol) q = q.order(orderCol, { ascending: ascending !== false });
+  var { data, error } = await q;
+  if (error) { console.error(table, error); return []; }
+  return data || [];
+}
+
+function fmtDate(d) {
+  if (!d) return '—';
+  var dt = new Date(d);
+  return dt.getDate().toString().padStart(2,'0') + '/' + (dt.getMonth()+1).toString().padStart(2,'0') + '/' + dt.getFullYear();
+}
+
+function val(v, unit) { return v !== null && v !== undefined ? v + (unit||'') : '—'; }
+
+function makeChart(id, type, labels, datasets, opts) {
+  var ctx = document.getElementById(id);
+  if (!ctx) return;
+  if (charts[id]) charts[id].destroy();
+  charts[id] = new Chart(ctx, {
+    type: type,
+    data: { labels: labels, datasets: datasets },
+    options: Object.assign({
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#8B949E', font: { size: 11 } } } },
+      scales: {
+        x: { ticks: { color: '#484F58', font: { size: 10 } }, grid: { color: 'rgba(48,54,61,.5)' } },
+        y: { ticks: { color: '#484F58', font: { size: 10 } }, grid: { color: 'rgba(48,54,61,.5)' } }
+      }
+    }, opts||{})
+  });
+}
+
+// ── ASSIDUITÉ ──
+async function loadAssiduite() {
+  var rows = await fetchTable('seances');
+  var total = rows.length;
+  var faites = rows.filter(function(r){return r.effectuee;}).length;
+  var ratees = total - faites;
+  var taux = total > 0 ? Math.round(faites/total*100) : 0;
+
+  document.getElementById('cards-assiduite').innerHTML =
+    '<div class="card card-green"><div class="card-lbl">Séances effectuées</div><div class="card-val">'+faites+'</div><div class="card-sub">sur '+total+' planifiées</div></div>'+
+    '<div class="card card-red"><div class="card-lbl">Séances non effectuées</div><div class="card-val">'+ratees+'</div><div class="card-sub">manquées</div></div>'+
+    '<div class="card card-blue"><div class="card-lbl">Taux d\'assiduité</div><div class="card-val">'+taux+'%</div><div class="card-sub">'+(taux>=80?'✅ Excellent':'⚠️ À améliorer')+'</div></div>'+
+    '<div class="card card-orange"><div class="card-lbl">Semaine en cours</div><div class="card-val" id="val-sem-cur">—</div><div class="card-sub">dernière séance enregistrée</div></div>';
+
+  // Dernière semaine
+  if (rows.length > 0) {
+    var last = rows[rows.length-1];
+    var el = document.getElementById('val-sem-cur');
+    if (el) el.textContent = 'S' + (last.semaine||'?');
+  }
+
+  // Chart assiduité par semaine
+  var bySem = {};
+  rows.forEach(function(r){
+    var s = 'S'+(r.semaine||'?');
+    if (!bySem[s]) bySem[s] = {ok:0,no:0};
+    if (r.effectuee) bySem[s].ok++; else bySem[s].no++;
+  });
+  var semLabels = Object.keys(bySem);
+  makeChart('chart-assiduite','bar',semLabels,[
+    {label:'Effectuées',data:semLabels.map(function(s){return bySem[s].ok;}),backgroundColor:'rgba(63,185,80,.7)'},
+    {label:'Manquées',data:semLabels.map(function(s){return bySem[s].no;}),backgroundColor:'rgba(248,81,73,.7)'}
+  ],{scales:{x:{stacked:true},y:{stacked:true}}});
+}
+
+// ── MESURES ──
+async function loadMesures() {
+  var rows = await fetchTable('mesures_corporelles');
+  var labels = rows.map(function(r){return fmtDate(r.date);});
+  var poids = rows.map(function(r){return r.poids;});
+
+  makeChart('chart-poids','line',labels,[
+    {label:'Poids (kg)',data:poids,borderColor:'#58A6FF',backgroundColor:'rgba(88,166,255,.1)',tension:.3,fill:true,pointBackgroundColor:'#58A6FF'}
+  ]);
+}
+
+// ── TESTS PHYSIQUES ──
+async function loadPhysique() {
+  var rows = await fetchTable('tests_physiques');
+  var last = rows.length > 0 ? rows[rows.length-1] : {};
+
+  document.getElementById('val-sprint10').textContent = val(last.sprint_10m);
+  document.getElementById('val-sprint30').textContent = val(last.sprint_30m);
+  document.getElementById('val-vift').textContent = val(last.vift);
+  document.getElementById('val-ttest').textContent = val(last.t_test);
+  document.getElementById('val-cmj').textContent = val(last.cmj);
+  document.getElementById('val-cazorla').textContent = val(last.cazorla_temps);
+
+  // VIFT chart overview
+  var viftLabels = rows.map(function(r){return fmtDate(r.date);});
+  var viftData = rows.map(function(r){return r.vift;});
+  makeChart('chart-vift','line',viftLabels,[
+    {label:'VIFT (km/h)',data:viftData,borderColor:'#3FB950',backgroundColor:'rgba(63,185,80,.1)',tension:.3,fill:true,pointBackgroundColor:'#3FB950'}
+  ]);
+
+  // Sprints overview
+  var s10 = rows.map(function(r){return r.sprint_10m;});
+  var s30 = rows.map(function(r){return r.sprint_30m;});
+  makeChart('chart-sprints','line',viftLabels,[
+    {label:'10m (sec)',data:s10,borderColor:'#58A6FF',tension:.3,pointBackgroundColor:'#58A6FF'},
+    {label:'30m (sec)',data:s30,borderColor:'#F0883E',tension:.3,pointBackgroundColor:'#F0883E'}
+  ]);
+
+  // Sprints section physique
+  makeChart('chart-sprints2','line',viftLabels,[
+    {label:'Sprint 10m',data:s10,borderColor:'#58A6FF',tension:.3},
+    {label:'Sprint 30m',data:s30,borderColor:'#F0883E',tension:.3}
+  ]);
+
+  // VMA & VIFT
+  var vma = rows.map(function(r){return r.vma;});
+  makeChart('chart-cardio','line',viftLabels,[
+    {label:'VMA (km/h)',data:vma,borderColor:'#BC8CFF',tension:.3},
+    {label:'VIFT (km/h)',data:viftData,borderColor:'#3FB950',tension:.3}
+  ]);
+
+  // Table physique
+  var tbody = document.getElementById('tbody-physique');
+  if (rows.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="9"><div class="empty"><div class="empty-icon">📊</div><div class="empty-text">Aucune donnée — saisir les résultats des tests</div></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.slice().reverse().map(function(r){
+    return '<tr>'+
+      '<td class="highlight">'+fmtDate(r.date)+'</td>'+
+      '<td>'+val(r.sprint_10m,' s')+'</td>'+
+      '<td>'+val(r.sprint_30m,' s')+'</td>'+
+      '<td>'+val(r.t_test,' s')+'</td>'+
+      '<td>'+val(r.vift,' km/h')+'</td>'+
+      '<td>'+val(r.cmj,' cm')+'</td>'+
+      '<td>'+val(r.cazorla_temps,' s')+'</td>'+
+      '<td>'+val(r.gainage_max_temps,' s')+'</td>'+
+      '<td class="action-col"><button class="del-btn" onclick="deleteRow(\'tests_physiques\','+r.id+',loadPhysique)">🗑️</button></td>'+
+    '</tr>';
+  }).join('');
+}
+
+// ── FORCE ──
+async function loadForce() {
+  var rows = await fetchTable('tests_force');
+  var mesures = await fetchTable('mesures_corporelles');
+  var last = rows.length > 0 ? rows[rows.length-1] : {};
+  var poids = mesures.length > 0 ? mesures[mesures.length-1].poids : null;
+
+  document.getElementById('val-squat').textContent = last.squat_gauche ? last.squat_gauche+' kg' : '—';
+  document.getElementById('val-dead').textContent = last.souleve_de_terre ? last.souleve_de_terre+' kg' : '—';
+  document.getElementById('val-bench').textContent = last.devel_couche_gauche ? last.devel_couche_gauche+' kg' : '—';
+  document.getElementById('val-pull').textContent = last.traction ? last.traction+' reps' : '—';
+  document.getElementById('val-hip').textContent = last.hiptrust_gauche ? last.hiptrust_gauche+' kg' : '—';
+  document.getElementById('val-nordic').textContent = last.nordic ? last.nordic+' reps' : '—';
+
+  // Progress bars
+  var barsEl = document.getElementById('force-bars');
+  if (poids && last.squat_gauche) {
+    var forceStds = [
+      {lbl:'Squat (≥1.5× BW = '+(poids*1.5).toFixed(0)+'kg)',val:last.squat_gauche,target:poids*1.5,color:'#3FB950'},
+      {lbl:'Deadlift (≥1.8× BW = '+(poids*1.8).toFixed(0)+'kg)',val:last.souleve_de_terre||0,target:poids*1.8,color:'#58A6FF'},
+      {lbl:'Dev. Couché (≥1× BW = '+poids+'kg)',val:last.devel_couche_gauche||0,target:poids,color:'#F0883E'},
+      {lbl:'Hip thrust (≥2× BW = '+(poids*2).toFixed(0)+'kg)',val:last.hiptrust_gauche||0,target:poids*2,color:'#BC8CFF'},
+    ];
+    barsEl.innerHTML = forceStds.map(function(s){
+      var pct = Math.min(Math.round(s.val/s.target*100),100);
+      return '<div class="progress-wrap">'+
+        '<div class="progress-label"><span>'+s.lbl+'</span><span style="color:'+s.color+'">'+s.val+'kg ('+pct+'%)</span></div>'+
+        '<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%;background:'+s.color+';"></div></div>'+
+      '</div>';
+    }).join('');
+  } else {
+    barsEl.innerHTML = '<div class="empty"><div class="empty-icon">💪</div><div class="empty-text">Saisir les tests de force et le poids pour voir la progression</div></div>';
+  }
+
+  // Table force
+  var tbody = document.getElementById('tbody-force');
+  if (rows.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8"><div class="empty"><div class="empty-icon">💪</div><div class="empty-text">Aucune donnée</div></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.slice().reverse().map(function(r){
+    return '<tr>'+
+      '<td class="highlight">'+fmtDate(r.date)+'</td>'+
+      '<td>'+val(r.squat_gauche)+' / '+val(r.squat_droit)+' kg</td>'+
+      '<td>'+val(r.souleve_de_terre,' kg')+'</td>'+
+      '<td>'+val(r.devel_couche_gauche,' kg')+'</td>'+
+      '<td>'+val(r.traction,' reps')+'</td>'+
+      '<td>'+val(r.hiptrust_gauche)+' / '+val(r.hiptrust_droit)+' kg</td>'+
+      '<td>'+val(r.nordic)+'</td>'+
+      '<td class="action-col"><button class="del-btn" onclick="deleteRow(\'tests_force\','+r.id+',loadForce)">🗑️</button></td>'+
+    '</tr>';
+  }).join('');
+}
+
+// ── MOBILITÉ ──
+async function loadMobilite() {
+  var rows = await fetchTable('tests_mobilite');
+  var last = rows.length > 0 ? rows[rows.length-1] : {};
+
+  document.getElementById('val-fms').textContent = val(last.fms_total);
+  document.getElementById('val-ischio-g').textContent = val(last.souplesse_ischio_gauche,' cm');
+  document.getElementById('val-ischio-d').textContent = val(last.souplesse_ischio_droite,' cm');
+  document.getElementById('val-add-g').textContent = val(last.souplesse_adducteur_gauche,' cm');
+  document.getElementById('val-add-d').textContent = val(last.souplesse_adducteur_droite,' cm');
+  document.getElementById('val-chev-g').textContent = val(last.souplesse_cheville_gauche,' cm');
+
+  var tbody = document.getElementById('tbody-mobilite');
+  if (rows.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="9"><div class="empty"><div class="empty-icon">🤸</div><div class="empty-text">Aucune donnée</div></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.slice().reverse().map(function(r){
+    var fmsClass = r.fms_total >= 14 ? 'badge-green' : 'badge-red';
+    return '<tr>'+
+      '<td class="highlight">'+fmtDate(r.date)+'</td>'+
+      '<td><span class="badge '+fmsClass+'">'+val(r.fms_total)+'</span></td>'+
+      '<td>'+val(r.fms_squat)+'</td>'+
+      '<td>'+val(r.fms_passage_haie)+'</td>'+
+      '<td>'+val(r.fms_fente)+'</td>'+
+      '<td>'+val(r.fms_chaine_posterieure)+'</td>'+
+      '<td>'+val(r.souplesse_ischio_gauche)+' / '+val(r.souplesse_ischio_droite)+' cm</td>'+
+      '<td>'+val(r.souplesse_adducteur_gauche)+' / '+val(r.souplesse_adducteur_droite)+' cm</td>'+
+      '<td class="action-col"><button class="del-btn" onclick="deleteRow(\'tests_mobilite\','+r.id+',loadMobilite)">🗑️</button></td>'+
+    '</tr>';
+  }).join('');
+}
+
+// ── SAISON ──
+async function loadSaison() {
+  var rows = await fetchTable('suivi_saison','mois',true);
+  var totMatchs=0,totTit=0,totCS=0,totButs=0,totPD=0;
+  rows.forEach(function(r){
+    totMatchs+=r.matchs_joues||0; totTit+=r.titularisations||0;
+    totCS+=r.clean_sheets||0; totButs+=r.buts||0; totPD+=r.passes_decisives||0;
+  });
+  document.getElementById('sv-matchs').textContent = totMatchs;
+  document.getElementById('sv-tit').textContent = totTit;
+  document.getElementById('sv-cs').textContent = totCS;
+  document.getElementById('sv-buts').textContent = totButs;
+  document.getElementById('sv-pd').textContent = totPD;
+  document.getElementById('sv-tx').textContent = totMatchs>0?Math.round(totTit/totMatchs*100)+'%':'—';
+
+  var labels = rows.map(function(r){return r.mois+' '+r.annee;});
+  makeChart('chart-saison','bar',labels,[
+    {label:'Matchs joués',data:rows.map(function(r){return r.matchs_joues||0;}),backgroundColor:'rgba(88,166,255,.7)'},
+    {label:'Titularisations',data:rows.map(function(r){return r.titularisations||0;}),backgroundColor:'rgba(63,185,80,.7)'},
+    {label:'Clean sheets',data:rows.map(function(r){return r.clean_sheets||0;}),backgroundColor:'rgba(188,140,255,.7)'},
+  ]);
+
+  var tbody = document.getElementById('tbody-saison');
+  if (rows.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7"><div class="empty"><div class="empty-icon">⚽</div><div class="empty-text">Aucune donnée saison</div></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.slice().reverse().map(function(r){
+    return '<tr>'+
+      '<td class="highlight">'+r.mois+' '+r.annee+'</td>'+
+      '<td>'+val(r.matchs_joues)+'</td>'+
+      '<td>'+val(r.titularisations)+'</td>'+
+      '<td>'+val(r.clean_sheets)+'</td>'+
+      '<td>'+val(r.buts)+'</td>'+
+      '<td>'+val(r.passes_decisives)+'</td>'+
+      '<td class="action-col"><button class="del-btn" onclick="deleteRow(\'suivi_saison\','+r.id+',loadSaison)">🗑️</button></td>'+
+    '</tr>';
+  }).join('');
+}
+
+// ── SUPPRESSION ──
+async function deleteRow(table, id, reloadFn) {
+  if (!confirm('Supprimer définitivement cette ligne ?')) return;
+  var { error } = await sb.from(table).delete().eq('id', id);
+  if (error) { alert('Erreur : ' + error.message); return; }
+  if (reloadFn) await reloadFn();
+}
+
+async function loadAll() {
+  await Promise.all([loadAssiduite(), loadMesures(), loadPhysique(), loadForce(), loadMobilite(), loadSaison()]);
+}
+
+loadAll();
+</script>
+</body>
+</html>
