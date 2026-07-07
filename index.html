@@ -112,12 +112,52 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 #breadcrumb-bar{display:none;}
 
 .bm{color:var(--b);}
+
+/* ─── MOBILE ─── */
+.hamburger{display:none;background:transparent;border:none;cursor:pointer;padding:6px;color:#fff;font-size:22px;line-height:1;}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;}
+.sidebar-close{display:none;position:absolute;top:10px;right:10px;background:transparent;border:none;font-size:20px;cursor:pointer;color:var(--il);}
+
+@media(max-width:768px){
+  /* Header */
+  .hamburger{display:block;}
+  .top-badge{display:none;}
+  .top-sub{display:none;}
+  .top-title{font-size:13px;}
+
+  /* Sidebar becomes drawer */
+  .sidebar{
+    position:fixed;top:0;left:-260px;height:100%;z-index:100;
+    width:260px;transition:left .25s ease;box-shadow:none;
+  }
+  .sidebar.open{left:0;box-shadow:4px 0 20px rgba(0,0,0,.15);}
+  .sidebar-overlay.open{display:block;}
+  .sidebar-close{display:block;}
+
+  /* Layout */
+  .layout{flex-direction:column;}
+  .main{flex:1;overflow:hidden;}
+  #welcome{padding:1rem;}
+
+  /* Welcome screen */
+  .wh-title{font-size:20px;}
+  .wh-stats{gap:1rem;}
+  .whs-v{font-size:16px;}
+  .welcome-hdr{padding:1.25rem 1.25rem;}
+  .timeline{grid-template-columns:repeat(7,1fr);gap:3px;}
+  .phase-cards{grid-template-columns:1fr;}
+  .ins-grid{grid-template-columns:1fr;}
+
+  /* Breadcrumb */
+  .breadcrumb{font-size:12px;padding:8px 12px;}
+}
 </style>
 </head>
 <body>
 
 <!-- TOP HEADER -->
 <div class="top">
+  <button class="hamburger" onclick="toggleSidebar()">☰</button>
   <div>
     <div class="top-title">⚽ Programme Football — Préparation Défenseur</div>
     <div class="top-sub">14 semaines · Semi-professionnel → National</div>
@@ -125,10 +165,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="top-badge">Juillet – Octobre</div>
 </div>
 
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
 <div class="layout">
 
 <!-- SIDEBAR -->
-<nav class="sidebar">
+<nav class="sidebar" id="sidebar">
+  <button class="sidebar-close" onclick="closeSidebar()">✕</button>
   <div class="sidebar-inner">
 
     <div class="phase-label">Phase 1 — Fat Loss & Fondations</div>
@@ -186,6 +229,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </button>
 
     <div class="phase-label">Outils</div>
+    <button class="week-btn" onclick="window.open('mobile.html','_blank')">
+      <div class="wnum" style="background:#FEF2F2;color:#B91C1C;">📱</div>
+      <div class="winfo"><div class="wlbl">Vue du jour</div><div class="wdesc">App mobile · entraînement</div></div>
+    </button>
     <button class="week-btn" onclick="window.open('dashboard.html','_blank')">
       <div class="wnum" style="background:#FEF3C7;color:#78350F;">📊</div>
       <div class="winfo"><div class="wlbl">Dashboard</div><div class="wdesc">Suivi progression complet</div></div>
@@ -314,6 +361,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 
 <script>
+function toggleSidebar(){
+  var s=document.getElementById('sidebar');
+  var o=document.getElementById('sidebar-overlay');
+  s.classList.toggle('open');
+  o.classList.toggle('open');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+}
+
 var currentWeek = null;
 
 function loadWeek(num, file, label, phase) {
@@ -346,6 +404,8 @@ function loadWeek(num, file, label, phase) {
 
   // Load file
   document.getElementById('week-frame').src = file;
+  // Close sidebar on mobile
+  closeSidebar();
 }
 
 function frameLoaded() {
